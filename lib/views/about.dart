@@ -237,7 +237,7 @@ class AboutView extends StatelessWidget {
                         const SizedBox(height: 16),
                         InkWell(
                           onTap: () {
-                            globalState.openUrl('https://github.com/remnawave/panel');
+                            globalState.openUrl('https://docs.rw');
                           },
                           child: const Text(
                             'TRY REMNAWAVE',

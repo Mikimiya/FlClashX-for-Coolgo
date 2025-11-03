@@ -297,6 +297,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullTip": m4,
     "numberTip": m5,
     "oneColumn": MessageLookupByLibrary.simpleMessage("一列"),
+    "oneline": MessageLookupByLibrary.simpleMessage("单行"),
     "onlyIcon": MessageLookupByLibrary.simpleMessage("仅图标"),
     "onlyOtherApps": MessageLookupByLibrary.simpleMessage("仅第三方应用"),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage("仅统计代理"),

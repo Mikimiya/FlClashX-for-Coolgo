@@ -1554,6 +1554,11 @@ class AppLocalizations {
     return Intl.message('Min', name: 'min', desc: '', args: []);
   }
 
+  /// `Oneline`
+  String get oneline {
+    return Intl.message('Oneline', name: 'oneline', desc: '', args: []);
+  }
+
   /// `Tab`
   String get tab {
     return Intl.message('Tab', name: 'tab', desc: '', args: []);

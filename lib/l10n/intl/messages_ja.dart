@@ -333,6 +333,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullTip": m4,
     "numberTip": m5,
     "oneColumn": MessageLookupByLibrary.simpleMessage("1列"),
+    "oneline": MessageLookupByLibrary.simpleMessage("オンライン"),
     "onlyIcon": MessageLookupByLibrary.simpleMessage("アイコンのみ"),
     "onlyOtherApps": MessageLookupByLibrary.simpleMessage("サードパーティアプリのみ"),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage("プロキシのみ統計"),

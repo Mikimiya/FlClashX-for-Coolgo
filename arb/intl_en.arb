@@ -202,6 +202,7 @@
   "expand": "Standard",
   "shrink": "Shrink",
   "min": "Min",
+  "oneline": "Oneline",
   "tab": "Tab",
   "list": "List",
   "delay": "Delay",

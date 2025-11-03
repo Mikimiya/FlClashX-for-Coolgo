@@ -197,6 +197,7 @@
   "expand": "标准",
   "shrink": "紧凑",
   "min": "最小",
+  "oneline": "单行",
   "tab": "标签页",
   "list": "列表",
   "delay": "延迟",

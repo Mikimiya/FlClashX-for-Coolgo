@@ -452,6 +452,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullTip": m4,
     "numberTip": m5,
     "oneColumn": MessageLookupByLibrary.simpleMessage("One column"),
+    "oneline": MessageLookupByLibrary.simpleMessage("Oneline"),
     "onlyIcon": MessageLookupByLibrary.simpleMessage("Icon"),
     "onlyOtherApps": MessageLookupByLibrary.simpleMessage(
       "Only third-party apps",
