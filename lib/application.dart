@@ -49,12 +49,11 @@ class ApplicationState extends ConsumerState<Application> {
   @override
   void initState() {
     super.initState();
-    
-    // Включаем темную тему для системных меню на Windows
+
     if (Platform.isWindows) {
       windows?.enableDarkModeForApp();
     }
-    
+
     _autoUpdateGroupTask();
     _autoUpdateProfilesTask();
     globalState.appController = AppController(context, ref);

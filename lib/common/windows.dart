@@ -28,9 +28,11 @@ class Windows {
 
   bool isDarkMode() {
     try {
-      final keyPath = 'Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize'.toNativeUtf16();
+      final keyPath =
+          'Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize'
+              .toNativeUtf16();
       final valueName = 'AppsUseLightTheme'.toNativeUtf16();
-      
+
       final phkResult = calloc<HKEY>();
       var result = RegOpenKeyEx(
         HKEY_CURRENT_USER,
@@ -39,22 +41,22 @@ class Windows {
         REG_SAM_FLAGS.KEY_READ,
         phkResult,
       );
-      
+
       calloc.free(keyPath);
-      
+
       if (result != WIN32_ERROR.ERROR_SUCCESS) {
         calloc.free(valueName);
         calloc.free(phkResult);
         return false;
       }
-      
+
       final hKey = phkResult.value;
       calloc.free(phkResult);
-      
+
       final data = calloc<DWORD>();
       final dataSize = calloc<DWORD>();
       dataSize.value = sizeOf<DWORD>();
-      
+
       result = RegQueryValueEx(
         hKey,
         valueName,
@@ -63,20 +65,20 @@ class Windows {
         data.cast(),
         dataSize,
       );
-      
+
       calloc.free(valueName);
       RegCloseKey(hKey);
-      
+
       if (result != WIN32_ERROR.ERROR_SUCCESS) {
         calloc.free(data);
         calloc.free(dataSize);
         return false;
       }
-      
+
       final isLightMode = data.value != 0;
       calloc.free(data);
       calloc.free(dataSize);
-      
+
       return !isLightMode;
     } catch (e) {
       return false;
@@ -87,93 +89,87 @@ class Windows {
     try {
       final isDark = isDarkMode();
       if (!isDark) return;
-      
-      // Пытаемся использовать недокументированное API для темной темы
-      // Эти функции существуют только как ordinals в uxtheme.dll
+
       try {
         final kernel32 = DynamicLibrary.open('kernel32.dll');
         final moduleName = 'uxtheme.dll'.toNativeUtf16();
-        
-        // Получаем GetProcAddress напрямую из kernel32
+
         final getProcAddressFunc = kernel32.lookupFunction<
             IntPtr Function(IntPtr hModule, Pointer<Utf8> lpProcName),
-            int Function(int hModule, Pointer<Utf8> lpProcName)>('GetProcAddress');
-        
+            int Function(
+                int hModule, Pointer<Utf8> lpProcName)>('GetProcAddress');
+
         final getModuleHandleFunc = kernel32.lookupFunction<
             IntPtr Function(Pointer<Utf16> lpModuleName),
             int Function(Pointer<Utf16> lpModuleName)>('GetModuleHandleW');
-        
+
         final uxthemeHandle = getModuleHandleFunc(moduleName);
         calloc.free(moduleName);
-        
+
         if (uxthemeHandle != 0) {
-          // Для ordinals используем MAKEINTRESOURCE: младшие 16 бит
-          // Ordinal 135 = SetPreferredAppMode (Windows 10 1903+)
           final ordinal135 = Pointer<Utf8>.fromAddress(135);
-          final setPreferredAppModePtr = getProcAddressFunc(uxthemeHandle, ordinal135);
-          
+          final setPreferredAppModePtr =
+              getProcAddressFunc(uxthemeHandle, ordinal135);
+
           if (setPreferredAppModePtr != 0) {
-            final setPreferredAppMode = Pointer<NativeFunction<Int32 Function(Int32)>>
-                .fromAddress(setPreferredAppModePtr)
-                .asFunction<int Function(int)>();
-            setPreferredAppMode(1); // 1 = AllowDark
+            final setPreferredAppMode =
+                Pointer<NativeFunction<Int32 Function(Int32)>>.fromAddress(
+                        setPreferredAppModePtr)
+                    .asFunction<int Function(int)>();
+            setPreferredAppMode(1);
           } else {
-            // Ordinal 133 = AllowDarkModeForApp (Windows 10 1809)
             final ordinal133 = Pointer<Utf8>.fromAddress(133);
-            final allowDarkModePtr = getProcAddressFunc(uxthemeHandle, ordinal133);
-            
+            final allowDarkModePtr =
+                getProcAddressFunc(uxthemeHandle, ordinal133);
+
             if (allowDarkModePtr != 0) {
-              final allowDarkModeForApp = Pointer<NativeFunction<Int32 Function(Int32)>>
-                  .fromAddress(allowDarkModePtr)
-                  .asFunction<int Function(int)>();
+              final allowDarkModeForApp =
+                  Pointer<NativeFunction<Int32 Function(Int32)>>.fromAddress(
+                          allowDarkModePtr)
+                      .asFunction<int Function(int)>();
               allowDarkModeForApp(1); // TRUE
             }
           }
-          
+
           // Ordinal 136 = FlushMenuThemes
           final ordinal136 = Pointer<Utf8>.fromAddress(136);
-          final flushMenuThemesPtr = getProcAddressFunc(uxthemeHandle, ordinal136);
-          
+          final flushMenuThemesPtr =
+              getProcAddressFunc(uxthemeHandle, ordinal136);
+
           if (flushMenuThemesPtr != 0) {
-            final flushMenuThemes = Pointer<NativeFunction<Void Function()>>
-                .fromAddress(flushMenuThemesPtr)
-                .asFunction<void Function()>();
+            final flushMenuThemes =
+                Pointer<NativeFunction<Void Function()>>.fromAddress(
+                        flushMenuThemesPtr)
+                    .asFunction<void Function()>();
             flushMenuThemes();
           }
         }
-      } catch (e) {
-        // Ignore if functions are not available
-      }
-    } catch (e) {
-      // Ignore errors
-    }
+      } catch (e) {}
+    } catch (e) {}
   }
 
   void applyDarkModeToMenu(int hwnd) {
     if (hwnd == 0) return;
-    
+
     try {
       final isDark = isDarkMode();
-      
-      // Попытка применить темную тему через SetWindowTheme
+
       final themeName = isDark ? 'DarkMode_Explorer'.toNativeUtf16() : nullptr;
-      
+
       try {
         final setWindowTheme = _uxtheme.lookupFunction<
-            Int32 Function(IntPtr hwnd, Pointer<Utf16> pszSubAppName, Pointer<Utf16> pszSubIdList),
-            int Function(int hwnd, Pointer<Utf16> pszSubAppName, Pointer<Utf16> pszSubIdList)>('SetWindowTheme');
-        
+            Int32 Function(IntPtr hwnd, Pointer<Utf16> pszSubAppName,
+                Pointer<Utf16> pszSubIdList),
+            int Function(int hwnd, Pointer<Utf16> pszSubAppName,
+                Pointer<Utf16> pszSubIdList)>('SetWindowTheme');
+
         setWindowTheme(hwnd, themeName, nullptr);
-      } catch (e) {
-        // Ignore if SetWindowTheme is not available
-      }
-      
+      } catch (e) {}
+
       if (themeName != nullptr) {
         calloc.free(themeName);
       }
-    } catch (e) {
-      // Ignore errors
-    }
+    } catch (e) {}
   }
 
   bool runas(String command, String arguments) {
@@ -240,7 +236,7 @@ class Windows {
     //   return WindowsHelperServiceStatus.none;
     // }
     final result = await Process.run('sc', ['query', appHelperService]);
-    if(result.exitCode != 0){
+    if (result.exitCode != 0) {
       return WindowsHelperServiceStatus.none;
     }
     final output = result.stdout.toString();
@@ -290,7 +286,7 @@ class Windows {
 
   Future<bool> startService() async {
     final status = await checkService();
-    
+
     if (status == WindowsHelperServiceStatus.running) {
       return true;
     }
@@ -300,29 +296,29 @@ class Windows {
     }
 
     final result = await Process.run('sc', ['start', appHelperService]);
-    
+
     if (result.exitCode == 0) {
       await Future.delayed(const Duration(milliseconds: 500));
       return true;
     }
-    
+
     return false;
   }
 
   Future<bool> stopService() async {
     final status = await checkService();
-    
+
     if (status == WindowsHelperServiceStatus.none) {
       return true;
     }
 
     final result = await Process.run('sc', ['stop', appHelperService]);
-    
+
     if (result.exitCode == 0) {
       await Future.delayed(const Duration(milliseconds: 500));
       return true;
     }
-    
+
     return false;
   }
 
