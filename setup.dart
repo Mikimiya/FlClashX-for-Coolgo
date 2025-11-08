@@ -211,7 +211,6 @@ var (
 ''';
 
     await versionFile.writeAsString(content);
-    print("Updated version.go: Version=$version, BuildTime=$buildTime");
   }
 
   static Future<void> exec(
@@ -682,27 +681,25 @@ class BuildCommand extends Command {
       case Target.android:
         // Build all architectures: armeabi-v7a, arm64-v8a, x86_64
         final allTargets = "android-arm,android-arm64,android-x64";
-        
+
         // Build split APKs (one per architecture)
         await _buildDistributor(
           target: target,
           targets: "apk",
-          args:
-              ",split-per-abi --build-target-platform $allTargets",
+          args: ",split-per-abi --build-target-platform $allTargets",
           env: env,
           coreVersion: coreVersion,
         );
-        
+
         // Build universal APK (all architectures in one file)
         await _buildDistributor(
           target: target,
           targets: "apk",
-          args:
-              " --build-target-platform $allTargets",
+          args: " --build-target-platform $allTargets",
           env: env,
           coreVersion: coreVersion,
         );
-        
+
         return;
       case Target.macos:
         await _getMacosDependencies();
