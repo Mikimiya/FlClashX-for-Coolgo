@@ -399,7 +399,28 @@ class GlobalState {
     }
 
     rawConfig["profile"]["store-selected"] = false;
-    rawConfig["geox-url"] = realPatchConfig.geoXUrl.toJson();
+    
+    // Элегантное решение: сливаем geox-url из профиля и patchConfig
+    // RawGeoXUrl в Go использует только lowercase ключи: geoip, mmdb, asn, geosite
+    final Map<String, dynamic> mergedGeoXUrl = {};
+    final patchGeoX = realPatchConfig.geoXUrl.toJson();
+    final profileGeoX = rawConfig["geox-url"];
+    
+    // Начинаем с дефолтных значений из patchConfig
+    mergedGeoXUrl['geoip'] = patchGeoX['geoip'];
+    mergedGeoXUrl['mmdb'] = patchGeoX['mmdb'];
+    mergedGeoXUrl['asn'] = patchGeoX['asn'];
+    mergedGeoXUrl['geosite'] = patchGeoX['geosite'];
+    
+    // Переопределяем значениями из профиля если они есть (только lowercase формат)
+    if (profileGeoX != null && profileGeoX is Map) {
+      if (profileGeoX['geoip'] != null) mergedGeoXUrl['geoip'] = profileGeoX['geoip'];
+      if (profileGeoX['mmdb'] != null) mergedGeoXUrl['mmdb'] = profileGeoX['mmdb'];
+      if (profileGeoX['asn'] != null) mergedGeoXUrl['asn'] = profileGeoX['asn'];
+      if (profileGeoX['geosite'] != null) mergedGeoXUrl['geosite'] = profileGeoX['geosite'];
+    }
+    
+    rawConfig["geox-url"] = mergedGeoXUrl;
     rawConfig["global-ua"] = realPatchConfig.globalUa;
     if (rawConfig["hosts"] == null) {
       rawConfig["hosts"] = {};

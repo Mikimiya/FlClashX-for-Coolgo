@@ -54,9 +54,9 @@ class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  /// `Rule`
+  /// `By rule`
   String get rule {
-    return Intl.message('Rule', name: 'rule', desc: '', args: []);
+    return Intl.message('By rule', name: 'rule', desc: '', args: []);
   }
 
   /// `Global`
@@ -89,9 +89,9 @@ class AppLocalizations {
     return Intl.message('Profiles', name: 'profiles', desc: '', args: []);
   }
 
-  /// `Tools`
+  /// `Settings`
   String get tools {
-    return Intl.message('Tools', name: 'tools', desc: '', args: []);
+    return Intl.message('Settings', name: 'tools', desc: '', args: []);
   }
 
   /// `Logs`
@@ -119,6 +119,16 @@ class AppLocalizations {
     return Intl.message(
       'External resource related info',
       name: 'resourcesDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update All Geo Files`
+  String get updateAllGeoData {
+    return Intl.message(
+      'Update All Geo Files',
+      name: 'updateAllGeoData',
       desc: '',
       args: [],
     );
@@ -159,10 +169,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Network detection`
+  /// `Your IP Address`
   String get networkDetection {
     return Intl.message(
-      'Network detection',
+      'Your IP Address',
       name: 'networkDetection',
       desc: '',
       args: [],
@@ -389,6 +399,31 @@ class AppLocalizations {
     );
   }
 
+  /// `Override`
+  String get overrideProviderSettings {
+    return Intl.message('Override', name: 'overrideProviderSettings', desc: '', args: []);
+  }
+
+  /// `Ignore provider settings and manage manually`
+  String get overrideProviderSettingsDesc {
+    return Intl.message(
+      'Ignore provider settings and manage manually',
+      name: 'overrideProviderSettingsDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `These settings are managed by your provider`
+  String get managedByProvider {
+    return Intl.message(
+      'These settings are managed by your provider',
+      name: 'managedByProvider',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Logcat`
   String get logcat {
     return Intl.message('Logcat', name: 'logcat', desc: '', args: []);
@@ -444,15 +479,20 @@ class AppLocalizations {
     );
   }
 
-  /// `Application`
+  /// `Application Settings`
   String get application {
-    return Intl.message('Application', name: 'application', desc: '', args: []);
+    return Intl.message(
+      'Application Settings',
+      name: 'application',
+      desc: '',
+      args: [],
+    );
   }
 
-  /// `Modify application related settings`
+  /// `Standard application settings`
   String get applicationDesc {
     return Intl.message(
-      'Modify application related settings',
+      'Standard application settings',
       name: 'applicationDesc',
       desc: '',
       args: [],
@@ -1624,10 +1664,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Other contributors`
+  /// `Contributors`
   String get otherContributors {
     return Intl.message(
-      'Other contributors',
+      'Contributors',
       name: 'otherContributors',
       desc: '',
       args: [],
@@ -3054,6 +3094,16 @@ class AppLocalizations {
     );
   }
 
+  /// `No scripts`
+  String get nullScriptTip {
+    return Intl.message(
+      'No scripts',
+      name: 'nullScriptTip',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Script`
   String get script {
     return Intl.message('Script', name: 'script', desc: '', args: []);
@@ -3309,20 +3359,20 @@ class AppLocalizations {
     );
   }
 
-  /// `Paste from Clipboard`
+  /// `Paste`
   String get pasteFromClipboard {
     return Intl.message(
-      'Paste from Clipboard',
+      'Paste',
       name: 'pasteFromClipboard',
       desc: '',
       args: [],
     );
   }
 
-  /// `Unlimited Subscription`
+  /// `Lifetime Subscription`
   String get subscriptionUnlimited {
     return Intl.message(
-      'Unlimited Subscription',
+      'Lifetime Subscription',
       name: 'subscriptionUnlimited',
       desc: '',
       args: [],

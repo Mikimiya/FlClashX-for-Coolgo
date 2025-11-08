@@ -58,6 +58,13 @@ _$ProfileImpl _$$ProfileImplFromJson(Map<String, dynamic> json) =>
           ? const OverrideData()
           : OverrideData.fromJson(json['overrideData'] as Map<String, dynamic>),
       denyWidgetEditing: json['denyWidgetEditing'] as bool?,
+      providerSettings: (json['providerSettings'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toSet(),
+      providerHeaders: (json['providerHeaders'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(k, e as String),
+          ) ??
+          const {},
     );
 
 Map<String, dynamic> _$$ProfileImplToJson(_$ProfileImpl instance) =>
@@ -80,6 +87,8 @@ Map<String, dynamic> _$$ProfileImplToJson(_$ProfileImpl instance) =>
       'unfoldSet': instance.unfoldSet.toList(),
       'overrideData': instance.overrideData,
       'denyWidgetEditing': instance.denyWidgetEditing,
+      'providerSettings': instance.providerSettings?.toList(),
+      'providerHeaders': instance.providerHeaders,
     };
 
 _$OverrideDataImpl _$$OverrideDataImplFromJson(Map<String, dynamic> json) =>

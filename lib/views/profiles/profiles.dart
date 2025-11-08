@@ -362,17 +362,7 @@ class _ProfileItemState extends State<ProfileItem> {
     ];
   }
 
-  List<Widget> _buildFileProfileInfo(BuildContext context) {
-    return [
-      const SizedBox(
-        height: 8,
-      ),
-      Text(
-        widget.profile.lastUpdateDate?.lastUpdateTimeDesc ?? "",
-        style: context.textTheme.labelMedium?.toLight,
-      ),
-    ];
-  }
+
 
   _handleExportFile(BuildContext context) async {
     final commonScaffoldState = context.commonScaffoldState;

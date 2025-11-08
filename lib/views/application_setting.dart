@@ -7,6 +7,61 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+class OverrideProviderSettingsItem extends ConsumerWidget {
+  const OverrideProviderSettingsItem({super.key});
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final overrideProviderSettings = ref.watch(
+      appSettingProvider.select((state) => state.overrideProviderSettings),
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListItem.switchItem(
+          title: Text(appLocalizations.overrideProviderSettings),
+          subtitle: Text(appLocalizations.overrideProviderSettingsDesc),
+          delegate: SwitchDelegate(
+            value: overrideProviderSettings,
+            onChanged: (value) {
+              ref.read(appSettingProvider.notifier).updateState(
+                    (state) => state.copyWith(
+                      overrideProviderSettings: value,
+                    ),
+                  );
+            },
+          ),
+        ),
+        if (!overrideProviderSettings)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.5),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  size: 16,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    appLocalizations.managedByProvider,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 class CloseConnectionsItem extends ConsumerWidget {
   const CloseConnectionsItem({super.key});
 
@@ -15,18 +70,21 @@ class CloseConnectionsItem extends ConsumerWidget {
     final closeConnections = ref.watch(
       appSettingProvider.select((state) => state.closeConnections),
     );
+    final overrideProviderSettings = ref.watch(
+      appSettingProvider.select((state) => state.overrideProviderSettings),
+    );
     return ListItem.switchItem(
       title: Text(appLocalizations.autoCloseConnections),
       subtitle: Text(appLocalizations.autoCloseConnectionsDesc),
       delegate: SwitchDelegate(
         value: closeConnections,
-        onChanged: (value) async {
+        onChanged: overrideProviderSettings ? (value) async {
           ref.read(appSettingProvider.notifier).updateState(
                 (state) => state.copyWith(
                   closeConnections: value,
                 ),
               );
-        },
+        } : null,
       ),
     );
   }
@@ -65,18 +123,21 @@ class MinimizeItem extends ConsumerWidget {
     final minimizeOnExit = ref.watch(
       appSettingProvider.select((state) => state.minimizeOnExit),
     );
+    final overrideProviderSettings = ref.watch(
+      appSettingProvider.select((state) => state.overrideProviderSettings),
+    );
     return ListItem.switchItem(
       title: Text(appLocalizations.minimizeOnExit),
       subtitle: Text(appLocalizations.minimizeOnExitDesc),
       delegate: SwitchDelegate(
         value: minimizeOnExit,
-        onChanged: (bool value) {
+        onChanged: overrideProviderSettings ? (bool value) {
           ref.read(appSettingProvider.notifier).updateState(
                 (state) => state.copyWith(
                   minimizeOnExit: value,
                 ),
               );
-        },
+        } : null,
       ),
     );
   }
@@ -90,18 +151,21 @@ class AutoLaunchItem extends ConsumerWidget {
     final autoLaunch = ref.watch(
       appSettingProvider.select((state) => state.autoLaunch),
     );
+    final overrideProviderSettings = ref.watch(
+      appSettingProvider.select((state) => state.overrideProviderSettings),
+    );
     return ListItem.switchItem(
       title: Text(appLocalizations.autoLaunch),
       subtitle: Text(appLocalizations.autoLaunchDesc),
       delegate: SwitchDelegate(
         value: autoLaunch,
-        onChanged: (bool value) {
+        onChanged: overrideProviderSettings ? (bool value) {
           ref.read(appSettingProvider.notifier).updateState(
                 (state) => state.copyWith(
                   autoLaunch: value,
                 ),
               );
-        },
+        } : null,
       ),
     );
   }
@@ -115,18 +179,21 @@ class SilentLaunchItem extends ConsumerWidget {
     final silentLaunch = ref.watch(
       appSettingProvider.select((state) => state.silentLaunch),
     );
+    final overrideProviderSettings = ref.watch(
+      appSettingProvider.select((state) => state.overrideProviderSettings),
+    );
     return ListItem.switchItem(
       title: Text(appLocalizations.silentLaunch),
       subtitle: Text(appLocalizations.silentLaunchDesc),
       delegate: SwitchDelegate(
         value: silentLaunch,
-        onChanged: (bool value) {
+        onChanged: overrideProviderSettings ? (bool value) {
           ref.read(appSettingProvider.notifier).updateState(
                 (state) => state.copyWith(
                   silentLaunch: value,
                 ),
               );
-        },
+        } : null,
       ),
     );
   }
@@ -140,18 +207,21 @@ class AutoRunItem extends ConsumerWidget {
     final autoRun = ref.watch(
       appSettingProvider.select((state) => state.autoRun),
     );
+    final overrideProviderSettings = ref.watch(
+      appSettingProvider.select((state) => state.overrideProviderSettings),
+    );
     return ListItem.switchItem(
       title: Text(appLocalizations.autoRun),
       subtitle: Text(appLocalizations.autoRunDesc),
       delegate: SwitchDelegate(
         value: autoRun,
-        onChanged: (bool value) {
+        onChanged: overrideProviderSettings ? (bool value) {
           ref.read(appSettingProvider.notifier).updateState(
                 (state) => state.copyWith(
                   autoRun: value,
                 ),
               );
-        },
+        } : null,
       ),
     );
   }
@@ -240,18 +310,21 @@ class AutoCheckUpdateItem extends ConsumerWidget {
     final autoCheckUpdate = ref.watch(
       appSettingProvider.select((state) => state.autoCheckUpdate),
     );
+    final overrideProviderSettings = ref.watch(
+      appSettingProvider.select((state) => state.overrideProviderSettings),
+    );
     return ListItem.switchItem(
       title: Text(appLocalizations.autoCheckUpdate),
       subtitle: Text(appLocalizations.autoCheckUpdateDesc),
       delegate: SwitchDelegate(
         value: autoCheckUpdate,
-        onChanged: (bool value) {
+        onChanged: overrideProviderSettings ? (bool value) {
           ref.read(appSettingProvider.notifier).updateState(
                 (state) => state.copyWith(
                   autoCheckUpdate: value,
                 ),
               );
-        },
+        } : null,
       ),
     );
   }
@@ -268,6 +341,7 @@ class ApplicationSettingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> items = [
+      OverrideProviderSettingsItem(),
       MinimizeItem(),
       if (system.isDesktop) ...[
         AutoLaunchItem(),

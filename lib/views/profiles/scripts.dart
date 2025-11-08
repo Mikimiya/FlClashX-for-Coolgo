@@ -41,7 +41,7 @@ class _ScriptsViewState extends ConsumerState<ScriptsView> {
       final scripts = vm2.b;
       if (scripts.isEmpty) {
         return NullStatus(
-          label: appLocalizations.nullTip(appLocalizations.script),
+          label: appLocalizations.nullScriptTip,
         );
       }
       return ListView.builder(

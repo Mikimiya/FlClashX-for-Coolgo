@@ -165,6 +165,112 @@ class AppController {
     _ref.read(localIpProvider.notifier).value = await utils.getLocalIpAddress();
   }
 
+  void applySubscriptionSettings(Set<String>? settings) {
+    try {
+      // Если заголовка нет вообще (null) - не трогаем настройки
+      if (settings == null) return;
+
+      // Проверяем флаг переопределения: если включен, игнорируем настройки из подписки
+      final currentSettings = _ref.read(appSettingProvider);
+      if (currentSettings.overrideProviderSettings) {
+        commonPrint.log("Override provider settings enabled - ignoring subscription settings");
+        return;
+      }
+
+      // Если заголовок есть (даже пустой) - управляем всеми настройками
+      // Настройка включена только если она есть в заголовке, иначе выключена
+      _ref.read(appSettingProvider.notifier).updateState((state) {
+        return state.copyWith(
+          minimizeOnExit: settings.contains('minimize'),
+          autoLaunch: settings.contains('autorun'),
+          silentLaunch: settings.contains('shadowstart'),
+          autoRun: settings.contains('autostart'),
+          closeConnections: settings.contains('closeconn'),
+          autoCheckUpdate: settings.contains('autoupdate'),
+        );
+      });
+
+      if (settings.isEmpty) {
+        commonPrint.log("Subscription settings header empty - all controlled settings disabled");
+      } else {
+        commonPrint.log("Applied subscription settings: ${settings.join(', ')}");
+      }
+    } catch (e) {
+      commonPrint.log("Failed to apply subscription settings: $e");
+    }
+  }
+
+  Profile _updateProfileFromHeaders(Profile profile) {
+    try {
+      final headers = profile.providerHeaders;
+      if (headers.isEmpty) return profile;
+
+      var updatedProfile = profile;
+
+      final dashboardHeader = headers['flclashx-widgets'];
+      if (dashboardHeader != null && dashboardHeader != profile.dashboardLayout) {
+        updatedProfile = updatedProfile.copyWith(dashboardLayout: dashboardHeader);
+      }
+
+      final serviceName = headers['flclashx-servicename'];
+      if (serviceName != null && serviceName != profile.serviceName) {
+        updatedProfile = updatedProfile.copyWith(serviceName: serviceName);
+      }
+
+      final customBehavior = headers['flclashx-custom'];
+      if (customBehavior != null && customBehavior != profile.customBehavior) {
+        updatedProfile = updatedProfile.copyWith(customBehavior: customBehavior);
+      }
+
+      final proxiesView = headers['flclashx-view'];
+      if (proxiesView != null && proxiesView != profile.proxiesView) {
+        updatedProfile = updatedProfile.copyWith(proxiesView: proxiesView);
+      }
+
+      final denyWidgetHeader = headers['flclashx-denywidgets'];
+      if (denyWidgetHeader != null) {
+        bool? denyWidgetValue;
+        if (denyWidgetHeader == 'true') {
+          denyWidgetValue = true;
+        } else if (denyWidgetHeader == 'false') {
+          denyWidgetValue = false;
+        }
+        if (denyWidgetValue != null && denyWidgetValue != profile.denyWidgetEditing) {
+          updatedProfile = updatedProfile.copyWith(denyWidgetEditing: denyWidgetValue);
+        }
+      }
+
+      return updatedProfile;
+    } catch (e) {
+      commonPrint.log("Failed to update profile from headers: $e");
+      return profile;
+    }
+  }
+
+  void applyProviderHeaders(Map<String, String> headers) {
+    try {
+      final currentSettings = _ref.read(appSettingProvider);
+      if (currentSettings.overrideProviderSettings) {
+        commonPrint.log("Override provider settings enabled - ignoring provider headers");
+        return;
+      }
+
+      final settingsHeader = headers['flclashx-settings'];
+      if (settingsHeader != null) {
+        final settings = settingsHeader
+            .split(',')
+            .map((s) => s.trim().toLowerCase())
+            .where((s) => s.isNotEmpty)
+            .toSet();
+        applySubscriptionSettings(settings);
+      }
+
+      commonPrint.log("Applied provider headers from profile: ${headers.keys.join(', ')}");
+    } catch (e) {
+      commonPrint.log("Failed to apply provider headers: $e");
+    }
+  }
+
   Future<void> updateProfile(Profile profile) async {
     final prefs = await SharedPreferences.getInstance();
     final shouldSend = prefs.getBool('sendDeviceHeaders') ?? true;
@@ -181,6 +287,179 @@ class AppController {
 
     if (profile.id == _ref.read(currentProfileIdProvider)) {
       applyProfileDebounce(silence: true);
+      // Обновляем геофайлы в фоне после обновления подписки
+      // Файлы обновляются только если их хеш изменился
+      _updateGeoFilesAfterProfileUpdate().catchError((e) {
+        commonPrint.log("Error updating geo files: $e");
+      });
+    }
+  }
+  
+  Future<Map<String, String>?> _getRemoteFileMetadata(String url) async {
+    try {
+      final response = await http.head(Uri.parse(url)).timeout(
+        const Duration(seconds: 10),
+      );
+      
+      if (response.statusCode != 200) {
+        return null;
+      }
+
+      final metadata = <String, String>{};
+      
+      // Получаем ETag (приоритетнее)
+      final etag = response.headers['etag'];
+      if (etag != null && etag.isNotEmpty) {
+        metadata['etag'] = etag;
+      }
+      
+      // Получаем Last-Modified
+      final lastModified = response.headers['last-modified'];
+      if (lastModified != null && lastModified.isNotEmpty) {
+        metadata['last-modified'] = lastModified;
+      }
+      
+      // Получаем Content-Length
+      final contentLength = response.headers['content-length'];
+      if (contentLength != null && contentLength.isNotEmpty) {
+        metadata['content-length'] = contentLength;
+      }
+      
+      return metadata.isEmpty ? null : metadata;
+    } catch (e) {
+      commonPrint.log("Failed to get remote file metadata for $url: $e");
+      return null;
+    }
+  }
+
+  String _getMetadataKey(String profileId, String key) {
+    return 'geo_metadata_${profileId}_$key';
+  }
+
+  Future<Map<String, String>?> _getSavedMetadata(String profileId, String key) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final storageKey = _getMetadataKey(profileId, key);
+      final jsonString = prefs.getString(storageKey);
+      if (jsonString == null) return null;
+      return Map<String, String>.from(json.decode(jsonString));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<void> _saveMetadata(String profileId, String key, Map<String, String> metadata) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final storageKey = _getMetadataKey(profileId, key);
+      await prefs.setString(storageKey, json.encode(metadata));
+    } catch (e) {
+      commonPrint.log("Failed to save metadata for $key: $e");
+    }
+  }
+
+  bool _hasMetadataChanged(Map<String, String>? oldMeta, Map<String, String>? newMeta) {
+    if (oldMeta == null || newMeta == null) return true;
+    
+    // Сначала проверяем ETag (самый надежный)
+    if (newMeta['etag'] != null && oldMeta['etag'] != null) {
+      return newMeta['etag'] != oldMeta['etag'];
+    }
+    
+    // Затем Last-Modified
+    if (newMeta['last-modified'] != null && oldMeta['last-modified'] != null) {
+      return newMeta['last-modified'] != oldMeta['last-modified'];
+    }
+    
+    // В крайнем случае Content-Length
+    if (newMeta['content-length'] != null && oldMeta['content-length'] != null) {
+      return newMeta['content-length'] != oldMeta['content-length'];
+    }
+    
+    // Если ничего нет - считаем что изменился
+    return true;
+  }
+
+  Future<void> _updateGeoFilesAfterProfileUpdate({bool forceUpdate = false}) async {
+    try {
+      final currentProfileId = _ref.read(currentProfileIdProvider);
+      if (currentProfileId == null) return;
+      
+      final profileConfig = await globalState.getProfileConfig(currentProfileId);
+      final geoXUrl = profileConfig["geox-url"];
+      
+      if (geoXUrl == null || geoXUrl is! Map) {
+        commonPrint.log("No geox-url found in profile config");
+        return;
+      }
+      
+      // Список geo-файлов для проверки
+      final geoFiles = [
+        {'type': 'GeoIp', 'name': geoIpFileName, 'key': 'geoip'},
+        {'type': 'MMDB', 'name': mmdbFileName, 'key': 'mmdb'},
+        {'type': 'GeoSite', 'name': geoSiteFileName, 'key': 'geosite'},
+        {'type': 'ASN', 'name': asnFileName, 'key': 'asn'},
+      ];
+
+      int updatedCount = 0;
+      int skippedCount = 0;
+
+      for (final geoFile in geoFiles) {
+        final geoType = geoFile['type'] as String;
+        final fileName = geoFile['name'] as String;
+        final key = geoFile['key'] as String;
+        
+        // Получаем URL файла из профиля
+        final url = geoXUrl[key];
+        if (url == null || url is! String || url.isEmpty) {
+          commonPrint.log("No URL for $fileName, skipping");
+          continue;
+        }
+        
+        try {
+          // Получаем метаданные с сервера (HEAD запрос, не скачивая файл)
+          final remoteMetadata = await _getRemoteFileMetadata(url);
+          if (remoteMetadata == null) {
+            commonPrint.log("Failed to get metadata for $fileName from $url");
+            continue;
+          }
+          
+          // Получаем сохраненные метаданные для этого профиля
+          final savedMetadata = await _getSavedMetadata(currentProfileId, key);
+          
+          // Если не принудительное обновление, проверяем изменились ли метаданные
+          if (!forceUpdate && !_hasMetadataChanged(savedMetadata, remoteMetadata)) {
+            commonPrint.log("$fileName is up to date for profile $currentProfileId, skipping download");
+            skippedCount++;
+            continue;
+          }
+          
+          // Файл изменился или принудительное обновление, скачиваем его
+          final reason = forceUpdate ? "force update" : "metadata changed";
+          commonPrint.log("$fileName needs update for profile $currentProfileId ($reason), downloading from $url...");
+          final result = await clashCore.updateGeoData(
+            UpdateGeoDataParams(geoType: geoType, geoName: fileName),
+          );
+          
+          if (result.isNotEmpty) {
+            commonPrint.log("Failed to update $fileName: $result");
+            continue;
+          }
+          
+          // Сохраняем новые метаданные для этого профиля
+          await _saveMetadata(currentProfileId, key, remoteMetadata);
+          commonPrint.log("$fileName was successfully updated for profile $currentProfileId from $url");
+          updatedCount++;
+          
+        } catch (e) {
+          commonPrint.log("Failed to update $fileName: $e");
+        }
+      }
+      
+      commonPrint.log("Geo files update completed: $updatedCount updated, $skippedCount skipped");
+      
+    } catch (e) {
+      commonPrint.log("Failed to update geo files after profile update: $e");
     }
   }
 
@@ -356,11 +635,35 @@ class AppController {
 
   handleChangeProfile() {
     _ref.read(delayDataSourceProvider.notifier).value = {};
+    
+    final currentProfileId = _ref.read(currentProfileIdProvider);
+    if (currentProfileId != null) {
+      final profiles = _ref.read(profilesProvider);
+      var currentProfile = profiles.firstWhere(
+        (p) => p.id == currentProfileId,
+        orElse: () => profiles.first,
+      );
+      
+      if (currentProfile.providerHeaders.isNotEmpty) {
+        currentProfile = _updateProfileFromHeaders(currentProfile);
+        _ref.read(profilesProvider.notifier).setProfile(currentProfile);
+        applyProviderHeaders(currentProfile.providerHeaders);
+      }
+      
+      _applyCustomViewSettings(currentProfile);
+    }
+    
     applyProfile();
     _ref.read(logsProvider.notifier).value = FixedList(500);
     _ref.read(requestsProvider.notifier).value = FixedList(500);
     globalState.cacheHeightMap = {};
     globalState.cacheScrollPosition = {};
+    
+    if (currentProfileId != null) {
+      _updateGeoFilesAfterProfileUpdate(forceUpdate: true).catchError((e) {
+        commonPrint.log("Error updating geo files on profile change: $e");
+      });
+    }
   }
 
   updateBrightness(Brightness brightness) {
@@ -690,7 +993,7 @@ class AppController {
     if (globalState.navigatorKey.currentState?.canPop() ?? false) {
       globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
-    toProfiles();
+    toPage(PageLabel.dashboard);
     final commonScaffoldState = globalState.homeScaffoldKey.currentState;
     if (commonScaffoldState?.mounted != true) return;
 
@@ -723,7 +1026,7 @@ class AppController {
     }
     if (!context.mounted) return;
     globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
-    toProfiles();
+    toPage(PageLabel.dashboard);
     final commonScaffoldState = globalState.homeScaffoldKey.currentState;
     if (commonScaffoldState?.mounted != true) return;
     final profile = await commonScaffoldState?.loadingRun<Profile?>(

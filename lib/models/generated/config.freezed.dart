@@ -38,6 +38,7 @@ mixin _$AppSettingProps {
   bool get minimizeOnExit => throw _privateConstructorUsedError;
   bool get hidden => throw _privateConstructorUsedError;
   bool get developerMode => throw _privateConstructorUsedError;
+  bool get overrideProviderSettings => throw _privateConstructorUsedError;
   RecoveryStrategy get recoveryStrategy => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -70,6 +71,7 @@ abstract class $AppSettingPropsCopyWith<$Res> {
       bool minimizeOnExit,
       bool hidden,
       bool developerMode,
+      bool overrideProviderSettings,
       RecoveryStrategy recoveryStrategy});
 }
 
@@ -102,6 +104,7 @@ class _$AppSettingPropsCopyWithImpl<$Res, $Val extends AppSettingProps>
     Object? minimizeOnExit = null,
     Object? hidden = null,
     Object? developerMode = null,
+    Object? overrideProviderSettings = null,
     Object? recoveryStrategy = null,
   }) {
     return _then(_value.copyWith(
@@ -169,6 +172,10 @@ class _$AppSettingPropsCopyWithImpl<$Res, $Val extends AppSettingProps>
           ? _value.developerMode
           : developerMode // ignore: cast_nullable_to_non_nullable
               as bool,
+      overrideProviderSettings: null == overrideProviderSettings
+          ? _value.overrideProviderSettings
+          : overrideProviderSettings // ignore: cast_nullable_to_non_nullable
+              as bool,
       recoveryStrategy: null == recoveryStrategy
           ? _value.recoveryStrategy
           : recoveryStrategy // ignore: cast_nullable_to_non_nullable
@@ -203,6 +210,7 @@ abstract class _$$AppSettingPropsImplCopyWith<$Res>
       bool minimizeOnExit,
       bool hidden,
       bool developerMode,
+      bool overrideProviderSettings,
       RecoveryStrategy recoveryStrategy});
 }
 
@@ -233,6 +241,7 @@ class __$$AppSettingPropsImplCopyWithImpl<$Res>
     Object? minimizeOnExit = null,
     Object? hidden = null,
     Object? developerMode = null,
+    Object? overrideProviderSettings = null,
     Object? recoveryStrategy = null,
   }) {
     return _then(_$AppSettingPropsImpl(
@@ -300,6 +309,10 @@ class __$$AppSettingPropsImplCopyWithImpl<$Res>
           ? _value.developerMode
           : developerMode // ignore: cast_nullable_to_non_nullable
               as bool,
+      overrideProviderSettings: null == overrideProviderSettings
+          ? _value.overrideProviderSettings
+          : overrideProviderSettings // ignore: cast_nullable_to_non_nullable
+              as bool,
       recoveryStrategy: null == recoveryStrategy
           ? _value.recoveryStrategy
           : recoveryStrategy // ignore: cast_nullable_to_non_nullable
@@ -316,19 +329,20 @@ class _$AppSettingPropsImpl implements _AppSettingProps {
       @JsonKey(fromJson: dashboardWidgetsSafeFormJson)
       final List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets,
       this.onlyStatisticsProxy = false,
-      this.autoLaunch = true,
+      this.autoLaunch = false,
       this.silentLaunch = false,
       this.autoRun = false,
       this.openLogs = false,
-      this.closeConnections = true,
+      this.closeConnections = false,
       this.testUrl = defaultTestUrl,
       this.isAnimateToPage = true,
-      this.autoCheckUpdate = true,
+      this.autoCheckUpdate = false,
       this.showLabel = false,
       this.disclaimerAccepted = false,
-      this.minimizeOnExit = true,
+      this.minimizeOnExit = false,
       this.hidden = false,
       this.developerMode = false,
+      this.overrideProviderSettings = false,
       this.recoveryStrategy = RecoveryStrategy.compatible})
       : _dashboardWidgets = dashboardWidgets;
 
@@ -391,11 +405,14 @@ class _$AppSettingPropsImpl implements _AppSettingProps {
   final bool developerMode;
   @override
   @JsonKey()
+  final bool overrideProviderSettings;
+  @override
+  @JsonKey()
   final RecoveryStrategy recoveryStrategy;
 
   @override
   String toString() {
-    return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, onlyStatisticsProxy: $onlyStatisticsProxy, autoLaunch: $autoLaunch, silentLaunch: $silentLaunch, autoRun: $autoRun, openLogs: $openLogs, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, autoCheckUpdate: $autoCheckUpdate, showLabel: $showLabel, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, recoveryStrategy: $recoveryStrategy)';
+    return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, onlyStatisticsProxy: $onlyStatisticsProxy, autoLaunch: $autoLaunch, silentLaunch: $silentLaunch, autoRun: $autoRun, openLogs: $openLogs, closeConnections: $closeConnections, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, autoCheckUpdate: $autoCheckUpdate, showLabel: $showLabel, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, hidden: $hidden, developerMode: $developerMode, overrideProviderSettings: $overrideProviderSettings, recoveryStrategy: $recoveryStrategy)';
   }
 
   @override
@@ -431,6 +448,9 @@ class _$AppSettingPropsImpl implements _AppSettingProps {
             (identical(other.hidden, hidden) || other.hidden == hidden) &&
             (identical(other.developerMode, developerMode) ||
                 other.developerMode == developerMode) &&
+            (identical(
+                    other.overrideProviderSettings, overrideProviderSettings) ||
+                other.overrideProviderSettings == overrideProviderSettings) &&
             (identical(other.recoveryStrategy, recoveryStrategy) ||
                 other.recoveryStrategy == recoveryStrategy));
   }
@@ -455,6 +475,7 @@ class _$AppSettingPropsImpl implements _AppSettingProps {
       minimizeOnExit,
       hidden,
       developerMode,
+      overrideProviderSettings,
       recoveryStrategy);
 
   @JsonKey(ignore: true)
@@ -491,6 +512,7 @@ abstract class _AppSettingProps implements AppSettingProps {
       final bool minimizeOnExit,
       final bool hidden,
       final bool developerMode,
+      final bool overrideProviderSettings,
       final RecoveryStrategy recoveryStrategy}) = _$AppSettingPropsImpl;
 
   factory _AppSettingProps.fromJson(Map<String, dynamic> json) =
@@ -529,6 +551,8 @@ abstract class _AppSettingProps implements AppSettingProps {
   bool get hidden;
   @override
   bool get developerMode;
+  @override
+  bool get overrideProviderSettings;
   @override
   RecoveryStrategy get recoveryStrategy;
   @override

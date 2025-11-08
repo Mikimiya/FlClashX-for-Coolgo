@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:flclashx/common/common.dart';
-import 'package:flclashx/providers/config.dart';
 import 'package:flclashx/state.dart';
 import 'package:flclashx/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 @immutable
 class Contributor {
@@ -52,20 +50,20 @@ class AboutView extends StatelessWidget {
   List<Widget> _buildThanksSection(BuildContext context) {
     const thanks = [
       ThanksPerson(
+        name: "cool_coala",
+        avatar: "assets/images/avatars/cool_coala.jpg",
+      ),
+      ThanksPerson(
+        name: "arpic",
+        avatar: "assets/images/avatars/arpic.jpg",
+      ),
+      ThanksPerson(
         name: "legiz",
         avatar: "assets/images/avatars/legiz.jpg",
       ),
       ThanksPerson(
         name: "x_kit_",
         avatar: "assets/images/avatars/x_kit_.jpg",
-      ),
-      ThanksPerson(
-        name: "cool_coala",
-        avatar: "assets/images/avatars/cool_coala.jpg",
-      ),
-      ThanksPerson(
-        name: "Arpic",
-        avatar: "assets/images/avatars/arpic.jpg",
       ),
     ];
     return generateSection(

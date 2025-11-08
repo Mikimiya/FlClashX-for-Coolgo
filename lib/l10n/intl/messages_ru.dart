@@ -100,9 +100,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "appDesc": MessageLookupByLibrary.simpleMessage(
       "Обработка настроек, связанных с приложением",
     ),
-    "application": MessageLookupByLibrary.simpleMessage("Приложение"),
+    "application": MessageLookupByLibrary.simpleMessage("Настройки приложения"),
     "applicationDesc": MessageLookupByLibrary.simpleMessage(
-      "Настройки приложения",
+      "Стандартные настройки приложения",
     ),
     "auto": MessageLookupByLibrary.simpleMessage("Авто"),
     "autoCheckUpdate": MessageLookupByLibrary.simpleMessage(
@@ -124,6 +124,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoRun": MessageLookupByLibrary.simpleMessage("Автозапуск прокси"),
     "autoRunDesc": MessageLookupByLibrary.simpleMessage(
       "Автоматически запускать прокси при открытии приложения",
+    ),
+    "overrideProviderSettings": MessageLookupByLibrary.simpleMessage("Переопределение"),
+    "overrideProviderSettingsDesc": MessageLookupByLibrary.simpleMessage(
+      "Игнорировать настройки от провайдера и управлять вручную",
+    ),
+    "managedByProvider": MessageLookupByLibrary.simpleMessage(
+      "Заблокированными настройками управляет ваш провайдер",
     ),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage(
       "Автоматическая настройка системного DNS",
@@ -446,9 +453,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkDesc": MessageLookupByLibrary.simpleMessage(
       "Изменение настроек, связанных с сетью",
     ),
-    "networkDetection": MessageLookupByLibrary.simpleMessage(
-      "Обнаружение сети",
-    ),
+    "networkDetection": MessageLookupByLibrary.simpleMessage("Ваш IP-адрес"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Скорость сети"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Нейтральные"),
     "noData": MessageLookupByLibrary.simpleMessage("Нет данных"),
@@ -472,6 +477,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "Профиль отсутствует. Пожалуйста, добавьте профиль",
     ),
+    "nullScriptTip": MessageLookupByLibrary.simpleMessage(
+      "Скрипты отсутствуют",
+    ),
     "nullTip": m4,
     "numberTip": m5,
     "oneColumn": MessageLookupByLibrary.simpleMessage("Один столбец"),
@@ -491,9 +499,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Оригинальный репозиторий",
     ),
     "other": MessageLookupByLibrary.simpleMessage("Другое"),
-    "otherContributors": MessageLookupByLibrary.simpleMessage(
-      "Другие участники",
-    ),
+    "otherContributors": MessageLookupByLibrary.simpleMessage("Контрибьюторы"),
     "outboundMode": MessageLookupByLibrary.simpleMessage(
       "Режим исходящих подключений",
     ),
@@ -514,9 +520,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("Палитра"),
     "password": MessageLookupByLibrary.simpleMessage("Пароль"),
     "paste": MessageLookupByLibrary.simpleMessage("Вставить"),
-    "pasteFromClipboard": MessageLookupByLibrary.simpleMessage(
-      "Вставить из буфера обмена",
-    ),
+    "pasteFromClipboard": MessageLookupByLibrary.simpleMessage("Вставить"),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "Пожалуйста, привяжите WebDAV",
     ),
@@ -656,7 +660,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Использовать конфигурацию",
     ),
     "ru": MessageLookupByLibrary.simpleMessage("Русский"),
-    "rule": MessageLookupByLibrary.simpleMessage("Правило"),
+    "rule": MessageLookupByLibrary.simpleMessage("По правилам"),
     "ruleName": MessageLookupByLibrary.simpleMessage("Название правила"),
     "ruleProviders": MessageLookupByLibrary.simpleMessage("Провайдеры правил"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Цель правила"),
@@ -710,7 +714,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Бессрочная подписка",
     ),
     "subscriptionUnlimited": MessageLookupByLibrary.simpleMessage(
-      "Безлимитная подписка",
+      "Бессрочная подписка",
     ),
     "successTitle": MessageLookupByLibrary.simpleMessage("Успешно"),
     "support": MessageLookupByLibrary.simpleMessage("Поддержка"),
@@ -746,7 +750,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tip": MessageLookupByLibrary.simpleMessage("Подсказка"),
     "toggle": MessageLookupByLibrary.simpleMessage("Переключить"),
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("Тональный акцент"),
-    "tools": MessageLookupByLibrary.simpleMessage("Инструменты"),
+    "tools": MessageLookupByLibrary.simpleMessage("Настройки"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy-порт"),
     "traffic": MessageLookupByLibrary.simpleMessage("Трафик"),
     "trafficUnlimited": MessageLookupByLibrary.simpleMessage(
@@ -773,6 +777,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknown": MessageLookupByLibrary.simpleMessage("Неизвестно"),
     "unnamed": MessageLookupByLibrary.simpleMessage("Без имени"),
     "update": MessageLookupByLibrary.simpleMessage("Обновить"),
+    "updateAllGeoData": MessageLookupByLibrary.simpleMessage(
+      "Обновить все геофайлы",
+    ),
     "updated": MessageLookupByLibrary.simpleMessage("Обновлено"),
     "upload": MessageLookupByLibrary.simpleMessage("Отправка"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),

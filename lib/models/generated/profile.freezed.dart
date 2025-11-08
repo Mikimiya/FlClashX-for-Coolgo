@@ -235,6 +235,8 @@ mixin _$Profile {
   @JsonKey(includeToJson: false, includeFromJson: false)
   bool get isUpdating => throw _privateConstructorUsedError;
   bool? get denyWidgetEditing => throw _privateConstructorUsedError;
+  Set<String>? get providerSettings => throw _privateConstructorUsedError;
+  Map<String, String> get providerHeaders => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -265,7 +267,9 @@ abstract class $ProfileCopyWith<$Res> {
       Set<String> unfoldSet,
       OverrideData overrideData,
       @JsonKey(includeToJson: false, includeFromJson: false) bool isUpdating,
-      bool? denyWidgetEditing});
+      bool? denyWidgetEditing,
+      Set<String>? providerSettings,
+      Map<String, String> providerHeaders});
 
   $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo;
   $OverrideDataCopyWith<$Res> get overrideData;
@@ -303,6 +307,8 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
     Object? overrideData = null,
     Object? isUpdating = null,
     Object? denyWidgetEditing = freezed,
+    Object? providerSettings = freezed,
+    Object? providerHeaders = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -381,6 +387,14 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
           ? _value.denyWidgetEditing
           : denyWidgetEditing // ignore: cast_nullable_to_non_nullable
               as bool?,
+      providerSettings: freezed == providerSettings
+          ? _value.providerSettings
+          : providerSettings // ignore: cast_nullable_to_non_nullable
+              as Set<String>?,
+      providerHeaders: null == providerHeaders
+          ? _value.providerHeaders
+          : providerHeaders // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
     ) as $Val);
   }
 
@@ -431,7 +445,9 @@ abstract class _$$ProfileImplCopyWith<$Res> implements $ProfileCopyWith<$Res> {
       Set<String> unfoldSet,
       OverrideData overrideData,
       @JsonKey(includeToJson: false, includeFromJson: false) bool isUpdating,
-      bool? denyWidgetEditing});
+      bool? denyWidgetEditing,
+      Set<String>? providerSettings,
+      Map<String, String> providerHeaders});
 
   @override
   $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo;
@@ -469,6 +485,8 @@ class __$$ProfileImplCopyWithImpl<$Res>
     Object? overrideData = null,
     Object? isUpdating = null,
     Object? denyWidgetEditing = freezed,
+    Object? providerSettings = freezed,
+    Object? providerHeaders = null,
   }) {
     return _then(_$ProfileImpl(
       id: null == id
@@ -547,6 +565,14 @@ class __$$ProfileImplCopyWithImpl<$Res>
           ? _value.denyWidgetEditing
           : denyWidgetEditing // ignore: cast_nullable_to_non_nullable
               as bool?,
+      providerSettings: freezed == providerSettings
+          ? _value._providerSettings
+          : providerSettings // ignore: cast_nullable_to_non_nullable
+              as Set<String>?,
+      providerHeaders: null == providerHeaders
+          ? _value._providerHeaders
+          : providerHeaders // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
     ));
   }
 }
@@ -574,9 +600,13 @@ class _$ProfileImpl implements _Profile {
       this.overrideData = const OverrideData(),
       @JsonKey(includeToJson: false, includeFromJson: false)
       this.isUpdating = false,
-      this.denyWidgetEditing})
+      this.denyWidgetEditing,
+      final Set<String>? providerSettings,
+      final Map<String, String> providerHeaders = const {}})
       : _selectedMap = selectedMap,
-        _unfoldSet = unfoldSet;
+        _unfoldSet = unfoldSet,
+        _providerSettings = providerSettings,
+        _providerHeaders = providerHeaders;
 
   factory _$ProfileImpl.fromJson(Map<String, dynamic> json) =>
       _$$ProfileImplFromJson(json);
@@ -637,10 +667,28 @@ class _$ProfileImpl implements _Profile {
   final bool isUpdating;
   @override
   final bool? denyWidgetEditing;
+  final Set<String>? _providerSettings;
+  @override
+  Set<String>? get providerSettings {
+    final value = _providerSettings;
+    if (value == null) return null;
+    if (_providerSettings is EqualUnmodifiableSetView) return _providerSettings;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(value);
+  }
+
+  final Map<String, String> _providerHeaders;
+  @override
+  @JsonKey()
+  Map<String, String> get providerHeaders {
+    if (_providerHeaders is EqualUnmodifiableMapView) return _providerHeaders;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_providerHeaders);
+  }
 
   @override
   String toString() {
-    return 'Profile(id: $id, label: $label, currentGroupName: $currentGroupName, announceText: $announceText, supportUrl: $supportUrl, serviceName: $serviceName, dashboardLayout: $dashboardLayout, proxiesView: $proxiesView, customBehavior: $customBehavior, url: $url, lastUpdateDate: $lastUpdateDate, autoUpdateDuration: $autoUpdateDuration, subscriptionInfo: $subscriptionInfo, autoUpdate: $autoUpdate, selectedMap: $selectedMap, unfoldSet: $unfoldSet, overrideData: $overrideData, isUpdating: $isUpdating, denyWidgetEditing: $denyWidgetEditing)';
+    return 'Profile(id: $id, label: $label, currentGroupName: $currentGroupName, announceText: $announceText, supportUrl: $supportUrl, serviceName: $serviceName, dashboardLayout: $dashboardLayout, proxiesView: $proxiesView, customBehavior: $customBehavior, url: $url, lastUpdateDate: $lastUpdateDate, autoUpdateDuration: $autoUpdateDuration, subscriptionInfo: $subscriptionInfo, autoUpdate: $autoUpdate, selectedMap: $selectedMap, unfoldSet: $unfoldSet, overrideData: $overrideData, isUpdating: $isUpdating, denyWidgetEditing: $denyWidgetEditing, providerSettings: $providerSettings, providerHeaders: $providerHeaders)';
   }
 
   @override
@@ -682,7 +730,11 @@ class _$ProfileImpl implements _Profile {
             (identical(other.isUpdating, isUpdating) ||
                 other.isUpdating == isUpdating) &&
             (identical(other.denyWidgetEditing, denyWidgetEditing) ||
-                other.denyWidgetEditing == denyWidgetEditing));
+                other.denyWidgetEditing == denyWidgetEditing) &&
+            const DeepCollectionEquality()
+                .equals(other._providerSettings, _providerSettings) &&
+            const DeepCollectionEquality()
+                .equals(other._providerHeaders, _providerHeaders));
   }
 
   @JsonKey(ignore: true)
@@ -707,7 +759,9 @@ class _$ProfileImpl implements _Profile {
         const DeepCollectionEquality().hash(_unfoldSet),
         overrideData,
         isUpdating,
-        denyWidgetEditing
+        denyWidgetEditing,
+        const DeepCollectionEquality().hash(_providerSettings),
+        const DeepCollectionEquality().hash(_providerHeaders)
       ]);
 
   @JsonKey(ignore: true)
@@ -745,7 +799,9 @@ abstract class _Profile implements Profile {
       final OverrideData overrideData,
       @JsonKey(includeToJson: false, includeFromJson: false)
       final bool isUpdating,
-      final bool? denyWidgetEditing}) = _$ProfileImpl;
+      final bool? denyWidgetEditing,
+      final Set<String>? providerSettings,
+      final Map<String, String> providerHeaders}) = _$ProfileImpl;
 
   factory _Profile.fromJson(Map<String, dynamic> json) = _$ProfileImpl.fromJson;
 
@@ -788,6 +844,10 @@ abstract class _Profile implements Profile {
   bool get isUpdating;
   @override
   bool? get denyWidgetEditing;
+  @override
+  Set<String>? get providerSettings;
+  @override
+  Map<String, String> get providerHeaders;
   @override
   @JsonKey(ignore: true)
   _$$ProfileImplCopyWith<_$ProfileImpl> get copyWith =>

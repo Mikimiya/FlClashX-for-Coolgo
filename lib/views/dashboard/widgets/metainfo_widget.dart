@@ -11,48 +11,43 @@ import 'package:intl/intl.dart';
 class MetainfoWidget extends ConsumerWidget {
   const MetainfoWidget({super.key});
 
-  // Функция для склонения слова "день"
   String _getDaysDeclension(int days) {
     if (days % 100 >= 11 && days % 100 <= 19) {
-      return appLocalizations.days; // дней
+      return appLocalizations.days;
     }
     switch (days % 10) {
       case 1:
-        return appLocalizations.day; // день
+        return appLocalizations.day;
       case 2:
       case 3:
       case 4:
-        return appLocalizations.daysGenitive; // дня
+        return appLocalizations.daysGenitive;
       default:
-        return appLocalizations.days; // дней
+        return appLocalizations.days;
     }
   }
 
-  // Функция для склонения слова "час"
   String _getHoursDeclension(int hours) {
     if (hours % 100 >= 11 && hours % 100 <= 19) {
-      return appLocalizations.hoursGenitive; // часов
+      return appLocalizations.hoursGenitive;
     }
     switch (hours % 10) {
       case 1:
-        return appLocalizations.hour; // час
+        return appLocalizations.hour;
       case 2:
       case 3:
       case 4:
-        return appLocalizations.hoursPlural; // часа
+        return appLocalizations.hoursPlural;
       default:
-        return appLocalizations.hoursGenitive; // часов
+        return appLocalizations.hoursGenitive;
     }
   }
 
-  // Функция для склонения слова "остался/осталось"
   String _getRemainingDeclension(int value) {
-    // "остался" для единственного числа (1, 21, 31 и т.д., кроме 11)
     if (value % 100 != 11 && value % 10 == 1) {
-      return appLocalizations.remainingSingular; // остался
+      return appLocalizations.remainingSingular;
     }
-    // "осталось" для всех остальных случаев
-    return appLocalizations.remainingPlural; // осталось
+    return appLocalizations.remainingPlural;
   }
 
   @override
@@ -63,19 +58,13 @@ class MetainfoWidget extends ConsumerWidget {
 
     if (allProfiles.isEmpty) {
       return CommonCard(
-        onPressed: () {
-          showExtend(
-            context,
-            builder: (_, type) {
-              return AdaptiveSheetScaffold(
-                type: type,
-                body: AddProfileView(
-                  context: context,
-                ),
-                title: "${appLocalizations.add}${appLocalizations.profile}",
-              );
-            },
+        onPressed: () async {
+          final url = await globalState.showCommonDialog<String>(
+            child: const URLFormDialog(),
           );
+          if (url != null) {
+            globalState.appController.addProfileFormURL(url);
+          }
         },
         child: Center(
           child: Padding(
@@ -110,23 +99,20 @@ class MetainfoWidget extends ConsumerWidget {
     String timeLeftUnit = '';
     String remainingText = '';
     bool showTimeLeft = false;
-    
+
     if (!isPerpetual) {
       final expireDateTime =
           DateTime.fromMillisecondsSinceEpoch(subscriptionInfo.expire * 1000);
       final difference = expireDateTime.difference(DateTime.now());
       final days = difference.inDays;
-      
-      // Показываем если осталось 3 дня или меньше
+
       if (days >= 0 && days <= 3) {
         showTimeLeft = true;
         if (days > 0) {
-          // Показываем дни
           timeLeftValue = days.toString();
           timeLeftUnit = _getDaysDeclension(days);
           remainingText = _getRemainingDeclension(days);
         } else {
-          // Если 0 дней - показываем часы
           final hours = difference.inHours;
           if (hours >= 0) {
             timeLeftValue = hours.toString();

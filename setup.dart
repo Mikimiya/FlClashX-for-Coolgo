@@ -268,14 +268,16 @@ var (
 
     final List<String> corePaths = [];
 
-    for (final item in items) {
-      final outFileDir = join(
-        outDir,
-        item.target.name,
-        item.archName,
-      );
+    final targetOutFilePath = join(outDir, target.name);
+    final targetOutFile = File(targetOutFilePath);
+    if (await targetOutFile.exists()) {
+      await targetOutFile.delete(recursive: true);
+      await Directory(targetOutFilePath).create(recursive: true);
+    }
 
-      final file = File(outFileDir);
+    for (final item in items) {
+      final outFilePath = join(targetOutFilePath, item.archName);
+      final file = File(outFilePath);
       if (file.existsSync()) {
         file.deleteSync(recursive: true);
       }
@@ -283,11 +285,8 @@ var (
       final fileName = isLib
           ? "$libName${item.target.dynamicLibExtensionName}"
           : "$coreName${item.target.executableExtensionName}";
-      final outPath = join(
-        outFileDir,
-        fileName,
-      );
-      corePaths.add(outPath);
+      final realOutPath = join(outFilePath, fileName);
+      corePaths.add(realOutPath);
 
       final Map<String, String> env = {};
       env["GOOS"] = item.target.os;
@@ -309,7 +308,7 @@ var (
         "-tags=$tags",
         if (isLib) "-buildmode=c-shared",
         "-o",
-        outPath,
+        realOutPath,
       ];
       await exec(
         execLines,
@@ -317,9 +316,40 @@ var (
         environment: env,
         workingDirectory: _coreDir,
       );
+      if (isLib && item.archName != null) {
+        await adjustLibOut(
+          targetOutFilePath: targetOutFilePath,
+          outFilePath: outFilePath,
+          archName: item.archName!,
+        );
+      }
     }
 
     return corePaths;
+  }
+
+  static Future<void> adjustLibOut({
+    required String targetOutFilePath,
+    required String outFilePath,
+    required String archName,
+  }) async {
+    final includesPath = join(targetOutFilePath, "includes");
+    final realOutPath = join(includesPath, archName);
+    await Directory(realOutPath).create(recursive: true);
+    final targetOutFiles = Directory(outFilePath).listSync();
+    final coreFiles = Directory(_coreDir).listSync();
+    for (final file in [...targetOutFiles, ...coreFiles]) {
+      if (!file.path.endsWith('.h')) {
+        continue;
+      }
+      final targetFilePath = join(realOutPath, basename(file.path));
+      final realFile = File(file.path);
+      await realFile.copy(targetFilePath);
+      if (coreFiles.contains(file)) {
+        continue;
+      }
+      await realFile.delete();
+    }
   }
 
   static buildHelper(Target target, String token) async {
@@ -433,6 +463,13 @@ class BuildCommand extends Command {
       ].join(','),
       help: 'The $name build env',
     );
+    if (target == Target.android) {
+      argParser.addFlag(
+        "universal",
+        defaultsTo: true,
+        help: 'Build universal APK in addition to split APKs',
+      );
+    }
   }
 
   @override
@@ -658,14 +695,35 @@ class BuildCommand extends Command {
             .where((element) => arch == null ? true : element == arch)
             .map((e) => targetMap[e])
             .toList();
-        _buildDistributor(
-          target: target,
-          targets: "apk",
-          args:
-              ",split-per-abi --build-target-platform ${defaultTargets.join(",")}",
-          env: env,
-          coreVersion: coreVersion,
-        );
+        final universal = argResults?["universal"] ?? false;
+        
+        if (universal) {
+          await _buildDistributor(
+            target: target,
+            targets: "apk",
+            args:
+                ",split-per-abi --build-target-platform ${defaultTargets.join(",")}",
+            env: env,
+            coreVersion: coreVersion,
+          );
+          await _buildDistributor(
+            target: target,
+            targets: "apk",
+            args:
+                " --build-target-platform ${defaultTargets.join(",")}",
+            env: env,
+            coreVersion: coreVersion,
+          );
+        } else {
+          await _buildDistributor(
+            target: target,
+            targets: "apk",
+            args:
+                ",split-per-abi --build-target-platform ${defaultTargets.join(",")}",
+            env: env,
+            coreVersion: coreVersion,
+          );
+        }
         return;
       case Target.macos:
         await _getMacosDependencies();

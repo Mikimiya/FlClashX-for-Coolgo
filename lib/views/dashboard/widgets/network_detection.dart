@@ -108,43 +108,45 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: baseInfoEdgeInsets.copyWith(
-                    top: 0,
-                  ),
-                  child: SizedBox(
-                    height: globalState.measure.bodyMediumHeight + 2,
-                    child: FadeThroughBox(
-                      child: ipInfo != null
-                          ? TooltipText(
-                              text: Text(
-                                ipInfo.ip,
-                                style: context.textTheme.bodyMedium?.toLight
-                                    .adjustSize(1),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            )
-                          : FadeThroughBox(
-                              child: isLoading == false && ipInfo == null
-                                  ? Text(
-                                      "timeout",
-                                      style: context.textTheme.bodyMedium
-                                          ?.copyWith(color: Colors.red)
-                                          .adjustSize(1),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  : Container(
-                                      padding: const EdgeInsets.all(2),
-                                      child: const AspectRatio(
-                                        aspectRatio: 1,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
+                Expanded(
+                  child: Container(
+                    padding: baseInfoEdgeInsets.copyWith(
+                      top: 0,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: FadeThroughBox(
+                        child: ipInfo != null
+                            ? TooltipText(
+                                text: Text(
+                                  ipInfo.ip,
+                                  style: context.textTheme.bodyMedium?.toLight
+                                      .adjustSize(1),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              )
+                            : FadeThroughBox(
+                                child: isLoading == false && ipInfo == null
+                                    ? Text(
+                                        "timeout",
+                                        style: context.textTheme.bodyMedium
+                                            ?.copyWith(color: Colors.red)
+                                            .adjustSize(1),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.all(2),
+                                        child: const AspectRatio(
+                                          aspectRatio: 1,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                            ),
+                              ),
+                      ),
                     ),
                   ),
                 )

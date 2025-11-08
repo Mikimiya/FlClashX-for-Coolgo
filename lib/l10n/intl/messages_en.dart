@@ -103,9 +103,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "appDesc": MessageLookupByLibrary.simpleMessage(
       "Processing app related settings",
     ),
-    "application": MessageLookupByLibrary.simpleMessage("Application"),
+    "application": MessageLookupByLibrary.simpleMessage("Application Settings"),
     "applicationDesc": MessageLookupByLibrary.simpleMessage(
-      "Modify application related settings",
+      "Standard application settings",
     ),
     "auto": MessageLookupByLibrary.simpleMessage("Auto"),
     "autoCheckUpdate": MessageLookupByLibrary.simpleMessage(
@@ -127,6 +127,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoRun": MessageLookupByLibrary.simpleMessage("AutoRun"),
     "autoRunDesc": MessageLookupByLibrary.simpleMessage(
       "Auto run when the application is opened",
+    ),
+    "overrideProviderSettings": MessageLookupByLibrary.simpleMessage("Override"),
+    "overrideProviderSettingsDesc": MessageLookupByLibrary.simpleMessage(
+      "Ignore provider settings and manage manually",
+    ),
+    "managedByProvider": MessageLookupByLibrary.simpleMessage(
+      "These settings are managed by your provider",
     ),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage(
       "Auto set system DNS",
@@ -425,9 +432,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkDesc": MessageLookupByLibrary.simpleMessage(
       "Modify network-related settings",
     ),
-    "networkDetection": MessageLookupByLibrary.simpleMessage(
-      "Network detection",
-    ),
+    "networkDetection": MessageLookupByLibrary.simpleMessage("Your IP Address"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Neutral"),
     "noData": MessageLookupByLibrary.simpleMessage("No data"),
@@ -449,6 +454,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "No profile, Please add a profile",
     ),
+    "nullScriptTip": MessageLookupByLibrary.simpleMessage("No scripts"),
     "nullTip": m4,
     "numberTip": m5,
     "oneColumn": MessageLookupByLibrary.simpleMessage("One column"),
@@ -468,9 +474,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Original Repository",
     ),
     "other": MessageLookupByLibrary.simpleMessage("Other"),
-    "otherContributors": MessageLookupByLibrary.simpleMessage(
-      "Other contributors",
-    ),
+    "otherContributors": MessageLookupByLibrary.simpleMessage("Contributors"),
     "outboundMode": MessageLookupByLibrary.simpleMessage("Outbound mode"),
     "override": MessageLookupByLibrary.simpleMessage("Override"),
     "overrideDesc": MessageLookupByLibrary.simpleMessage(
@@ -489,9 +493,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("Palette"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "paste": MessageLookupByLibrary.simpleMessage("Paste"),
-    "pasteFromClipboard": MessageLookupByLibrary.simpleMessage(
-      "Paste from Clipboard",
-    ),
+    "pasteFromClipboard": MessageLookupByLibrary.simpleMessage("Paste"),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "Please bind WebDAV",
     ),
@@ -623,7 +625,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("Use config"),
     "ru": MessageLookupByLibrary.simpleMessage("Russian"),
-    "rule": MessageLookupByLibrary.simpleMessage("Rule"),
+    "rule": MessageLookupByLibrary.simpleMessage("By rule"),
     "ruleName": MessageLookupByLibrary.simpleMessage("Rule name"),
     "ruleProviders": MessageLookupByLibrary.simpleMessage("Rule providers"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Rule target"),
@@ -681,7 +683,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Lifetime Subscription",
     ),
     "subscriptionUnlimited": MessageLookupByLibrary.simpleMessage(
-      "Unlimited Subscription",
+      "Lifetime Subscription",
     ),
     "successTitle": MessageLookupByLibrary.simpleMessage("Success"),
     "support": MessageLookupByLibrary.simpleMessage("Support"),
@@ -717,7 +719,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tip": MessageLookupByLibrary.simpleMessage("tip"),
     "toggle": MessageLookupByLibrary.simpleMessage("Toggle"),
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("TonalSpot"),
-    "tools": MessageLookupByLibrary.simpleMessage("Tools"),
+    "tools": MessageLookupByLibrary.simpleMessage("Settings"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy Port"),
     "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
     "trafficUnlimited": MessageLookupByLibrary.simpleMessage(
@@ -740,6 +742,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknown": MessageLookupByLibrary.simpleMessage("Unknown"),
     "unnamed": MessageLookupByLibrary.simpleMessage("Unnamed"),
     "update": MessageLookupByLibrary.simpleMessage("Update"),
+    "updateAllGeoData": MessageLookupByLibrary.simpleMessage(
+      "Update All Geo Files",
+    ),
     "updated": MessageLookupByLibrary.simpleMessage("Updated"),
     "upload": MessageLookupByLibrary.simpleMessage("Upload"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),

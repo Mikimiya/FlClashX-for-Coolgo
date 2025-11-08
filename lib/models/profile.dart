@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:flclashx/clash/core.dart';
 import 'package:flclashx/common/common.dart';
 import 'package:flclashx/enum/enum.dart';
+import 'package:flclashx/state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flclashx/utils/device_info_service.dart';
 
@@ -69,6 +70,8 @@ class Profile with _$Profile {
     @Default(false)
     bool isUpdating,
     bool? denyWidgetEditing,
+    Set<String>? providerSettings,
+    @Default({}) Map<String, String> providerHeaders,
   }) = _Profile;
 
   factory Profile.fromJson(Map<String, Object?> json) =>
@@ -137,6 +140,25 @@ extension ProfilesExt on List<Profile> {
   Profile? getProfile(String? profileId) {
     final index = indexWhere((profile) => profile.id == profileId);
     return index == -1 ? null : this[index];
+  }
+}
+
+Set<String>? _parseSettingsFromHeader(String? settingsHeader) {
+  try {
+    if (settingsHeader == null) {
+      return null;
+    }
+
+    final settings = settingsHeader
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .where((s) => s.isNotEmpty)
+        .toSet();
+
+    return settings;
+  } catch (e) {
+    commonPrint.log("Failed to parse settings from header: $e");
+    return null;
   }
 }
 
@@ -220,10 +242,23 @@ extension ProfileExtension on Profile {
     }
 
     final proxiesViewHeader = response.headers.value('flclashx-view');
+    final settingsHeader = response.headers.value('flclashx-settings');
+    
     final responseData = response.data;
     if (responseData == null) {
       throw Exception("Failed to get profile data from response.");
     }
+
+    final parsedSettings = _parseSettingsFromHeader(settingsHeader);
+    
+    final providerHeaders = <String, String>{};
+    response.headers.forEach((name, values) {
+      if (name.toLowerCase().startsWith('flclashx-') && values.isNotEmpty) {
+        providerHeaders[name.toLowerCase()] = values.first;
+      }
+    });
+    
+    globalState.appController.applySubscriptionSettings(parsedSettings);
 
     return await copyWith(
       label: label ?? utils.getFileNameForDisposition(disposition) ?? id,
@@ -236,6 +271,8 @@ extension ProfileExtension on Profile {
       denyWidgetEditing: denyWidgetValue,
       proxiesView: proxiesViewHeader,
       customBehavior: customBehavior,
+      providerSettings: parsedSettings,
+      providerHeaders: providerHeaders,
     ).saveFile(responseData);
   }
 

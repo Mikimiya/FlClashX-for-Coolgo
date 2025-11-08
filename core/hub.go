@@ -42,8 +42,9 @@ func handleInitClash(paramsString string) bool {
 		return false
 	}
 	version = params.Version
+	// Always update homeDir to ensure correct path even on re-initialization
+	constant.SetHomeDir(params.HomeDir)
 	if !isInit {
-		constant.SetHomeDir(params.HomeDir)
 		isInit = true
 	}
 	return isInit
