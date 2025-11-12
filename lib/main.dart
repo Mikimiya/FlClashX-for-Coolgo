@@ -21,6 +21,12 @@ import 'models/models.dart';
 Future<void> main() async {
   globalState.isService = false;
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Enable Skia graphics for better performance on desktop
+  if (Platform.isWindows || Platform.isLinux) {
+    DartPluginRegistrant.ensureInitialized();
+  }
+  
   final version = await system.version;
   await clashCore.preload();
   await globalState.initApp(version);

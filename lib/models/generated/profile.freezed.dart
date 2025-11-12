@@ -25,12 +25,8 @@ mixin _$SubscriptionInfo {
   int get total => throw _privateConstructorUsedError;
   int get expire => throw _privateConstructorUsedError;
 
-  /// Serializes this SubscriptionInfo to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SubscriptionInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SubscriptionInfoCopyWith<SubscriptionInfo> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -54,8 +50,6 @@ class _$SubscriptionInfoCopyWithImpl<$Res, $Val extends SubscriptionInfo>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SubscriptionInfo
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -104,8 +98,6 @@ class __$$SubscriptionInfoImplCopyWithImpl<$Res>
       $Res Function(_$SubscriptionInfoImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SubscriptionInfo
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -174,13 +166,11 @@ class _$SubscriptionInfoImpl implements _SubscriptionInfo {
             (identical(other.expire, expire) || other.expire == expire));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, upload, download, total, expire);
 
-  /// Create a copy of SubscriptionInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SubscriptionInfoImplCopyWith<_$SubscriptionInfoImpl> get copyWith =>
@@ -213,11 +203,8 @@ abstract class _SubscriptionInfo implements SubscriptionInfo {
   int get total;
   @override
   int get expire;
-
-  /// Create a copy of SubscriptionInfo
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SubscriptionInfoImplCopyWith<_$SubscriptionInfoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -233,6 +220,7 @@ mixin _$Profile {
   String? get currentGroupName => throw _privateConstructorUsedError;
   String? get announceText => throw _privateConstructorUsedError;
   String? get supportUrl => throw _privateConstructorUsedError;
+  String? get serviceName => throw _privateConstructorUsedError;
   String? get dashboardLayout => throw _privateConstructorUsedError;
   String? get proxiesView => throw _privateConstructorUsedError;
   String? get customBehavior => throw _privateConstructorUsedError;
@@ -247,13 +235,11 @@ mixin _$Profile {
   @JsonKey(includeToJson: false, includeFromJson: false)
   bool get isUpdating => throw _privateConstructorUsedError;
   bool? get denyWidgetEditing => throw _privateConstructorUsedError;
+  Set<String>? get providerSettings => throw _privateConstructorUsedError;
+  Map<String, String> get providerHeaders => throw _privateConstructorUsedError;
 
-  /// Serializes this Profile to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of Profile
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $ProfileCopyWith<Profile> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -268,6 +254,7 @@ abstract class $ProfileCopyWith<$Res> {
       String? currentGroupName,
       String? announceText,
       String? supportUrl,
+      String? serviceName,
       String? dashboardLayout,
       String? proxiesView,
       String? customBehavior,
@@ -280,7 +267,9 @@ abstract class $ProfileCopyWith<$Res> {
       Set<String> unfoldSet,
       OverrideData overrideData,
       @JsonKey(includeToJson: false, includeFromJson: false) bool isUpdating,
-      bool? denyWidgetEditing});
+      bool? denyWidgetEditing,
+      Set<String>? providerSettings,
+      Map<String, String> providerHeaders});
 
   $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo;
   $OverrideDataCopyWith<$Res> get overrideData;
@@ -296,8 +285,6 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of Profile
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -306,6 +293,7 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
     Object? currentGroupName = freezed,
     Object? announceText = freezed,
     Object? supportUrl = freezed,
+    Object? serviceName = freezed,
     Object? dashboardLayout = freezed,
     Object? proxiesView = freezed,
     Object? customBehavior = freezed,
@@ -319,6 +307,8 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
     Object? overrideData = null,
     Object? isUpdating = null,
     Object? denyWidgetEditing = freezed,
+    Object? providerSettings = freezed,
+    Object? providerHeaders = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -340,6 +330,10 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
       supportUrl: freezed == supportUrl
           ? _value.supportUrl
           : supportUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      serviceName: freezed == serviceName
+          ? _value.serviceName
+          : serviceName // ignore: cast_nullable_to_non_nullable
               as String?,
       dashboardLayout: freezed == dashboardLayout
           ? _value.dashboardLayout
@@ -393,11 +387,17 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
           ? _value.denyWidgetEditing
           : denyWidgetEditing // ignore: cast_nullable_to_non_nullable
               as bool?,
+      providerSettings: freezed == providerSettings
+          ? _value.providerSettings
+          : providerSettings // ignore: cast_nullable_to_non_nullable
+              as Set<String>?,
+      providerHeaders: null == providerHeaders
+          ? _value.providerHeaders
+          : providerHeaders // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
     ) as $Val);
   }
 
-  /// Create a copy of Profile
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo {
@@ -410,8 +410,6 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
     });
   }
 
-  /// Create a copy of Profile
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $OverrideDataCopyWith<$Res> get overrideData {
@@ -434,6 +432,7 @@ abstract class _$$ProfileImplCopyWith<$Res> implements $ProfileCopyWith<$Res> {
       String? currentGroupName,
       String? announceText,
       String? supportUrl,
+      String? serviceName,
       String? dashboardLayout,
       String? proxiesView,
       String? customBehavior,
@@ -446,7 +445,9 @@ abstract class _$$ProfileImplCopyWith<$Res> implements $ProfileCopyWith<$Res> {
       Set<String> unfoldSet,
       OverrideData overrideData,
       @JsonKey(includeToJson: false, includeFromJson: false) bool isUpdating,
-      bool? denyWidgetEditing});
+      bool? denyWidgetEditing,
+      Set<String>? providerSettings,
+      Map<String, String> providerHeaders});
 
   @override
   $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo;
@@ -462,8 +463,6 @@ class __$$ProfileImplCopyWithImpl<$Res>
       _$ProfileImpl _value, $Res Function(_$ProfileImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of Profile
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -472,6 +471,7 @@ class __$$ProfileImplCopyWithImpl<$Res>
     Object? currentGroupName = freezed,
     Object? announceText = freezed,
     Object? supportUrl = freezed,
+    Object? serviceName = freezed,
     Object? dashboardLayout = freezed,
     Object? proxiesView = freezed,
     Object? customBehavior = freezed,
@@ -485,6 +485,8 @@ class __$$ProfileImplCopyWithImpl<$Res>
     Object? overrideData = null,
     Object? isUpdating = null,
     Object? denyWidgetEditing = freezed,
+    Object? providerSettings = freezed,
+    Object? providerHeaders = null,
   }) {
     return _then(_$ProfileImpl(
       id: null == id
@@ -506,6 +508,10 @@ class __$$ProfileImplCopyWithImpl<$Res>
       supportUrl: freezed == supportUrl
           ? _value.supportUrl
           : supportUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
+      serviceName: freezed == serviceName
+          ? _value.serviceName
+          : serviceName // ignore: cast_nullable_to_non_nullable
               as String?,
       dashboardLayout: freezed == dashboardLayout
           ? _value.dashboardLayout
@@ -559,6 +565,14 @@ class __$$ProfileImplCopyWithImpl<$Res>
           ? _value.denyWidgetEditing
           : denyWidgetEditing // ignore: cast_nullable_to_non_nullable
               as bool?,
+      providerSettings: freezed == providerSettings
+          ? _value._providerSettings
+          : providerSettings // ignore: cast_nullable_to_non_nullable
+              as Set<String>?,
+      providerHeaders: null == providerHeaders
+          ? _value._providerHeaders
+          : providerHeaders // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
     ));
   }
 }
@@ -572,6 +586,7 @@ class _$ProfileImpl implements _Profile {
       this.currentGroupName,
       this.announceText,
       this.supportUrl,
+      this.serviceName,
       this.dashboardLayout,
       this.proxiesView,
       this.customBehavior,
@@ -585,9 +600,13 @@ class _$ProfileImpl implements _Profile {
       this.overrideData = const OverrideData(),
       @JsonKey(includeToJson: false, includeFromJson: false)
       this.isUpdating = false,
-      this.denyWidgetEditing})
+      this.denyWidgetEditing,
+      final Set<String>? providerSettings,
+      final Map<String, String> providerHeaders = const {}})
       : _selectedMap = selectedMap,
-        _unfoldSet = unfoldSet;
+        _unfoldSet = unfoldSet,
+        _providerSettings = providerSettings,
+        _providerHeaders = providerHeaders;
 
   factory _$ProfileImpl.fromJson(Map<String, dynamic> json) =>
       _$$ProfileImplFromJson(json);
@@ -602,6 +621,8 @@ class _$ProfileImpl implements _Profile {
   final String? announceText;
   @override
   final String? supportUrl;
+  @override
+  final String? serviceName;
   @override
   final String? dashboardLayout;
   @override
@@ -646,10 +667,28 @@ class _$ProfileImpl implements _Profile {
   final bool isUpdating;
   @override
   final bool? denyWidgetEditing;
+  final Set<String>? _providerSettings;
+  @override
+  Set<String>? get providerSettings {
+    final value = _providerSettings;
+    if (value == null) return null;
+    if (_providerSettings is EqualUnmodifiableSetView) return _providerSettings;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(value);
+  }
+
+  final Map<String, String> _providerHeaders;
+  @override
+  @JsonKey()
+  Map<String, String> get providerHeaders {
+    if (_providerHeaders is EqualUnmodifiableMapView) return _providerHeaders;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_providerHeaders);
+  }
 
   @override
   String toString() {
-    return 'Profile(id: $id, label: $label, currentGroupName: $currentGroupName, announceText: $announceText, supportUrl: $supportUrl, dashboardLayout: $dashboardLayout, proxiesView: $proxiesView, customBehavior: $customBehavior, url: $url, lastUpdateDate: $lastUpdateDate, autoUpdateDuration: $autoUpdateDuration, subscriptionInfo: $subscriptionInfo, autoUpdate: $autoUpdate, selectedMap: $selectedMap, unfoldSet: $unfoldSet, overrideData: $overrideData, isUpdating: $isUpdating, denyWidgetEditing: $denyWidgetEditing)';
+    return 'Profile(id: $id, label: $label, currentGroupName: $currentGroupName, announceText: $announceText, supportUrl: $supportUrl, serviceName: $serviceName, dashboardLayout: $dashboardLayout, proxiesView: $proxiesView, customBehavior: $customBehavior, url: $url, lastUpdateDate: $lastUpdateDate, autoUpdateDuration: $autoUpdateDuration, subscriptionInfo: $subscriptionInfo, autoUpdate: $autoUpdate, selectedMap: $selectedMap, unfoldSet: $unfoldSet, overrideData: $overrideData, isUpdating: $isUpdating, denyWidgetEditing: $denyWidgetEditing, providerSettings: $providerSettings, providerHeaders: $providerHeaders)';
   }
 
   @override
@@ -665,6 +704,8 @@ class _$ProfileImpl implements _Profile {
                 other.announceText == announceText) &&
             (identical(other.supportUrl, supportUrl) ||
                 other.supportUrl == supportUrl) &&
+            (identical(other.serviceName, serviceName) ||
+                other.serviceName == serviceName) &&
             (identical(other.dashboardLayout, dashboardLayout) ||
                 other.dashboardLayout == dashboardLayout) &&
             (identical(other.proxiesView, proxiesView) ||
@@ -689,35 +730,41 @@ class _$ProfileImpl implements _Profile {
             (identical(other.isUpdating, isUpdating) ||
                 other.isUpdating == isUpdating) &&
             (identical(other.denyWidgetEditing, denyWidgetEditing) ||
-                other.denyWidgetEditing == denyWidgetEditing));
+                other.denyWidgetEditing == denyWidgetEditing) &&
+            const DeepCollectionEquality()
+                .equals(other._providerSettings, _providerSettings) &&
+            const DeepCollectionEquality()
+                .equals(other._providerHeaders, _providerHeaders));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      label,
-      currentGroupName,
-      announceText,
-      supportUrl,
-      dashboardLayout,
-      proxiesView,
-      customBehavior,
-      url,
-      lastUpdateDate,
-      autoUpdateDuration,
-      subscriptionInfo,
-      autoUpdate,
-      const DeepCollectionEquality().hash(_selectedMap),
-      const DeepCollectionEquality().hash(_unfoldSet),
-      overrideData,
-      isUpdating,
-      denyWidgetEditing);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        label,
+        currentGroupName,
+        announceText,
+        supportUrl,
+        serviceName,
+        dashboardLayout,
+        proxiesView,
+        customBehavior,
+        url,
+        lastUpdateDate,
+        autoUpdateDuration,
+        subscriptionInfo,
+        autoUpdate,
+        const DeepCollectionEquality().hash(_selectedMap),
+        const DeepCollectionEquality().hash(_unfoldSet),
+        overrideData,
+        isUpdating,
+        denyWidgetEditing,
+        const DeepCollectionEquality().hash(_providerSettings),
+        const DeepCollectionEquality().hash(_providerHeaders)
+      ]);
 
-  /// Create a copy of Profile
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$ProfileImplCopyWith<_$ProfileImpl> get copyWith =>
@@ -738,6 +785,7 @@ abstract class _Profile implements Profile {
       final String? currentGroupName,
       final String? announceText,
       final String? supportUrl,
+      final String? serviceName,
       final String? dashboardLayout,
       final String? proxiesView,
       final String? customBehavior,
@@ -751,7 +799,9 @@ abstract class _Profile implements Profile {
       final OverrideData overrideData,
       @JsonKey(includeToJson: false, includeFromJson: false)
       final bool isUpdating,
-      final bool? denyWidgetEditing}) = _$ProfileImpl;
+      final bool? denyWidgetEditing,
+      final Set<String>? providerSettings,
+      final Map<String, String> providerHeaders}) = _$ProfileImpl;
 
   factory _Profile.fromJson(Map<String, dynamic> json) = _$ProfileImpl.fromJson;
 
@@ -765,6 +815,8 @@ abstract class _Profile implements Profile {
   String? get announceText;
   @override
   String? get supportUrl;
+  @override
+  String? get serviceName;
   @override
   String? get dashboardLayout;
   @override
@@ -792,11 +844,12 @@ abstract class _Profile implements Profile {
   bool get isUpdating;
   @override
   bool? get denyWidgetEditing;
-
-  /// Create a copy of Profile
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  Set<String>? get providerSettings;
+  @override
+  Map<String, String> get providerHeaders;
+  @override
+  @JsonKey(ignore: true)
   _$$ProfileImplCopyWith<_$ProfileImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -810,12 +863,8 @@ mixin _$OverrideData {
   bool get enable => throw _privateConstructorUsedError;
   OverrideRule get rule => throw _privateConstructorUsedError;
 
-  /// Serializes this OverrideData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of OverrideData
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $OverrideDataCopyWith<OverrideData> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -841,8 +890,6 @@ class _$OverrideDataCopyWithImpl<$Res, $Val extends OverrideData>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of OverrideData
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -861,8 +908,6 @@ class _$OverrideDataCopyWithImpl<$Res, $Val extends OverrideData>
     ) as $Val);
   }
 
-  /// Create a copy of OverrideData
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $OverrideRuleCopyWith<$Res> get rule {
@@ -894,8 +939,6 @@ class __$$OverrideDataImplCopyWithImpl<$Res>
       _$OverrideDataImpl _value, $Res Function(_$OverrideDataImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of OverrideData
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -945,13 +988,11 @@ class _$OverrideDataImpl implements _OverrideData {
             (identical(other.rule, rule) || other.rule == rule));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, enable, rule);
 
-  /// Create a copy of OverrideData
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$OverrideDataImplCopyWith<_$OverrideDataImpl> get copyWith =>
@@ -976,11 +1017,8 @@ abstract class _OverrideData implements OverrideData {
   bool get enable;
   @override
   OverrideRule get rule;
-
-  /// Create a copy of OverrideData
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$OverrideDataImplCopyWith<_$OverrideDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -995,12 +1033,8 @@ mixin _$OverrideRule {
   List<Rule> get overrideRules => throw _privateConstructorUsedError;
   List<Rule> get addedRules => throw _privateConstructorUsedError;
 
-  /// Serializes this OverrideRule to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of OverrideRule
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $OverrideRuleCopyWith<OverrideRule> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1025,8 +1059,6 @@ class _$OverrideRuleCopyWithImpl<$Res, $Val extends OverrideRule>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of OverrideRule
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1071,8 +1103,6 @@ class __$$OverrideRuleImplCopyWithImpl<$Res>
       _$OverrideRuleImpl _value, $Res Function(_$OverrideRuleImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of OverrideRule
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1148,7 +1178,7 @@ class _$OverrideRuleImpl implements _OverrideRule {
                 .equals(other._addedRules, _addedRules));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -1156,9 +1186,7 @@ class _$OverrideRuleImpl implements _OverrideRule {
       const DeepCollectionEquality().hash(_overrideRules),
       const DeepCollectionEquality().hash(_addedRules));
 
-  /// Create a copy of OverrideRule
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$OverrideRuleImplCopyWith<_$OverrideRuleImpl> get copyWith =>
@@ -1187,11 +1215,8 @@ abstract class _OverrideRule implements OverrideRule {
   List<Rule> get overrideRules;
   @override
   List<Rule> get addedRules;
-
-  /// Create a copy of OverrideRule
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$OverrideRuleImplCopyWith<_$OverrideRuleImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

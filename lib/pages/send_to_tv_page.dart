@@ -44,10 +44,12 @@ class _SendToTvPageState extends ConsumerState<SendToTvPage> {
           tvUrl,
           data: {'url': widget.profileUrl},
         );
-        _showResultDialog(appLocalizations.successTitle, appLocalizations.sentSuccessfullyMessage);
+        _showResultDialog(appLocalizations.successTitle,
+            appLocalizations.sentSuccessfullyMessage);
       }
     } catch (e) {
-      _showResultDialog(appLocalizations.errorTitle, appLocalizations.invalidQrMessage);
+      _showResultDialog(
+          appLocalizations.errorTitle, appLocalizations.invalidQrMessage);
       print('Error sending to TV: $e');
     }
   }
@@ -64,7 +66,7 @@ class _SendToTvPageState extends ConsumerState<SendToTvPage> {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },
-            child: const Text('ОК'),
+            child: const Text('OK'),
           ),
         ],
       ),

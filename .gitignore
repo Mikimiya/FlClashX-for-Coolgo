@@ -35,7 +35,8 @@ migrate_working_dir/
 /build/
 /dist/
 /android/core/.cxx/
-/service/helper/target/release/
+/service/
+
 # Symbolication related
 app.*.symbols
 
@@ -47,9 +48,15 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Helper
+/services/helper/target/
 #libclash
 /libclash/
 
 #jniLibs
 /android/app/src/main/jniLibs/
 /android/core/src/main/jniLibs/
+
+# Environment variables (contains sensitive data)
+.env
+*.local.sh

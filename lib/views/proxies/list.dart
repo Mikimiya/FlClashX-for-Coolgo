@@ -8,6 +8,7 @@ import 'package:flclashx/providers/config.dart';
 import 'package:flclashx/providers/state.dart';
 import 'package:flclashx/state.dart';
 import 'package:flclashx/widgets/widgets.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,6 +34,9 @@ class _ProxiesListViewState extends State<ProxiesListView> {
   );
   List<double> _headerOffset = [];
   GroupNameProxiesMap _lastGroupNameProxiesMap = {};
+
+  int _lastGroupsVersion = 0;
+  List<String> _lastGroupNames = [];
 
   @override
   void initState() {
@@ -119,7 +123,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
     final items = <Widget>[];
     final GroupNameProxiesMap groupNameProxiesMap = {};
     for (final groupName in groupNames) {
-      final group = ref.read(
+      final group = ref.watch(
         groupsProvider.select(
           (state) => state.getGroup(groupName),
         ),
@@ -205,7 +209,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
     required Set<String> currentUnfoldSet,
   }) {
     final group =
-        ref.read(groupsProvider.select((state) => state.getGroup(groupName)));
+        ref.watch(groupsProvider.select((state) => state.getGroup(groupName)));
     if (group == null) {
       return SizedBox();
     }
@@ -256,7 +260,25 @@ class _ProxiesListViewState extends State<ProxiesListView> {
     return Consumer(
       builder: (_, ref, __) {
         final state = ref.watch(proxiesListSelectorStateProvider);
+
+        final groupsVersion = ref.watch(versionProvider);
+
         ref.watch(themeSettingProvider.select((state) => state.textScale));
+
+        if (_lastGroupsVersion != groupsVersion ||
+            !listEquals(_lastGroupNames, state.groupNames)) {
+          _lastGroupsVersion = groupsVersion;
+          _lastGroupNames = state.groupNames;
+
+          _lastGroupNameProxiesMap.clear();
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              setState(() {});
+            }
+          });
+        }
+
         if (state.groupNames.isEmpty) {
           return NullStatus(
             label: appLocalizations.nullTip(appLocalizations.proxies),

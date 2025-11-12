@@ -171,6 +171,48 @@ class Build {
 
   static get tags => "with_gvisor";
 
+  static Future<String> getLatestVersion() async {
+    final result = await Process.run(
+      'git',
+      [
+        'ls-remote',
+        '--tags',
+        '--refs',
+        '--sort=v:refname',
+        'https://github.com/MetaCubeX/mihomo.git'
+      ],
+    );
+    if (result.exitCode != 0) {
+      throw "Failed to get latest version from mihomo repository";
+    }
+    final output = result.stdout.toString().trim();
+    final lines = output.split('\n');
+    if (lines.isEmpty) {
+      throw "No tags found in mihomo repository";
+    }
+    final lastTag = lines.last.split('\t').last.replaceAll('refs/tags/', '');
+    return lastTag.startsWith('v') ? lastTag.substring(1) : lastTag;
+  }
+
+  static Future<void> updateVersionFile(
+      String version, String buildTime) async {
+    final versionFilePath =
+        join(_coreDir, "Clash.Meta", "constant", "version.go");
+    final versionFile = File(versionFilePath);
+
+    final content = '''package constant
+
+var (
+	Meta       = true
+	Version    = "$version"
+	BuildTime  = "$buildTime"
+	MihomoName = "mihomo"
+)
+''';
+
+    await versionFile.writeAsString(content);
+  }
+
   static Future<void> exec(
     List<String> executable, {
     String? name,
@@ -210,6 +252,10 @@ class Build {
     required Target target,
     Arch? arch,
   }) async {
+    final version = await getLatestVersion();
+    final buildTime = DateTime.now().toUtc().toIso8601String();
+    await updateVersionFile(version, buildTime);
+
     final isLib = mode == Mode.lib;
 
     final items = buildItems.where(
@@ -221,14 +267,16 @@ class Build {
 
     final List<String> corePaths = [];
 
-    for (final item in items) {
-      final outFileDir = join(
-        outDir,
-        item.target.name,
-        item.archName,
-      );
+    final targetOutFilePath = join(outDir, target.name);
+    final targetOutFile = File(targetOutFilePath);
+    if (await targetOutFile.exists()) {
+      await targetOutFile.delete(recursive: true);
+      await Directory(targetOutFilePath).create(recursive: true);
+    }
 
-      final file = File(outFileDir);
+    for (final item in items) {
+      final outFilePath = join(targetOutFilePath, item.archName);
+      final file = File(outFilePath);
       if (file.existsSync()) {
         file.deleteSync(recursive: true);
       }
@@ -236,11 +284,8 @@ class Build {
       final fileName = isLib
           ? "$libName${item.target.dynamicLibExtensionName}"
           : "$coreName${item.target.executableExtensionName}";
-      final outPath = join(
-        outFileDir,
-        fileName,
-      );
-      corePaths.add(outPath);
+      final realOutPath = join(outFilePath, fileName);
+      corePaths.add(realOutPath);
 
       final Map<String, String> env = {};
       env["GOOS"] = item.target.os;
@@ -262,7 +307,7 @@ class Build {
         "-tags=$tags",
         if (isLib) "-buildmode=c-shared",
         "-o",
-        outPath,
+        realOutPath,
       ];
       await exec(
         execLines,
@@ -270,9 +315,40 @@ class Build {
         environment: env,
         workingDirectory: _coreDir,
       );
+      if (isLib && item.archName != null) {
+        await adjustLibOut(
+          targetOutFilePath: targetOutFilePath,
+          outFilePath: outFilePath,
+          archName: item.archName!,
+        );
+      }
     }
 
     return corePaths;
+  }
+
+  static Future<void> adjustLibOut({
+    required String targetOutFilePath,
+    required String outFilePath,
+    required String archName,
+  }) async {
+    final includesPath = join(targetOutFilePath, "includes");
+    final realOutPath = join(includesPath, archName);
+    await Directory(realOutPath).create(recursive: true);
+    final targetOutFiles = Directory(outFilePath).listSync();
+    final coreFiles = Directory(_coreDir).listSync();
+    for (final file in [...targetOutFiles, ...coreFiles]) {
+      if (!file.path.endsWith('.h')) {
+        continue;
+      }
+      final targetFilePath = join(realOutPath, basename(file.path));
+      final realFile = File(file.path);
+      await realFile.copy(targetFilePath);
+      if (coreFiles.contains(file)) {
+        continue;
+      }
+      await realFile.delete();
+    }
   }
 
   static buildHelper(Target target, String token) async {
@@ -386,6 +462,8 @@ class BuildCommand extends Command {
       ].join(','),
       help: 'The $name build env',
     );
+    // Android builds always create both split and universal APKs
+    // No additional flags needed
   }
 
   @override
@@ -444,8 +522,72 @@ class BuildCommand extends Command {
 
   _getMacosDependencies() async {
     await Build.exec(
-      Build.getExecutable("npm install -g appdmg"),
+      Build.getExecutable("npm install -g create-dmg"),
     );
+  }
+
+  _buildMacosApp({
+    required Arch arch,
+    required String env,
+    required String coreVersion,
+  }) async {
+    await Build.exec(
+      name: "flutter build macos",
+      [
+        "flutter",
+        "build",
+        "macos",
+        "--release",
+        "--dart-define=APP_ENV=$env",
+        "--dart-define=CORE_VERSION=$coreVersion",
+      ],
+    );
+
+    final pubspecFile = File(join(current, "pubspec.yaml"));
+    final pubspecContent = pubspecFile.readAsStringSync();
+    final versionMatch = RegExp(r'version:\s*(.+)').firstMatch(pubspecContent);
+    final version = versionMatch?.group(1)?.split('+').first ?? "0.0.0";
+
+    final appName = Build.appName;
+    final appPath = join(current, "build", "macos", "Build", "Products",
+        "Release", "$appName.app");
+
+    final distDir = Directory(Build.distPath);
+    if (!distDir.existsSync()) {
+      distDir.createSync(recursive: true);
+    }
+
+    print("Creating DMG with create-dmg...");
+
+    await Build.exec(
+      name: "create-dmg",
+      [
+        "create-dmg",
+        "--overwrite",
+        "--dmg-title",
+        appName,
+        appPath,
+        Build.distPath,
+      ],
+    );
+
+    final createdDmgName = "$appName $version.dmg";
+    final createdDmgPath = join(Build.distPath, createdDmgName);
+    final targetDmgName = "$appName-$version-macos-${arch.name}.dmg";
+    final targetDmgPath = join(Build.distPath, targetDmgName);
+
+    final createdDmg = File(createdDmgPath);
+    if (createdDmg.existsSync()) {
+      final targetDmg = File(targetDmgPath);
+      if (targetDmg.existsSync()) {
+        targetDmg.deleteSync();
+      }
+
+      createdDmg.renameSync(targetDmgPath);
+      print("✅ DMG created: $targetDmgPath");
+    } else {
+      throw "DMG file not created: $createdDmgPath";
+    }
   }
 
   _buildDistributor({
@@ -453,12 +595,13 @@ class BuildCommand extends Command {
     required String targets,
     String args = '',
     required String env,
+    required String coreVersion,
   }) async {
     await Build.getDistributor();
     await Build.exec(
       name: name,
       Build.getExecutable(
-        "flutter_distributor package --skip-clean --platform ${target.name} --targets $targets --flutter-build-args=verbose$args --build-dart-define=APP_ENV=$env",
+        "flutter_distributor package --skip-clean --platform ${target.name} --targets $targets --flutter-build-args=verbose$args --build-dart-define=APP_ENV=$env,CORE_VERSION=$coreVersion",
       ),
     );
   }
@@ -487,6 +630,8 @@ class BuildCommand extends Command {
       throw "Invalid arch parameter";
     }
 
+    final coreVersion = await Build.getLatestVersion();
+
     final corePaths = await Build.buildCore(
       target: target,
       arch: arch,
@@ -509,6 +654,7 @@ class BuildCommand extends Command {
           args:
               " --description $archName --build-dart-define=CORE_SHA256=$token",
           env: env,
+          coreVersion: coreVersion,
         );
         return;
       case Target.linux:
@@ -529,34 +675,38 @@ class BuildCommand extends Command {
           args:
               " --description $archName --build-target-platform $defaultTarget",
           env: env,
+          coreVersion: coreVersion,
         );
         return;
       case Target.android:
-        final targetMap = {
-          Arch.arm: "android-arm",
-          Arch.arm64: "android-arm64",
-          Arch.amd64: "android-x64",
-        };
-        final defaultArches = [Arch.arm, Arch.arm64, Arch.amd64];
-        final defaultTargets = defaultArches
-            .where((element) => arch == null ? true : element == arch)
-            .map((e) => targetMap[e])
-            .toList();
-        _buildDistributor(
+        // Build all architectures: armeabi-v7a, arm64-v8a, x86_64
+        final allTargets = "android-arm,android-arm64,android-x64";
+
+        // Build split APKs (one per architecture)
+        await _buildDistributor(
           target: target,
           targets: "apk",
-          args:
-              ",split-per-abi --build-target-platform ${defaultTargets.join(",")}",
+          args: ",split-per-abi --build-target-platform $allTargets",
           env: env,
+          coreVersion: coreVersion,
         );
+
+        // Build universal APK (all architectures in one file)
+        await _buildDistributor(
+          target: target,
+          targets: "apk",
+          args: " --build-target-platform $allTargets",
+          env: env,
+          coreVersion: coreVersion,
+        );
+
         return;
       case Target.macos:
         await _getMacosDependencies();
-        _buildDistributor(
-          target: target,
-          targets: "dmg",
-          args: " --description $archName",
+        await _buildMacosApp(
+          arch: arch!,
           env: env,
+          coreVersion: coreVersion,
         );
         return;
     }

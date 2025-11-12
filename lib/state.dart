@@ -35,6 +35,7 @@ class GlobalState {
   late AppState appState;
   bool isPre = true;
   String? coreSHA256;
+  String? coreVersion;
   late PackageInfo packageInfo;
   Function? updateCurrentDelayDebounce;
   late Measure measure;
@@ -66,6 +67,7 @@ class GlobalState {
 
   initApp(int version) async {
     coreSHA256 = const String.fromEnvironment("CORE_SHA256");
+    coreVersion = const String.fromEnvironment("CORE_VERSION");
     isPre = const String.fromEnvironment("APP_ENV") != 'stable';
     appState = AppState(
       version: version,
@@ -83,14 +85,14 @@ class GlobalState {
     try {
       corePalette = await DynamicColorPlugin.getCorePalette();
       accentColor = await DynamicColorPlugin.getAccentColor() ??
-          Color(defaultPrimaryColor);
+          const Color(defaultPrimaryColor);
     } catch (_) {}
   }
 
   init() async {
     packageInfo = await PackageInfo.fromPlatform();
     config = await preferences.getConfig() ??
-        Config(
+        const Config(
           themeProps: defaultThemeProps,
         );
     await globalState.migrateOldData(config);
@@ -319,9 +321,13 @@ class GlobalState {
       tun: patchConfig.tun.getRealTun(config.networkProps.routeMode),
     );
     rawConfig["external-controller"] = realPatchConfig.externalController.value;
-    rawConfig["external-ui"] = "";
+    if (rawConfig["external-ui"] == null || rawConfig["external-ui"] == "") {
+      rawConfig["external-ui"] = "";
+    }
     rawConfig["interface-name"] = "";
-    rawConfig["external-ui-url"] = "";
+    if (rawConfig["external-ui-url"] == null || rawConfig["external-ui-url"] == "") {
+      rawConfig["external-ui-url"] = "";
+    }
     rawConfig["tcp-concurrent"] = realPatchConfig.tcpConcurrent;
     rawConfig["unified-delay"] = realPatchConfig.unifiedDelay;
     rawConfig["ipv6"] = realPatchConfig.ipv6;
@@ -393,7 +399,24 @@ class GlobalState {
     }
 
     rawConfig["profile"]["store-selected"] = false;
-    rawConfig["geox-url"] = realPatchConfig.geoXUrl.toJson();
+    
+    final Map<String, dynamic> mergedGeoXUrl = {};
+    final patchGeoX = realPatchConfig.geoXUrl.toJson();
+    final profileGeoX = rawConfig["geox-url"];
+    
+    mergedGeoXUrl['geoip'] = patchGeoX['geoip'];
+    mergedGeoXUrl['mmdb'] = patchGeoX['mmdb'];
+    mergedGeoXUrl['asn'] = patchGeoX['asn'];
+    mergedGeoXUrl['geosite'] = patchGeoX['geosite'];
+    
+    if (profileGeoX != null && profileGeoX is Map) {
+      if (profileGeoX['geoip'] != null) mergedGeoXUrl['geoip'] = profileGeoX['geoip'];
+      if (profileGeoX['mmdb'] != null) mergedGeoXUrl['mmdb'] = profileGeoX['mmdb'];
+      if (profileGeoX['asn'] != null) mergedGeoXUrl['asn'] = profileGeoX['asn'];
+      if (profileGeoX['geosite'] != null) mergedGeoXUrl['geosite'] = profileGeoX['geosite'];
+    }
+    
+    rawConfig["geox-url"] = mergedGeoXUrl;
     rawConfig["global-ua"] = realPatchConfig.globalUa;
     if (rawConfig["hosts"] == null) {
       rawConfig["hosts"] = {};
@@ -501,7 +524,7 @@ class DetectionState {
     debouncer.call(
       FunctionTag.checkIp,
       _checkIp,
-      duration: Duration(
+      duration: const Duration(
         milliseconds: 1200,
       ),
     );

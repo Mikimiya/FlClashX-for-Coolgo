@@ -52,7 +52,7 @@ class ClashService extends ClashHandlerInterface {
         socket
             .transform(uint8ListToListIntConverter)
             .transform(utf8.decoder)
-            .transform(LineSplitter())
+            .transform(const LineSplitter())
             .listen(
           (data) {
             handleResult(
@@ -92,11 +92,19 @@ class ClashService extends ClashHandlerInterface {
         return;
       }
     }
+    
+    final homeDirPath = await appPath.homeDirPath;
+    final environment = Map<String, String>.from(Platform.environment);
+    // Set SAFE_PATHS to prevent "path is not subpath of home directory" errors
+    // This ensures the core can access provider files before SetHomeDir is called
+    environment['SAFE_PATHS'] = homeDirPath;
+    
     process = await Process.start(
       appPath.corePath,
       [
         arg,
       ],
+      environment: environment,
     );
     process?.stdout.listen((_) {});
     process?.stderr.listen((e) {

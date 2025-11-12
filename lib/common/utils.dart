@@ -81,14 +81,23 @@ class Utils {
       return '00:00:00';
     }
     final diff = timeStamp / 1000;
-    final inHours = (diff / 3600).floor();
-    if (inHours > 99) {
-      return "99:59:59";
-    }
-    final inMinutes = (diff / 60 % 60).floor();
-    final inSeconds = (diff % 60).floor();
+    final totalSeconds = diff.floor();
 
-    return "${getDateStringLast2(inHours)}:${getDateStringLast2(inMinutes)}:${getDateStringLast2(inSeconds)}";
+    const maxSeconds = 31 * 86400 + 23 * 3600 + 59 * 60 + 59;
+    if (totalSeconds >= maxSeconds) {
+      return "Seriously?";
+    }
+
+    final days = (totalSeconds / 86400).floor();
+    final hours = ((totalSeconds % 86400) / 3600).floor();
+    final minutes = ((totalSeconds % 3600) / 60).floor();
+    final seconds = (totalSeconds % 60).floor();
+
+    if (days == 0) {
+      return "${getDateStringLast2(hours)}:${getDateStringLast2(minutes)}:${getDateStringLast2(seconds)}";
+    }
+
+    return "${days}d ${getDateStringLast2(hours)}:${getDateStringLast2(minutes)}:${getDateStringLast2(seconds)}";
   }
 
   Locale? getLocaleForString(String? localString) {

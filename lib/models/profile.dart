@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'package:flclashx/clash/core.dart';
 import 'package:flclashx/common/common.dart';
 import 'package:flclashx/enum/enum.dart';
+import 'package:flclashx/state.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flclashx/utils/device_info_service.dart';
 
@@ -53,6 +54,7 @@ class Profile with _$Profile {
     String? currentGroupName,
     String? announceText,
     String? supportUrl,
+    String? serviceName,
     String? dashboardLayout,
     String? proxiesView,
     String? customBehavior,
@@ -68,7 +70,8 @@ class Profile with _$Profile {
     @Default(false)
     bool isUpdating,
     bool? denyWidgetEditing,
-
+    Set<String>? providerSettings,
+    @Default({}) Map<String, String> providerHeaders,
   }) = _Profile;
 
   factory Profile.fromJson(Map<String, Object?> json) =>
@@ -140,6 +143,25 @@ extension ProfilesExt on List<Profile> {
   }
 }
 
+Set<String>? _parseSettingsFromHeader(String? settingsHeader) {
+  try {
+    if (settingsHeader == null) {
+      return null;
+    }
+
+    final settings = settingsHeader
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .where((s) => s.isNotEmpty)
+        .toSet();
+
+    return settings;
+  } catch (e) {
+    commonPrint.log("Failed to parse settings from header: $e");
+    return null;
+  }
+}
+
 extension ProfileExtension on Profile {
   ProfileType get type =>
       url.isEmpty == true ? ProfileType.file : ProfileType.url;
@@ -181,11 +203,17 @@ extension ProfileExtension on Profile {
     if (shouldSendHeaders) {
       final deviceInfoService = DeviceInfoService();
       final details = await deviceInfoService.getDeviceDetails();
-      
-      if (details.hwid != null) headers['x-hwid'] = details.hwid; 
+
+      commonPrint.log("Device Details - HWID: ${details.hwid}, OS: ${details.os}, Version: ${details.osVersion}, Model: ${details.model}");
+
+      if (details.hwid != null) headers['x-hwid'] = details.hwid;
       if (details.os != null) headers['x-device-os'] = details.os;
       if (details.osVersion != null) headers['x-ver-os'] = details.osVersion;
       if (details.model != null) headers['x-device-model'] = details.model;
+      
+      commonPrint.log("Sending headers to server: $headers");
+    } else {
+      commonPrint.log("shouldSendHeaders is false, not sending device headers");
     }
 
     final response = await request.getFileResponseForUrl(
@@ -196,44 +224,61 @@ extension ProfileExtension on Profile {
     final disposition = response.headers.value("content-disposition");
     final userinfo = response.headers.value('subscription-userinfo');
     final announce = response.headers.value('announce');
-    final updateIntervalHeader = response.headers.value('profile-update-interval');
+    final updateIntervalHeader =
+        response.headers.value('profile-update-interval');
     final supportUrl = response.headers.value('support-url');
     final dashboardHeader = response.headers.value('flclashx-widgets');
     final serviceName = response.headers.value('flclashx-servicename');
     final customBehavior = response.headers.value('flclashx-custom');
 
     final denyWidgetHeader = response.headers.value('flclashx-denywidgets');
-      bool? denyWidgetValue;
-      if (denyWidgetHeader == 'true') {
-        denyWidgetValue = true;
-      } else if (denyWidgetHeader == 'false') {
-        denyWidgetValue = false;
+    bool? denyWidgetValue;
+    if (denyWidgetHeader == 'true') {
+      denyWidgetValue = true;
+    } else if (denyWidgetHeader == 'false') {
+      denyWidgetValue = false;
+    }
+
+    Duration? durationFromHeader;
+    if (updateIntervalHeader != null) {
+      final hours = int.tryParse(updateIntervalHeader);
+      if (hours != null && hours > 0) {
+        durationFromHeader = Duration(hours: hours);
       }
-    
-      Duration? durationFromHeader;
-      if (updateIntervalHeader != null) {
-        final hours = int.tryParse(updateIntervalHeader);
-        if (hours != null && hours > 0) {
-          durationFromHeader = Duration(hours: hours);
-        }
-      }
+    }
 
     final proxiesViewHeader = response.headers.value('flclashx-view');
+    final settingsHeader = response.headers.value('flclashx-settings');
+    
     final responseData = response.data;
     if (responseData == null) {
       throw Exception("Failed to get profile data from response.");
     }
+
+    final parsedSettings = _parseSettingsFromHeader(settingsHeader);
+    
+    final providerHeaders = <String, String>{};
+    response.headers.forEach((name, values) {
+      if (name.toLowerCase().startsWith('flclashx-') && values.isNotEmpty) {
+        providerHeaders[name.toLowerCase()] = values.first;
+      }
+    });
+    
+    globalState.appController.applySubscriptionSettings(parsedSettings);
 
     return await copyWith(
       label: label ?? utils.getFileNameForDisposition(disposition) ?? id,
       subscriptionInfo: SubscriptionInfo.formHString(userinfo),
       announceText: announce,
       supportUrl: supportUrl,
+      serviceName: serviceName,
       dashboardLayout: dashboardHeader,
       autoUpdateDuration: durationFromHeader ?? autoUpdateDuration,
       denyWidgetEditing: denyWidgetValue,
       proxiesView: proxiesViewHeader,
       customBehavior: customBehavior,
+      providerSettings: parsedSettings,
+      providerHeaders: providerHeaders,
     ).saveFile(responseData);
   }
 

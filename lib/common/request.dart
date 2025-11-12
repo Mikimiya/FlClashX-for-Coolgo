@@ -34,7 +34,7 @@ class Request {
     });
   }
 
-   Future<Response<Uint8List>> getFileResponseForUrl(
+  Future<Response<Uint8List>> getFileResponseForUrl(
     String url, {
     Map<String, dynamic>? headers,
   }) async {
@@ -178,12 +178,14 @@ class Request {
 
   Future<bool> startCoreByHelper(String arg) async {
     try {
+      final homeDirPath = await appPath.homeDirPath;
       final response = await _dio
           .post(
             "http://$localhost:$helperPort/start",
             data: json.encode({
               "path": appPath.corePath,
               "arg": arg,
+              "home_dir": homeDirPath,
             }),
             options: Options(
               responseType: ResponseType.plain,
@@ -209,22 +211,31 @@ class Request {
       final response = await _dio
           .post(
             "http://$localhost:$helperPort/stop",
-            options: Options(
-              responseType: ResponseType.plain,
-            ),
+            options: Options(responseType: ResponseType.plain),
           )
-          .timeout(
-            const Duration(
-              milliseconds: 2000,
-            ),
-          );
-      if (response.statusCode != HttpStatus.ok) {
-        return false;
-      }
+          .timeout(const Duration(milliseconds: 2000));
+
+      if (response.statusCode != HttpStatus.ok) return false;
       final data = response.data as String;
       return data.isEmpty;
     } catch (_) {
       return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getCoreVersion() async {
+    try {
+      final response = await _dio.get<Map<String, dynamic>>(
+        "http://$defaultExternalController/version",
+        options: Options(
+          responseType: ResponseType.json,
+        ),
+      ).timeout(const Duration(seconds: 2));
+      
+      if (response.statusCode != HttpStatus.ok) return null;
+      return response.data;
+    } catch (_) {
+      return null;
     }
   }
 }

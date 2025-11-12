@@ -56,6 +56,12 @@ android {
         }
     }
 
+    packaging {
+        jniLibs {
+            useLegacyPackaging = true
+        }
+    }
+
     buildTypes {
         debug {
             isMinifyEnabled = false
@@ -64,6 +70,7 @@ android {
 
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             isDebuggable = false
 
             signingConfig = if (isRelease) {

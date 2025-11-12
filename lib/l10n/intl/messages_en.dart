@@ -61,6 +61,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "action_tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "action_view": MessageLookupByLibrary.simpleMessage("Show/Hide"),
     "add": MessageLookupByLibrary.simpleMessage("Add"),
+    "addFromPhoneSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Scan QR code with phone",
+    ),
+    "addFromPhoneTitle": MessageLookupByLibrary.simpleMessage("Add from Phone"),
+    "addProfile": MessageLookupByLibrary.simpleMessage("Add Profile"),
     "addRule": MessageLookupByLibrary.simpleMessage("Add rule"),
     "addedOriginRules": MessageLookupByLibrary.simpleMessage(
       "Attach on the original rules",
@@ -95,25 +100,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "appAccessControl": MessageLookupByLibrary.simpleMessage(
       "App access control",
     ),
-    "subscriptionExpiresOn": (date) => "Your subscription expires on ${date}",
     "appDesc": MessageLookupByLibrary.simpleMessage(
       "Processing app related settings",
     ),
-    "application": MessageLookupByLibrary.simpleMessage("Application"),
+    "application": MessageLookupByLibrary.simpleMessage("Application Settings"),
     "applicationDesc": MessageLookupByLibrary.simpleMessage(
-      "Modify application related settings",
+      "Standard application settings",
     ),
     "auto": MessageLookupByLibrary.simpleMessage("Auto"),
     "autoCheckUpdate": MessageLookupByLibrary.simpleMessage(
       "Auto check updates",
     ),
-    "traffic": MessageLookupByLibrary.simpleMessage("Traffic:"),
-    "expiresOn": MessageLookupByLibrary.simpleMessage("Expires on:"),
     "autoCheckUpdateDesc": MessageLookupByLibrary.simpleMessage(
       "Auto check for updates when the app starts",
     ),
-    "support": MessageLookupByLibrary.simpleMessage("Support"),
-
     "autoCloseConnections": MessageLookupByLibrary.simpleMessage(
       "Auto close connections",
     ),
@@ -128,6 +128,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoRunDesc": MessageLookupByLibrary.simpleMessage(
       "Auto run when the application is opened",
     ),
+    "overrideProviderSettings": MessageLookupByLibrary.simpleMessage("Override"),
+    "overrideProviderSettingsDesc": MessageLookupByLibrary.simpleMessage(
+      "Ignore provider settings and manage manually",
+    ),
+    "managedByProvider": MessageLookupByLibrary.simpleMessage(
+      "These settings are managed by your provider",
+    ),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage(
       "Auto set system DNS",
     ),
@@ -135,7 +142,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "Auto update interval (minutes)",
     ),
-    "subscriptionUnlimited": MessageLookupByLibrary.simpleMessage("No expiration date"),
     "backup": MessageLookupByLibrary.simpleMessage("Backup"),
     "backupAndRecovery": MessageLookupByLibrary.simpleMessage(
       "Backup and Recovery",
@@ -157,13 +163,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "cacheCorrupt": MessageLookupByLibrary.simpleMessage(
       "The cache is corrupt. Do you want to clear it?",
     ),
-    "subscriptionEternal": MessageLookupByLibrary.simpleMessage("Your subscription is perpetual"),
-    "trafficUnlimited": MessageLookupByLibrary.simpleMessage("Your traffic is unlimited"),
-    "daysUntilExpiration": (days) => "Days until expiration: ${days}",
-    "subscriptionExpiresSoon": MessageLookupByLibrary.simpleMessage("Subscription Expires Soon"),
-    "subscriptionExpiresInDays": (days) => "Your subscription will expire in ${days} days.",
-    "remaining": MessageLookupByLibrary.simpleMessage("Remaining"),
-    "renew": MessageLookupByLibrary.simpleMessage("Renew"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "cancelFilterSystemApp": MessageLookupByLibrary.simpleMessage(
       "Cancel filter system app",
@@ -171,6 +170,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "cancelSelectAll": MessageLookupByLibrary.simpleMessage(
       "Cancel select all",
     ),
+    "changeServer": MessageLookupByLibrary.simpleMessage("Change Server"),
     "checkError": MessageLookupByLibrary.simpleMessage("Check error"),
     "checkUpdate": MessageLookupByLibrary.simpleMessage("Check for updates"),
     "checkUpdateError": MessageLookupByLibrary.simpleMessage(
@@ -210,7 +210,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "cut": MessageLookupByLibrary.simpleMessage("Cut"),
     "dark": MessageLookupByLibrary.simpleMessage("Dark"),
     "dashboard": MessageLookupByLibrary.simpleMessage("Dashboard"),
-    "days": MessageLookupByLibrary.simpleMessage("Days"),
+    "day": MessageLookupByLibrary.simpleMessage("day"),
+    "days": MessageLookupByLibrary.simpleMessage("days"),
+    "daysGenitive": MessageLookupByLibrary.simpleMessage("days"),
     "defaultNameserver": MessageLookupByLibrary.simpleMessage(
       "Default nameserver",
     ),
@@ -225,7 +227,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteMultipTip": m0,
     "deleteTip": m1,
     "desc": MessageLookupByLibrary.simpleMessage(
-      "Fork a multi-platform proxy client FlClash based on ClashMeta, simple and easy to use, open-source and ad-free.",
+      "A multi-platform proxy client based on ClashMeta, simple and easy to use, open-source and ad-free.",
     ),
     "detectionTip": MessageLookupByLibrary.simpleMessage(
       "Relying on third-party api is for reference only",
@@ -248,10 +250,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "dnsDesc": MessageLookupByLibrary.simpleMessage(
       "Update DNS related settings",
     ),
-    "profileAddedSuccess": MessageLookupByLibrary.simpleMessage(
-      "Sucess add profile",
-    ),
-    "daysUntilExpirationShort": MessageLookupByLibrary.simpleMessage("Expire of"),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS mode"),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
       "Do you want to pass",
@@ -263,6 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "en": MessageLookupByLibrary.simpleMessage("English"),
     "enableOverride": MessageLookupByLibrary.simpleMessage("Enable override"),
     "entries": MessageLookupByLibrary.simpleMessage(" entries"),
+    "errorTitle": MessageLookupByLibrary.simpleMessage("Error"),
     "exclude": MessageLookupByLibrary.simpleMessage("Hidden from recent tasks"),
     "excludeDesc": MessageLookupByLibrary.simpleMessage(
       "When the app is in the background, the app is hidden from the recent task",
@@ -271,6 +270,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "exit": MessageLookupByLibrary.simpleMessage("Exit"),
     "expand": MessageLookupByLibrary.simpleMessage("Standard"),
     "expirationTime": MessageLookupByLibrary.simpleMessage("Expiration time"),
+    "expiresOn": MessageLookupByLibrary.simpleMessage("Expires on"),
     "exportFile": MessageLookupByLibrary.simpleMessage("Export file"),
     "exportLogs": MessageLookupByLibrary.simpleMessage("Export logs"),
     "exportSuccess": MessageLookupByLibrary.simpleMessage("Export Success"),
@@ -337,7 +337,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "hotkeyManagementDesc": MessageLookupByLibrary.simpleMessage(
       "Use keyboard to control applications",
     ),
+    "hour": MessageLookupByLibrary.simpleMessage("hour"),
     "hours": MessageLookupByLibrary.simpleMessage("Hours"),
+    "hoursGenitive": MessageLookupByLibrary.simpleMessage("hours"),
+    "hoursPlural": MessageLookupByLibrary.simpleMessage("hours"),
     "icon": MessageLookupByLibrary.simpleMessage("Icon"),
     "iconConfiguration": MessageLookupByLibrary.simpleMessage(
       "Icon configuration",
@@ -358,6 +361,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "internet": MessageLookupByLibrary.simpleMessage("Internet"),
     "interval": MessageLookupByLibrary.simpleMessage("Interval"),
     "intranetIP": MessageLookupByLibrary.simpleMessage("Intranet IP"),
+    "invalidQrMessage": MessageLookupByLibrary.simpleMessage("Invalid QR code"),
     "ipcidr": MessageLookupByLibrary.simpleMessage("Ipcidr"),
     "ipv6Desc": MessageLookupByLibrary.simpleMessage(
       "When turned on it will be able to receive IPv6 traffic",
@@ -428,9 +432,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "networkDesc": MessageLookupByLibrary.simpleMessage(
       "Modify network-related settings",
     ),
-    "networkDetection": MessageLookupByLibrary.simpleMessage(
-      "Network detection",
-    ),
+    "networkDetection": MessageLookupByLibrary.simpleMessage("Your IP Address"),
     "networkSpeed": MessageLookupByLibrary.simpleMessage("Network speed"),
     "neutralScheme": MessageLookupByLibrary.simpleMessage("Neutral"),
     "noData": MessageLookupByLibrary.simpleMessage("No data"),
@@ -452,9 +454,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullProfileDesc": MessageLookupByLibrary.simpleMessage(
       "No profile, Please add a profile",
     ),
+    "nullScriptTip": MessageLookupByLibrary.simpleMessage("No scripts"),
     "nullTip": m4,
     "numberTip": m5,
     "oneColumn": MessageLookupByLibrary.simpleMessage("One column"),
+    "oneline": MessageLookupByLibrary.simpleMessage("Oneline"),
     "onlyIcon": MessageLookupByLibrary.simpleMessage("Icon"),
     "onlyOtherApps": MessageLookupByLibrary.simpleMessage(
       "Only third-party apps",
@@ -466,12 +470,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "When turned on, only statistics proxy traffic",
     ),
     "options": MessageLookupByLibrary.simpleMessage("Options"),
-    "other": MessageLookupByLibrary.simpleMessage("Other"),
-    "otherContributors": MessageLookupByLibrary.simpleMessage(
-      "Other contributors",
+    "originalRepository": MessageLookupByLibrary.simpleMessage(
+      "Original Repository",
     ),
+    "other": MessageLookupByLibrary.simpleMessage("Other"),
+    "otherContributors": MessageLookupByLibrary.simpleMessage("Contributors"),
     "outboundMode": MessageLookupByLibrary.simpleMessage("Outbound mode"),
-    "originalRepository": MessageLookupByLibrary.simpleMessage("Original Repository"),
     "override": MessageLookupByLibrary.simpleMessage("Override"),
     "overrideDesc": MessageLookupByLibrary.simpleMessage(
       "Override Proxy related config",
@@ -489,6 +493,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "palette": MessageLookupByLibrary.simpleMessage("Palette"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
     "paste": MessageLookupByLibrary.simpleMessage("Paste"),
+    "pasteFromClipboard": MessageLookupByLibrary.simpleMessage("Paste"),
     "pleaseBindWebDAV": MessageLookupByLibrary.simpleMessage(
       "Please bind WebDAV",
     ),
@@ -498,7 +503,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "pleaseInputAdminPassword": MessageLookupByLibrary.simpleMessage(
       "Please enter the admin password",
     ),
-    "addProfile": MessageLookupByLibrary.simpleMessage("Add Profile"),
     "pleaseUploadFile": MessageLookupByLibrary.simpleMessage(
       "Please upload file",
     ),
@@ -516,7 +520,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "pressKeyboard": MessageLookupByLibrary.simpleMessage(
       "Please press the keyboard.",
     ),
-    "qrNotFound": MessageLookupByLibrary.simpleMessage("QR code not found in the image"),
     "preview": MessageLookupByLibrary.simpleMessage("Preview"),
     "profile": MessageLookupByLibrary.simpleMessage("Profile"),
     "profileAutoUpdateIntervalInvalidValidationDesc":
@@ -559,11 +562,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "proxyProviders": MessageLookupByLibrary.simpleMessage("Proxy providers"),
     "pureBlackMode": MessageLookupByLibrary.simpleMessage("Pure black mode"),
+    "qrNotFound": MessageLookupByLibrary.simpleMessage("QR code not found"),
     "qrcode": MessageLookupByLibrary.simpleMessage("QR code"),
     "qrcodeDesc": MessageLookupByLibrary.simpleMessage(
       "Scan QR code to obtain profile",
     ),
     "rainbowScheme": MessageLookupByLibrary.simpleMessage("Rainbow"),
+    "receiveSubscriptionTitle": MessageLookupByLibrary.simpleMessage(
+      "Receive Subscription",
+    ),
     "recovery": MessageLookupByLibrary.simpleMessage("Recovery"),
     "recoveryAll": MessageLookupByLibrary.simpleMessage("Recovery all data"),
     "recoveryProfiles": MessageLookupByLibrary.simpleMessage(
@@ -582,6 +589,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "redirPort": MessageLookupByLibrary.simpleMessage("Redir Port"),
     "redo": MessageLookupByLibrary.simpleMessage("redo"),
     "regExp": MessageLookupByLibrary.simpleMessage("RegExp"),
+    "remaining": MessageLookupByLibrary.simpleMessage("Remaining"),
+    "remainingPlural": MessageLookupByLibrary.simpleMessage("Remaining"),
+    "remainingSingular": MessageLookupByLibrary.simpleMessage("Remaining"),
     "remote": MessageLookupByLibrary.simpleMessage("Remote"),
     "remoteBackupDesc": MessageLookupByLibrary.simpleMessage(
       "Backup local data to WebDAV",
@@ -615,7 +625,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "routeMode_config": MessageLookupByLibrary.simpleMessage("Use config"),
     "ru": MessageLookupByLibrary.simpleMessage("Russian"),
-    "rule": MessageLookupByLibrary.simpleMessage("Rule"),
+    "rule": MessageLookupByLibrary.simpleMessage("By rule"),
     "ruleName": MessageLookupByLibrary.simpleMessage("Rule name"),
     "ruleProviders": MessageLookupByLibrary.simpleMessage("Rule providers"),
     "ruleTarget": MessageLookupByLibrary.simpleMessage("Rule target"),
@@ -630,9 +640,21 @@ class MessageLookup extends MessageLookupByLibrary {
     "search": MessageLookupByLibrary.simpleMessage("Search"),
     "seconds": MessageLookupByLibrary.simpleMessage("Seconds"),
     "selectAll": MessageLookupByLibrary.simpleMessage("Select all"),
+    "selectProfile": MessageLookupByLibrary.simpleMessage("Select Profile"),
     "selected": MessageLookupByLibrary.simpleMessage("Selected"),
     "selectedCountTitle": m7,
+    "sendToTv": MessageLookupByLibrary.simpleMessage("Send to TV"),
+    "sendToTvTitle": MessageLookupByLibrary.simpleMessage("Send to TV"),
+    "sentSuccessfullyMessage": MessageLookupByLibrary.simpleMessage(
+      "Sent successfully",
+    ),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "settingsSendDeviceDataSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Help improve the app by sending anonymous data",
+    ),
+    "settingsSendDeviceDataTitle": MessageLookupByLibrary.simpleMessage(
+      "Send device data",
+    ),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
     "silentLaunch": MessageLookupByLibrary.simpleMessage("SilentLaunch"),
@@ -657,6 +679,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "style": MessageLookupByLibrary.simpleMessage("Style"),
     "subRule": MessageLookupByLibrary.simpleMessage("Sub rule"),
     "submit": MessageLookupByLibrary.simpleMessage("Submit"),
+    "subscriptionEternal": MessageLookupByLibrary.simpleMessage(
+      "Lifetime Subscription",
+    ),
+    "subscriptionUnlimited": MessageLookupByLibrary.simpleMessage(
+      "Lifetime Subscription",
+    ),
+    "successTitle": MessageLookupByLibrary.simpleMessage("Success"),
+    "support": MessageLookupByLibrary.simpleMessage("Support"),
     "sync": MessageLookupByLibrary.simpleMessage("Sync"),
     "system": MessageLookupByLibrary.simpleMessage("System"),
     "systemApp": MessageLookupByLibrary.simpleMessage("System APP"),
@@ -676,6 +706,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "testUrl": MessageLookupByLibrary.simpleMessage("Test url"),
     "textScale": MessageLookupByLibrary.simpleMessage("Text Scaling"),
+    "thanks": MessageLookupByLibrary.simpleMessage("Thanks for contribution"),
     "theme": MessageLookupByLibrary.simpleMessage("Theme"),
     "themeColor": MessageLookupByLibrary.simpleMessage("Theme color"),
     "themeDesc": MessageLookupByLibrary.simpleMessage(
@@ -688,8 +719,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "tip": MessageLookupByLibrary.simpleMessage("tip"),
     "toggle": MessageLookupByLibrary.simpleMessage("Toggle"),
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("TonalSpot"),
-    "tools": MessageLookupByLibrary.simpleMessage("Tools"),
+    "tools": MessageLookupByLibrary.simpleMessage("Settings"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy Port"),
+    "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
+    "trafficUnlimited": MessageLookupByLibrary.simpleMessage(
+      "Unlimited Traffic",
+    ),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("Traffic usage"),
     "tun": MessageLookupByLibrary.simpleMessage("TUN"),
     "tunDesc": MessageLookupByLibrary.simpleMessage(
@@ -707,6 +742,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknown": MessageLookupByLibrary.simpleMessage("Unknown"),
     "unnamed": MessageLookupByLibrary.simpleMessage("Unnamed"),
     "update": MessageLookupByLibrary.simpleMessage("Update"),
+    "updateAllGeoData": MessageLookupByLibrary.simpleMessage(
+      "Update All Geo Files",
+    ),
+    "updated": MessageLookupByLibrary.simpleMessage("Updated"),
     "upload": MessageLookupByLibrary.simpleMessage("Upload"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage(

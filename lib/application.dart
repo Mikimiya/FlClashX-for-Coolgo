@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flclashx/clash/clash.dart';
@@ -48,6 +49,11 @@ class ApplicationState extends ConsumerState<Application> {
   @override
   void initState() {
     super.initState();
+
+    if (Platform.isWindows) {
+      windows?.enableDarkModeForApp();
+    }
+
     _autoUpdateGroupTask();
     _autoUpdateProfilesTask();
     globalState.appController = AppController(context, ref);
@@ -145,6 +151,9 @@ class ApplicationState extends ConsumerState<Application> {
             return MaterialApp(
               debugShowCheckedModeBanner: false,
               navigatorKey: globalState.navigatorKey,
+              checkerboardRasterCacheImages: false,
+              checkerboardOffscreenLayers: false,
+              showPerformanceOverlay: false,
               localizationsDelegates: const [
                 AppLocalizations.delegate,
                 GlobalMaterialLocalizations.delegate,
@@ -152,11 +161,25 @@ class ApplicationState extends ConsumerState<Application> {
                 GlobalWidgetsLocalizations.delegate
               ],
               builder: (_, child) {
-                return AppEnvManager(
+                Widget app = AppEnvManager(
                   child: _buildPlatformApp(
                     _buildApp(child!),
                   ),
                 );
+
+                if (Platform.isMacOS) {
+                  return FittedBox(
+                    fit: BoxFit.contain,
+                    alignment: Alignment.topCenter,
+                    child: SizedBox(
+                      width: 500,
+                      height: 800,
+                      child: app,
+                    ),
+                  );
+                }
+
+                return app;
               },
               scrollBehavior: BaseScrollBehavior(),
               title: appName,
@@ -170,6 +193,8 @@ class ApplicationState extends ConsumerState<Application> {
                   brightness: Brightness.light,
                   primaryColor: themeProps.primaryColor,
                 ),
+                // Reduce animation duration for snappier feel
+                visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               darkTheme: ThemeData(
                 useMaterial3: true,
@@ -178,6 +203,8 @@ class ApplicationState extends ConsumerState<Application> {
                   brightness: Brightness.dark,
                   primaryColor: themeProps.primaryColor,
                 ).toPureBlack(themeProps.pureBlack),
+                // Reduce animation duration for snappier feel
+                visualDensity: VisualDensity.adaptivePlatformDensity,
               ),
               home: child,
             );
@@ -193,6 +220,7 @@ class ApplicationState extends ConsumerState<Application> {
     linkManager.destroy();
     _autoUpdateGroupTaskTimer?.cancel();
     _autoUpdateProfilesTaskTimer?.cancel();
+    await windows?.stopService();
     await clashCore.destroy();
     await globalState.appController.savePreferences();
     await globalState.appController.handleExit();
