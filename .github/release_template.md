@@ -22,7 +22,6 @@
                 <a href="https://github.com/pluralplay/FlClashX/releases/download/vVERSION/FlClashX-android-arm64-v8a.apk"><img src="https://img.shields.io/badge/APK-ARMv8-168039.svg?logo=android"></a><br>
                 <a href="https://github.com/pluralplay/FlClashX/releases/download/vVERSION/FlClashX-android-armeabi-v7a.apk"><img src="https://img.shields.io/badge/APK-ARMv7-45bf55.svg?logo=android"></a><br>
                 <a href="https://github.com/pluralplay/FlClashX/releases/download/vVERSION/FlClashX-android-x86_64.apk"><img src="https://img.shields.io/badge/APK-x64-96ed89.svg?logo=android"></a>
-
             </td>
         </tr>
         <tr>
