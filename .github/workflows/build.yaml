@@ -300,24 +300,11 @@ jobs:
       - name: Patch release.md
         run: |
           version=$(echo "${{ github.ref_name }}" | sed 's/^v//')
-          
-          # Create final release.md with correct order
           if [ "${{ env.IS_STABLE }}" != "true" ]; then
-            echo "⚠️ **This is a pre-release version for testing purposes.**" > release_final.md
-            echo "" >> release_final.md
-            echo "" >> release_final.md
-          else
-            touch release_final.md
+            echo "⚠️ **This is a pre-release version for testing purposes.**" >> release.md
+            echo "" >> release.md
           fi
-          
-          # Add template
-          sed "s|VERSION|$version|g" ./.github/release_template.md >> release_final.md
-          
-          # Add changelog
-          echo "" >> release_final.md
-          cat release.md >> release_final.md
-          
-          mv release_final.md release.md
+          sed "s|VERSION|$version|g" ./.github/release_template.md >> release.md
 
       - name: Generate sha256
         if: env.IS_STABLE == 'true'

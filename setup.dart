@@ -573,7 +573,7 @@ class BuildCommand extends Command {
 
     final createdDmgName = "$appName $version.dmg";
     final createdDmgPath = join(Build.distPath, createdDmgName);
-    final targetDmgName = "$appName-macos-${arch.name}.dmg";
+    final targetDmgName = "$appName-$version-macos-${arch.name}.dmg";
     final targetDmgPath = join(Build.distPath, targetDmgName);
 
     final createdDmg = File(createdDmgPath);
