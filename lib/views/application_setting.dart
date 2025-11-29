@@ -410,8 +410,10 @@ class ApplicationSettingView extends StatelessWidget {
       CloseConnectionsItem(),
       UsageItem(),
       AutoCheckUpdateItem(),
-      const Divider(height: 16),
-      ResetAppItem(),
+      Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: ResetAppItem(),
+      ),
     ];
     return ListView.separated(
       itemBuilder: (_, index) {

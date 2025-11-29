@@ -134,12 +134,12 @@ class CommonCard extends StatelessWidget {
       if (isSelected) {
         return colorScheme.secondaryContainer.opacity80;
       }
-      return colorScheme.surfaceContainer;
+      return colorScheme.surfaceContainer.withValues(alpha: 0.85);
     }
     if (isSelected) {
-      return colorScheme.secondaryContainer;
+      return colorScheme.secondaryContainer.withValues(alpha: 0.85);
     }
-    return colorScheme.surfaceContainerLow;
+    return colorScheme.surfaceContainerLow.withValues(alpha: 0.85);
   }
 
   @override
@@ -247,7 +247,7 @@ class SettingsBlock extends StatelessWidget {
             ),
           ),
           Card(
-            color: context.colorScheme.surfaceContainer,
+            color: context.colorScheme.surfaceContainer.withValues(alpha: 0.85),
             child: Column(
               children: settings,
             ),

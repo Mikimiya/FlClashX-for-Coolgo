@@ -187,7 +187,7 @@ final proxiesActionsStateProvider =
 
 typedef ProxiesActionsStateRef = AutoDisposeProviderRef<ProxiesActionsState>;
 String _$startButtonSelectorStateHash() =>
-    r'537aff93c98b0a689cf8cabd080c610c9c58e611';
+    r'fc1555d326829ce796ef8882a1f797f65d470a6c';
 
 /// See also [startButtonSelectorState].
 @ProviderFor(startButtonSelectorState)
@@ -205,7 +205,7 @@ final startButtonSelectorStateProvider =
 typedef StartButtonSelectorStateRef
     = AutoDisposeProviderRef<StartButtonSelectorState>;
 String _$profilesSelectorStateHash() =>
-    r'aac2deee6e747eceaf62cb5f279ec99ce9227a5a';
+    r'08a0b4d3a9a3168037856b383e8fd9c2229840cb';
 
 /// See also [profilesSelectorState].
 @ProviderFor(profilesSelectorState)
@@ -223,7 +223,7 @@ final profilesSelectorStateProvider =
 typedef ProfilesSelectorStateRef
     = AutoDisposeProviderRef<ProfilesSelectorState>;
 String _$proxiesListSelectorStateHash() =>
-    r'5e6bbe1a0cecbdea6c9c62e6ccf314968deac264';
+    r'91caade26c6fdfd28c8dc173dc9416f3544a1113';
 
 /// See also [proxiesListSelectorState].
 @ProviderFor(proxiesListSelectorState)
@@ -241,7 +241,7 @@ final proxiesListSelectorStateProvider =
 typedef ProxiesListSelectorStateRef
     = AutoDisposeProviderRef<ProxiesListSelectorState>;
 String _$proxiesSelectorStateHash() =>
-    r'4b96e83c09efd17de6caede484e71c904273c9f8';
+    r'7bd67f71ec73cf976c4a2329a82235a5272f7720';
 
 /// See also [proxiesSelectorState].
 @ProviderFor(proxiesSelectorState)
@@ -257,7 +257,7 @@ final proxiesSelectorStateProvider =
 );
 
 typedef ProxiesSelectorStateRef = AutoDisposeProviderRef<ProxiesSelectorState>;
-String _$groupNamesStateHash() => r'd4ba8f2fd72a0db7186ab5d96aa1548bd5a7cdcb';
+String _$groupNamesStateHash() => r'7226345462405908b11d34ccdc05d88ea31238c9';
 
 /// See also [groupNamesState].
 @ProviderFor(groupNamesState)
@@ -273,7 +273,7 @@ final groupNamesStateProvider = AutoDisposeProvider<GroupNamesState>.internal(
 
 typedef GroupNamesStateRef = AutoDisposeProviderRef<GroupNamesState>;
 String _$proxyGroupSelectorStateHash() =>
-    r'27d42af16ed77f2d22017edbb34ab60f45566be3';
+    r'ab32d582cf61e59b0c6cf7325aba559ab47e7aa7';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -446,7 +446,7 @@ final packageListSelectorStateProvider =
 typedef PackageListSelectorStateRef
     = AutoDisposeProviderRef<PackageListSelectorState>;
 String _$moreToolsSelectorStateHash() =>
-    r'd27e3eceec2422ad6b6231cf52b892e63c67e365';
+    r'b4d493dcd8ef574c453c427feaf2a181afc72432';
 
 /// See also [moreToolsSelectorState].
 @ProviderFor(moreToolsSelectorState)
@@ -909,7 +909,7 @@ final unfoldSetProvider = AutoDisposeProvider<Set<String>>.internal(
 );
 
 typedef UnfoldSetRef = AutoDisposeProviderRef<Set<String>>;
-String _$getHotKeyActionHash() => r'4dc74ea7ffb25624ce70c7c8214806f3ef022223';
+String _$getHotKeyActionHash() => r'17d32ae5db419f287235467de2d4238be40d1542';
 
 /// See also [getHotKeyAction].
 @ProviderFor(getHotKeyAction)
@@ -1052,6 +1052,21 @@ final currentProfileProvider = AutoDisposeProvider<Profile?>.internal(
 );
 
 typedef CurrentProfileRef = AutoDisposeProviderRef<Profile?>;
+String _$backgroundUrlHash() => r'13f97b984026adac4ccddacb35f9f9c06b420afc';
+
+/// See also [backgroundUrl].
+@ProviderFor(backgroundUrl)
+final backgroundUrlProvider = AutoDisposeProvider<String?>.internal(
+  backgroundUrl,
+  name: r'backgroundUrlProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$backgroundUrlHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef BackgroundUrlRef = AutoDisposeProviderRef<String?>;
 String _$getProxiesColumnsHash() => r'725066b5fc21f590a4c2656a1fd5e14ab7079079';
 
 /// See also [getProxiesColumns].
@@ -1583,7 +1598,7 @@ class _GetProxyDescProviderElement extends AutoDisposeProviderElement<String>
 }
 
 String _$getProfileOverrideDataHash() =>
-    r'a17ec085f1733b63b123ac08aa7737588c048c5f';
+    r'f1cbade42b110c8f39e6f1d4978ab105e697c401';
 
 /// See also [getProfileOverrideData].
 @ProviderFor(getProfileOverrideData)
@@ -1936,7 +1951,7 @@ final autoSetSystemDnsStateProvider =
 
 typedef AutoSetSystemDnsStateRef = AutoDisposeProviderRef<VM2<bool, bool>>;
 String _$profileOverrideStateHash() =>
-    r'fa26570a355ab39e27b1f93d1d2f358717065592';
+    r'8d01dc59a6aa899d2865536fa45a4acb78aacb4c';
 
 /// See also [ProfileOverrideState].
 @ProviderFor(ProfileOverrideState)

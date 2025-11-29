@@ -35,15 +35,36 @@ var
 begin
   Processes := ['FlClashX.exe', 'FlClashCore.exe', 'FlClashHelperService.exe'];
 
+  // First try graceful shutdown
+  for i := 0 to GetArrayLength(Processes)-1 do
+  begin
+    Exec('taskkill', '/im ' + Processes[i], '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  end;
+  
+  // Wait for processes to terminate gracefully
+  Sleep(1000);
+
+  // Force kill any remaining processes
   for i := 0 to GetArrayLength(Processes)-1 do
   begin
     Exec('taskkill', '/f /im ' + Processes[i], '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
   end;
+  
+  // Give time for cleanup
+  Sleep(1000);
 end;
 
 function InitializeSetup(): Boolean;
+var
+  ResultCode: Integer;
 begin
+  // Stop service if running
+  Exec('sc.exe', 'stop "FlClashHelperService"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Sleep(1000);
+  
+  // Kill all processes
   KillProcesses;
+  
   Result := True;
 end;
 
@@ -63,11 +84,16 @@ begin
   case CurUninstallStep of
     usUninstall:
     begin
+      // Stop service first
+      Exec('sc.exe', 'stop "FlClashHelperService"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+      Sleep(1000);
+      
+      // Kill all processes
       KillProcesses;
       
-      Exec('sc.exe', 'stop "FlClashHelperService"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
-      Sleep(2000);
+      // Delete service
       Exec('sc.exe', 'delete "FlClashHelperService"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+      Sleep(500);
     end;
     
     usPostUninstall:

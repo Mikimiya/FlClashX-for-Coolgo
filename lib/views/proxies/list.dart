@@ -6,6 +6,7 @@ import 'package:flclashx/models/models.dart';
 import 'package:flclashx/providers/app.dart';
 import 'package:flclashx/providers/config.dart';
 import 'package:flclashx/providers/state.dart';
+import 'package:flclashx/state.dart';
 import 'package:flclashx/widgets/widgets.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -231,12 +232,18 @@ class _ProxyGroupCardState extends State<ProxyGroupCard>
     super.dispose();
   }
 
-  void _toggleExpansion() {
+  void _toggleExpansion(Set<String> currentUnfoldSet) {
+    final appController = globalState.appController;
+    final unfoldSet = Set<String>.from(currentUnfoldSet);
+    
     if (_expansibleController.isExpanded) {
       _expansibleController.collapse();
+      unfoldSet.remove(groupName);
     } else {
       _expansibleController.expand();
+      unfoldSet.add(groupName);
     }
+    appController.updateCurrentUnfoldSet(unfoldSet);
   }
 
   Future<void> _delayTest() async {
@@ -291,11 +298,24 @@ class _ProxyGroupCardState extends State<ProxyGroupCard>
   Widget build(BuildContext context) {
     super.build(context);
     final colorScheme = context.colorScheme;
-    return RepaintBoundary(
-      child: Expansible(
-        controller: _expansibleController,
-        headerBuilder: (context, animation) => GestureDetector(
-            onTap: _toggleExpansion,
+    return Consumer(
+      builder: (_, ref, __) {
+        final unfoldSet = ref.watch(unfoldSetProvider);
+        final shouldExpand = unfoldSet.contains(groupName);
+        
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (shouldExpand && !_expansibleController.isExpanded) {
+            _expansibleController.expand();
+          } else if (!shouldExpand && _expansibleController.isExpanded) {
+            _expansibleController.collapse();
+          }
+        });
+        
+        return RepaintBoundary(
+          child: Expansible(
+            controller: _expansibleController,
+            headerBuilder: (context, animation) => GestureDetector(
+            onTap: () => _toggleExpansion(unfoldSet),
             child: Container(
                 decoration: BoxDecoration(
                   color: colorScheme.surfaceContainerLow.opacity80,
@@ -396,7 +416,7 @@ class _ProxyGroupCardState extends State<ProxyGroupCard>
                               width: 4,
                             ),
                           IconButton.filledTonal(
-                            onPressed: _toggleExpansion,
+                            onPressed: () => _toggleExpansion(unfoldSet),
                             icon: CommonExpandIcon(
                               expand: isExpand,
                             ),
@@ -417,7 +437,9 @@ class _ProxyGroupCardState extends State<ProxyGroupCard>
         ),
         expansibleBuilder: (context, header, body, animation) =>
             Column(children: [header, body]),
-      ),
+          ),
+        );
+      },
     );
   }
 

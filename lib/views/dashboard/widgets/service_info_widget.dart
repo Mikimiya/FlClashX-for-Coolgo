@@ -10,46 +10,55 @@ class ServiceInfoWidget extends ConsumerWidget {
   const ServiceInfoWidget({super.key});
 
   Widget _buildLogo(BuildContext context, String? logoUrl) {
+    const logoSize = 44.0;
+    const borderRadius = 8.0;
+    
     if (logoUrl == null || logoUrl.isEmpty) {
       return Icon(
         Icons.contact_mail,
-        size: 28,
+        size: logoSize,
         color: context.colorScheme.primary,
       );
     }
 
     final isSvg = logoUrl.toLowerCase().endsWith('.svg');
 
+    Widget logoWidget;
     if (isSvg) {
-      return SvgPicture.network(
+      logoWidget = SvgPicture.network(
         logoUrl,
-        width: 28,
-        height: 28,
+        width: logoSize,
+        height: logoSize,
         placeholderBuilder: (context) => Icon(
           Icons.contact_mail,
-          size: 28,
+          size: logoSize,
           color: context.colorScheme.primary,
         ),
       );
+    } else {
+      logoWidget = Image.network(
+        logoUrl,
+        width: logoSize,
+        height: logoSize,
+        errorBuilder: (context, error, stackTrace) => Icon(
+            Icons.contact_mail,
+            size: logoSize,
+            color: context.colorScheme.primary,
+          ),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Icon(
+            Icons.contact_mail,
+            size: logoSize,
+            color: context.colorScheme.primary,
+          );
+        },
+      );
     }
 
-    return Image.network(
-      logoUrl,
-      width: 28,
-      height: 28,
-      errorBuilder: (context, error, stackTrace) => Icon(
-          Icons.contact_mail,
-          size: 28,
-          color: context.colorScheme.primary,
-        ),
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return Icon(
-          Icons.contact_mail,
-          size: 28,
-          color: context.colorScheme.primary,
-        );
-      },
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(borderRadius),
+      child: logoWidget,
     );
   }
 

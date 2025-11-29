@@ -50,6 +50,7 @@ class StartButtonSelectorState with _$StartButtonSelectorState {
   const factory StartButtonSelectorState({
     required bool isInit,
     required bool hasProfile,
+    required bool hasProxiesInit,
   }) = _StartButtonSelectorState;
 }
 

@@ -683,6 +683,7 @@ abstract class _VM5<A, B, C, D, E> implements VM5<A, B, C, D, E> {
 mixin _$StartButtonSelectorState {
   bool get isInit => throw _privateConstructorUsedError;
   bool get hasProfile => throw _privateConstructorUsedError;
+  bool get hasProxiesInit => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $StartButtonSelectorStateCopyWith<StartButtonSelectorState> get copyWith =>
@@ -695,7 +696,7 @@ abstract class $StartButtonSelectorStateCopyWith<$Res> {
           $Res Function(StartButtonSelectorState) then) =
       _$StartButtonSelectorStateCopyWithImpl<$Res, StartButtonSelectorState>;
   @useResult
-  $Res call({bool isInit, bool hasProfile});
+  $Res call({bool isInit, bool hasProfile, bool hasProxiesInit});
 }
 
 /// @nodoc
@@ -714,6 +715,7 @@ class _$StartButtonSelectorStateCopyWithImpl<$Res,
   $Res call({
     Object? isInit = null,
     Object? hasProfile = null,
+    Object? hasProxiesInit = null,
   }) {
     return _then(_value.copyWith(
       isInit: null == isInit
@@ -723,6 +725,10 @@ class _$StartButtonSelectorStateCopyWithImpl<$Res,
       hasProfile: null == hasProfile
           ? _value.hasProfile
           : hasProfile // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasProxiesInit: null == hasProxiesInit
+          ? _value.hasProxiesInit
+          : hasProxiesInit // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -737,7 +743,7 @@ abstract class _$$StartButtonSelectorStateImplCopyWith<$Res>
       __$$StartButtonSelectorStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool isInit, bool hasProfile});
+  $Res call({bool isInit, bool hasProfile, bool hasProxiesInit});
 }
 
 /// @nodoc
@@ -755,6 +761,7 @@ class __$$StartButtonSelectorStateImplCopyWithImpl<$Res>
   $Res call({
     Object? isInit = null,
     Object? hasProfile = null,
+    Object? hasProxiesInit = null,
   }) {
     return _then(_$StartButtonSelectorStateImpl(
       isInit: null == isInit
@@ -765,6 +772,10 @@ class __$$StartButtonSelectorStateImplCopyWithImpl<$Res>
           ? _value.hasProfile
           : hasProfile // ignore: cast_nullable_to_non_nullable
               as bool,
+      hasProxiesInit: null == hasProxiesInit
+          ? _value.hasProxiesInit
+          : hasProxiesInit // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -773,16 +784,20 @@ class __$$StartButtonSelectorStateImplCopyWithImpl<$Res>
 
 class _$StartButtonSelectorStateImpl implements _StartButtonSelectorState {
   const _$StartButtonSelectorStateImpl(
-      {required this.isInit, required this.hasProfile});
+      {required this.isInit,
+      required this.hasProfile,
+      required this.hasProxiesInit});
 
   @override
   final bool isInit;
   @override
   final bool hasProfile;
+  @override
+  final bool hasProxiesInit;
 
   @override
   String toString() {
-    return 'StartButtonSelectorState(isInit: $isInit, hasProfile: $hasProfile)';
+    return 'StartButtonSelectorState(isInit: $isInit, hasProfile: $hasProfile, hasProxiesInit: $hasProxiesInit)';
   }
 
   @override
@@ -792,11 +807,14 @@ class _$StartButtonSelectorStateImpl implements _StartButtonSelectorState {
             other is _$StartButtonSelectorStateImpl &&
             (identical(other.isInit, isInit) || other.isInit == isInit) &&
             (identical(other.hasProfile, hasProfile) ||
-                other.hasProfile == hasProfile));
+                other.hasProfile == hasProfile) &&
+            (identical(other.hasProxiesInit, hasProxiesInit) ||
+                other.hasProxiesInit == hasProxiesInit));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isInit, hasProfile);
+  int get hashCode =>
+      Object.hash(runtimeType, isInit, hasProfile, hasProxiesInit);
 
   @JsonKey(ignore: true)
   @override
@@ -809,12 +827,15 @@ class _$StartButtonSelectorStateImpl implements _StartButtonSelectorState {
 abstract class _StartButtonSelectorState implements StartButtonSelectorState {
   const factory _StartButtonSelectorState(
       {required final bool isInit,
-      required final bool hasProfile}) = _$StartButtonSelectorStateImpl;
+      required final bool hasProfile,
+      required final bool hasProxiesInit}) = _$StartButtonSelectorStateImpl;
 
   @override
   bool get isInit;
   @override
   bool get hasProfile;
+  @override
+  bool get hasProxiesInit;
   @override
   @JsonKey(ignore: true)
   _$$StartButtonSelectorStateImplCopyWith<_$StartButtonSelectorStateImpl>

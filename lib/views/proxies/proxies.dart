@@ -2,6 +2,7 @@ import 'package:flclashx/common/common.dart';
 import 'package:flclashx/enum/enum.dart';
 import 'package:flclashx/models/common.dart';
 import 'package:flclashx/providers/providers.dart';
+import 'package:flclashx/state.dart';
 import 'package:flclashx/views/proxies/list.dart';
 import 'package:flclashx/views/proxies/providers.dart';
 import 'package:flclashx/widgets/widgets.dart';
@@ -34,6 +35,32 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
               Icons.adjust,
               weight: 1,
             ),
+          ),
+        if (!_isTab)
+          Consumer(
+            builder: (_, ref, __) {
+              final unfoldSet = ref.watch(unfoldSetProvider);
+              final groupNames = ref.watch(
+                currentGroupsStateProvider.select(
+                  (state) => state.value.map((e) => e.name).toList(),
+                ),
+              );
+              final allExpanded = groupNames.isNotEmpty &&
+                  groupNames.every((name) => unfoldSet.contains(name));
+              return IconButton(
+                onPressed: () {
+                  if (allExpanded) {
+                    globalState.appController.updateCurrentUnfoldSet({});
+                  } else {
+                    globalState.appController
+                        .updateCurrentUnfoldSet(groupNames.toSet());
+                  }
+                },
+                icon: Icon(
+                  allExpanded ? Icons.unfold_less : Icons.unfold_more,
+                ),
+              );
+            },
           ),
         CommonPopupBox(
           targetBuilder: (open) => IconButton(

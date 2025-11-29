@@ -101,13 +101,13 @@ class _StartButtonState extends ConsumerState<StartButton>
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(startButtonSelectorStateProvider);
-    if (!state.isInit || !state.hasProfile) {
+    if (!state.isInit || !state.hasProfile || !state.hasProxiesInit) {
       return Container();
     }
 
     final colorScheme = Theme.of(context).colorScheme;
-    final activeColor = Colors.green.shade600;
-    final inactiveColor = colorScheme.secondaryContainer;
+    final activeColor = Colors.green.shade600.withValues(alpha: 0.9);
+    final inactiveColor = colorScheme.secondaryContainer.withValues(alpha: 0.85);
 
     return Padding(
       padding: const EdgeInsets.all(16.0),

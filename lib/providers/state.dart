@@ -242,9 +242,12 @@ StartButtonSelectorState startButtonSelectorState(Ref ref) {
   final isInit = ref.watch(initProvider);
   final hasProfile =
       ref.watch(profilesProvider.select((state) => state.isNotEmpty));
+  final hasProxiesInit =
+      ref.watch(groupsProvider.select((state) => state.isNotEmpty));
   return StartButtonSelectorState(
     isInit: isInit,
     hasProfile: hasProfile,
+    hasProxiesInit: hasProxiesInit,
   );
 }
 
@@ -448,6 +451,12 @@ Profile? currentProfile(Ref ref) {
   final profileId = ref.watch(currentProfileIdProvider);
   return ref
       .watch(profilesProvider.select((state) => state.getProfile(profileId)));
+}
+
+@riverpod
+String? backgroundUrl(Ref ref) {
+  final profile = ref.watch(currentProfileProvider);
+  return profile?.providerHeaders['flclashx-background'];
 }
 
 @riverpod

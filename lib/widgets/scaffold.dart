@@ -1,15 +1,18 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flclashx/common/common.dart';
 import 'package:flclashx/enum/enum.dart';
 import 'package:flclashx/models/models.dart';
+import 'package:flclashx/providers/providers.dart';
 import 'package:flclashx/state.dart';
 import 'package:flclashx/widgets/fade_box.dart';
 import 'package:flclashx/widgets/pop_scope.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'chip.dart';
 
-class CommonScaffold extends StatefulWidget {
+class CommonScaffold extends ConsumerStatefulWidget {
 
   const CommonScaffold({
     super.key,
@@ -60,10 +63,10 @@ class CommonScaffold extends StatefulWidget {
   final FloatingActionButton? floatingActionButton;
 
   @override
-  State<CommonScaffold> createState() => CommonScaffoldState();
+  ConsumerState<CommonScaffold> createState() => CommonScaffoldState();
 }
 
-class CommonScaffoldState extends State<CommonScaffold> {
+class CommonScaffoldState extends ConsumerState<CommonScaffold> {
   late final ValueNotifier<AppBarState> _appBarState;
   final ValueNotifier<Widget?> _floatingActionButton = ValueNotifier(null);
   final ValueNotifier<List<String>> _keywordsNotifier = ValueNotifier([]);
@@ -321,7 +324,11 @@ class CommonScaffoldState extends State<CommonScaffold> {
     return appBar;
   }
 
-  PreferredSizeWidget _buildAppBar() => PreferredSize(
+  PreferredSizeWidget _buildAppBar() {
+    final backgroundUrl = ref.watch(backgroundUrlProvider);
+    final isTransparent = backgroundUrl != null;
+    
+    return PreferredSize(
       preferredSize: const Size.fromHeight(kToolbarHeight),
       child: Theme(
         data: Theme.of(context).copyWith(
@@ -351,6 +358,8 @@ class CommonScaffoldState extends State<CommonScaffold> {
                   valueListenable: _appBarState,
                   builder: (_, state, __) => _buildAppBarWrap(
                       AppBar(
+                        backgroundColor: isTransparent ? Colors.transparent : null,
+                        elevation: isTransparent ? 0 : null,
                         centerTitle: widget.centerTitle ?? false,
                         automaticallyImplyLeading:
                             widget.automaticallyImplyLeading,
@@ -375,10 +384,47 @@ class CommonScaffoldState extends State<CommonScaffold> {
         ),
       ),
     );
+  }
+
+  Widget _buildBackground(String? backgroundUrl) {
+    if (backgroundUrl == null || backgroundUrl.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Positioned.fill(
+      child: CachedNetworkImage(
+        imageUrl: backgroundUrl,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => const SizedBox.shrink(),
+        errorWidget: (context, url, error) => const SizedBox.shrink(),
+        fadeInDuration: const Duration(milliseconds: 300),
+        fadeOutDuration: const Duration(milliseconds: 300),
+      ),
+    );
+  }
+
+  Widget _buildOverlay(BuildContext context) {
+    return Positioned.fill(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              context.colorScheme.surface.withOpacity(0.92),
+              context.colorScheme.surface.withOpacity(0.88),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     assert(widget.appBar != null || widget.title != null);
+    final backgroundUrl = ref.watch(backgroundUrlProvider);
+    
     final body = SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -422,11 +468,12 @@ class CommonScaffoldState extends State<CommonScaffold> {
         ],
       ),
     );
+    
     final scaffold = Scaffold(
       appBar: _buildAppBar(),
       body: body,
       resizeToAvoidBottomInset: true,
-      backgroundColor: widget.backgroundColor,
+      backgroundColor: backgroundUrl != null ? Colors.transparent : widget.backgroundColor,
       floatingActionButton: widget.floatingActionButton ??
           ValueListenableBuilder<Widget?>(
             valueListenable: _floatingActionButton,
@@ -440,6 +487,17 @@ class CommonScaffoldState extends State<CommonScaffold> {
           ),
       bottomNavigationBar: widget.bottomNavigationBar,
     );
+    
+    final scaffoldWithBackground = backgroundUrl != null
+        ? Stack(
+            children: [
+              _buildBackground(backgroundUrl),
+              _buildOverlay(context),
+              scaffold,
+            ],
+          )
+        : scaffold;
+    
     return _sideNavigationBar != null
         ? Row(
             mainAxisSize: MainAxisSize.min,
@@ -447,11 +505,11 @@ class CommonScaffoldState extends State<CommonScaffold> {
               _sideNavigationBar!,
               Expanded(
                 flex: 1,
-                child: scaffold,
+                child: scaffoldWithBackground,
               ),
             ],
           )
-        : scaffold;
+        : scaffoldWithBackground;
   }
 }
 
