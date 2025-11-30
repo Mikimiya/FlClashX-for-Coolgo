@@ -59,7 +59,6 @@ dependencies:
   defer_pointer: ^0.0.2
   flutter_riverpod: ^2.5.1
   riverpod_annotation: ^2.3.5
-  material_color_utilities: ^0.11.1
   flutter_js:
     git:
       url: https://github.com/chen08209/flutter_js
