@@ -224,8 +224,8 @@
   "otherContributors": "Contributors",
   "autoCloseConnections": "Auto close connections",
   "autoCloseConnectionsDesc": "Auto close connections after change node",
-  "onlyStatisticsProxy": "Only statistics proxy",
-  "onlyStatisticsProxyDesc": "When turned on, only statistics proxy traffic",
+  "onlyStatisticsProxy": "Count only proxy traffic",
+  "onlyStatisticsProxyDesc": "When turned on, only proxy traffic will be counted in statistics",
   "pureBlackMode": "Pure black mode",
   "keepAliveIntervalDesc": "Tcp keep alive interval",
   "entries": " entries",
@@ -448,6 +448,6 @@
   "thanks": "Thanks for contribution",
   "originalRepository": "Original Repository",
   "receiveSubscriptionTitle": "Receive Subscription",
-  "settingsSendDeviceDataTitle": "Send device data",
-  "settingsSendDeviceDataSubtitle": "Help improve the app by sending anonymous data"
+  "settingsSendDeviceDataTitle": "Send HWID",
+  "settingsSendDeviceDataSubtitle": "Send device identifier, app version and device name to proxy provider server"
 }

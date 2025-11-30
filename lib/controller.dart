@@ -168,8 +168,6 @@ class AppController {
 
   void applySubscriptionSettings(Set<String>? settings) {
     try {
-      if (settings == null) return;
-
       final currentSettings = _ref.read(appSettingProvider);
       if (currentSettings.overrideProviderSettings) {
         commonPrint.log(
@@ -177,20 +175,26 @@ class AppController {
         return;
       }
 
+      // If settings is null (header removed), reset to defaults (false)
+      final effectiveSettings = settings ?? {};
+
       _ref.read(appSettingProvider.notifier).updateState((state) => state.copyWith(
-          minimizeOnExit: settings.contains('minimize'),
-          autoLaunch: settings.contains('autorun'),
-          silentLaunch: settings.contains('shadowstart'),
-          autoRun: settings.contains('autostart'),
-          autoCheckUpdate: settings.contains('autoupdate'),
+          minimizeOnExit: effectiveSettings.contains('minimize'),
+          autoLaunch: effectiveSettings.contains('autorun'),
+          silentLaunch: effectiveSettings.contains('shadowstart'),
+          autoRun: effectiveSettings.contains('autostart'),
+          autoCheckUpdate: effectiveSettings.contains('autoupdate'),
         ));
 
-      if (settings.isEmpty) {
+      if (settings == null) {
+        commonPrint.log(
+            "Subscription settings header not present - all controlled settings reset to defaults (disabled)");
+      } else if (effectiveSettings.isEmpty) {
         commonPrint.log(
             "Subscription settings header empty - all controlled settings disabled");
       } else {
         commonPrint
-            .log("Applied subscription settings: ${settings.join(', ')}");
+            .log("Applied subscription settings: ${effectiveSettings.join(', ')}");
       }
     } catch (e) {
       commonPrint.log("Failed to apply subscription settings: $e");
@@ -266,6 +270,9 @@ class AppController {
             .where((s) => s.isNotEmpty)
             .toSet();
         applySubscriptionSettings(settings);
+      } else {
+        // If header is missing, reset settings to defaults
+        applySubscriptionSettings(null);
       }
 
       commonPrint.log(

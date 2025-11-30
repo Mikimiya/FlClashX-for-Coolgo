@@ -30,6 +30,10 @@ on Mobile:
 
 🛠️ Fixed default settings: process search mode on, TUN mode on, system proxy mode off, proxy list display mode set to 'list', changed camera behavior when adding a subscription via QR.
 
+📱 **Android 120Hz Display Support:** Added support for high refresh rate displays (120Hz) on Android devices for smoother animations and scrolling.
+
+🗑️ **Clear Application Data:** Added "Clear Data" button in Application Settings that removes all profiles from the profiles folder. Useful for troubleshooting or resetting the application.
+
 🇷🇺 Added Russian language to the installer and redesigned the localization in the application.
 
 ✈️ Transmit HWID to the panel (Works only with <a href="https://github.com/remnawave/panel">Remnawave</a>).
@@ -88,13 +92,13 @@ Usage:
 |  `type`  | Display mode                  | `list`,`tab`                      |
 |  `sort`  | Sorting type                  | `none`,`delay`,`name`             |
 | `layout` | Layout                        | `loose`,`standard`,`tight`        |
-|  `icon`  | Icon style (for list display) | `none`,`standard`,`icon`          |
+|  `icon`  | Icon style (for list display) | `none`,`icon`          |
 |  `card`  | Card size                     | `expand`,`shrink`,`min`,`oneline` |
 
 Usage:
 
 ```bash
-    flclashx-view: type:list; sort:delay; layout:tight; icon:standard; card:shrink
+    flclashx-view: type:list; sort:delay; layout:tight; icon:icon; card:shrink
 ```
 
 - flclashx-custom: Controls the application of styles for Dashboard and ProxyView.
@@ -134,13 +138,50 @@ Usage:
     flclashx-servicelogo: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/remnawave.svg
 ```
 
-- flclashx-settings: Manage application settings via header (with client-side override option), such as: Minimize on exit, Auto-launch, Silent launch, Auto-start proxy, Auto-check updates. If you don't pass a parameter, it will be disabled.
+- flclashx-background: Sets a custom background image for the application. Provide a direct link to an image.
+
+**Image Recommendations:**
+  - Format: PNG, JPG, or WebP
+  - Resolution: 1920x1080 or higher for desktop, 1080x1920 for mobile
+  - File size: Keep under 2MB for better performance
+  - Content: Use images with subtle patterns or gradients; avoid too bright or busy images
+  - Contrast: Ensure good readability of text over the background
 
 Usage:
 
 ```bash
-    flclashx-settings: minimize, autostart, shadowstart, autorun, autoupdate
+    flclashx-background: https://example.com/background.jpg
 ```
+
+- flclashx-settings: Manage application settings via header (with client-side override option). By default, all parameters are **disabled**. If you pass a parameter, it will be **enabled**. If you don't pass it - it stays **disabled**.
+
+|   Parameter   | Description                                      | Default      |
+| :-----------: | ------------------------------------------------ | :----------: |
+|  `minimize`   | Minimize application on exit instead of closing  | ❌ Disabled  |
+|   `autorun`   | Launch application on system startup             | ❌ Disabled  |
+| `shadowstart` | Launch application minimized to tray             | ❌ Disabled  |
+|  `autostart`  | Automatically start proxy on application launch  | ❌ Disabled  |
+| `autoupdate`  | Automatically check for application updates      | ❌ Disabled  |
+
+**Client-side override:** Users can enable "Override provider settings" in Application Settings to apply their local configuration instead of subscription settings.
+
+Usage:
+
+```bash
+    flclashx-settings: minimize, autorun, shadowstart, autostart, autoupdate
+```
+
+### Configuration Settings Override
+
+By default, the following configuration parameters received from the subscription are **not overridden** by the client:
+
+- `allow-lan` - Allow LAN connections
+- `ipv6` - Enable IPv6 support
+- `find-process-mode` - Process search mode
+- `tun-stack` - TUN mode network stack
+- `mixed-port` - Mixed port for HTTP/SOCKS proxy
+
+**Client-side override:** Users can enable "Override provider settings" or "Override network settings" in Application Settings to apply their local configuration instead of subscription settings. This is useful when you need custom network settings.
 
 ## Application Usage
 
