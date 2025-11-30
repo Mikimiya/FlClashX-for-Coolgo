@@ -319,6 +319,8 @@ class GlobalState {
       final providerIpv6 = rawConfig['ipv6'] as bool? ?? patchConfig.ipv6;
       final providerAllowLan = rawConfig['allow-lan'] as bool? ?? patchConfig.allowLan;
       commonPrint.log("syncNetworkSettingsFromProvider: rawConfig['allow-lan']=${rawConfig['allow-lan']}, providerAllowLan=$providerAllowLan, patchConfig.allowLan=${patchConfig.allowLan}");
+      final providerMixedPort = rawConfig['mixed-port'] as int? ?? patchConfig.mixedPort;
+      commonPrint.log("syncNetworkSettingsFromProvider: rawConfig['mixed-port']=${rawConfig['mixed-port']}, providerMixedPort=$providerMixedPort, patchConfig.mixedPort=${patchConfig.mixedPort}");
       final providerFindProcessModeStr = rawConfig['find-process-mode'] as String?;
       final providerFindProcessMode = providerFindProcessModeStr != null 
           ? FindProcessMode.values.firstWhere(
@@ -339,6 +341,7 @@ class GlobalState {
       return patchConfig.copyWith(
         ipv6: providerIpv6,
         allowLan: providerAllowLan,
+        mixedPort: providerMixedPort,
         findProcessMode: providerFindProcessMode,
       ).copyWith.tun(stack: providerTunStack);
     } catch (e) {
@@ -375,7 +378,6 @@ class GlobalState {
     rawConfig["port"] = 0;
     rawConfig["socks-port"] = 0;
     rawConfig["keep-alive-interval"] = realPatchConfig.keepAliveInterval;
-    rawConfig["mixed-port"] = realPatchConfig.mixedPort;
     rawConfig["port"] = realPatchConfig.port;
     rawConfig["socks-port"] = realPatchConfig.socksPort;
     rawConfig["redir-port"] = realPatchConfig.redirPort;
@@ -388,7 +390,8 @@ class GlobalState {
       rawConfig["find-process-mode"] = realPatchConfig.findProcessMode.name;
       rawConfig["allow-lan"] = realPatchConfig.allowLan;
       rawConfig["ipv6"] = realPatchConfig.ipv6;
-      commonPrint.log("patchRawConfig [OVERRIDE]: allow-lan=${realPatchConfig.allowLan}, ipv6=${realPatchConfig.ipv6}, find-process-mode=${realPatchConfig.findProcessMode.name}");
+      rawConfig["mixed-port"] = realPatchConfig.mixedPort;
+      commonPrint.log("patchRawConfig [OVERRIDE]: allow-lan=${realPatchConfig.allowLan}, ipv6=${realPatchConfig.ipv6}, mixed-port=${realPatchConfig.mixedPort}, find-process-mode=${realPatchConfig.findProcessMode.name}");
     } else {
       // Use provider values - only set if not already in rawConfig, use patchConfig values (which are synced from provider)
       if (rawConfig["find-process-mode"] == null) {
@@ -400,7 +403,10 @@ class GlobalState {
       if (rawConfig["ipv6"] == null) {
         rawConfig["ipv6"] = realPatchConfig.ipv6;
       }
-      commonPrint.log("patchRawConfig [PROVIDER]: allow-lan from rawConfig=${rawConfig['allow-lan']}, realPatchConfig.allowLan=${realPatchConfig.allowLan}");
+      if (rawConfig["mixed-port"] == null) {
+        rawConfig["mixed-port"] = realPatchConfig.mixedPort;
+      }
+      commonPrint.log("patchRawConfig [PROVIDER]: allow-lan from rawConfig=${rawConfig['allow-lan']}, mixed-port from rawConfig=${rawConfig['mixed-port']}, realPatchConfig.allowLan=${realPatchConfig.allowLan}, realPatchConfig.mixedPort=${realPatchConfig.mixedPort}");
     }
     
     if (rawConfig["tun"] == null) {

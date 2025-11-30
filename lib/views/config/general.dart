@@ -221,40 +221,51 @@ class PortItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final mixedPort =
         ref.watch(patchClashConfigProvider.select((state) => state.mixedPort));
-    return ListItem(
-      leading: const Icon(Icons.adjust_outlined),
-      title: Text(appLocalizations.port),
-      subtitle: Text("$mixedPort"),
-      onTap: handleShowPortDialog,
-      // delegate: InputDelegate(
-      //   title: appLocalizations.port,
-      //   value: "$mixedPort",
-      //   validator: (String? value) {
-      //     if (value == null || value.isEmpty) {
-      //       return appLocalizations.emptyTip(appLocalizations.proxyPort);
-      //     }
-      //     final mixedPort = int.tryParse(value);
-      //     if (mixedPort == null) {
-      //       return appLocalizations.numberTip(appLocalizations.proxyPort);
-      //     }
-      //     if (mixedPort < 1024 || mixedPort > 49151) {
-      //       return appLocalizations.proxyPortTip;
-      //     }
-      //     return null;
-      //   },
-      //   onChanged: (String? value) {
-      //     if (value == null) {
-      //       return;
-      //     }
-      //     final mixedPort = int.parse(value);
-      //     ref.read(patchClashConfigProvider.notifier).updateState(
-      //           (state) => state.copyWith(
-      //             mixedPort: mixedPort,
-      //           ),
-      //         );
-      //   },
-      //   resetValue: "$defaultMixedPort",
-      // ),
+    final overrideNetworkSettings = ref.watch(
+      appSettingProvider.select((state) => state.overrideNetworkSettings),
+    );
+    final isEnabled = overrideNetworkSettings;
+    
+    return AbsorbPointer(
+      absorbing: !isEnabled,
+      child: Opacity(
+        opacity: isEnabled ? 1.0 : 0.5,
+        child: ListItem(
+          leading: const Icon(Icons.adjust_outlined),
+          title: Text(appLocalizations.port),
+          subtitle: Text("$mixedPort"),
+          onTap: handleShowPortDialog,
+          // delegate: InputDelegate(
+          //   title: appLocalizations.port,
+          //   value: "$mixedPort",
+          //   validator: (String? value) {
+          //     if (value == null || value.isEmpty) {
+          //       return appLocalizations.emptyTip(appLocalizations.proxyPort);
+          //     }
+          //     final mixedPort = int.tryParse(value);
+          //     if (mixedPort == null) {
+          //       return appLocalizations.numberTip(appLocalizations.proxyPort);
+          //     }
+          //     if (mixedPort < 1024 || mixedPort > 49151) {
+          //       return appLocalizations.proxyPortTip;
+          //     }
+          //     return null;
+          //   },
+          //   onChanged: (String? value) {
+          //     if (value == null) {
+          //       return;
+          //     }
+          //     final mixedPort = int.parse(value);
+          //     ref.read(patchClashConfigProvider.notifier).updateState(
+          //           (state) => state.copyWith(
+          //             mixedPort: mixedPort,
+          //           ),
+          //         );
+          //   },
+          //   resetValue: "$defaultMixedPort",
+          // ),
+        ),
+      ),
     );
   }
 }
