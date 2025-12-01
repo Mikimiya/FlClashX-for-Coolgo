@@ -138,6 +138,20 @@ flclashx-widgets: announce,metainfo,outboundModeV2,networkDetection
     flclashx-servicelogo: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/remnawave.svg
 ```
 
+- flclashx-serverinfo: Название прокси-группы для отображения в виджете ChangeServerButton. Виджет показывает активный сервер из указанной группы с флагом страны, пингом и кнопкой для быстрого переключения.
+
+**Отображаемые элементы:**
+  - Флаг страны (автоматически извлекается из serverDescription или имени прокси)
+  - Название активного сервера
+  - Текущий пинг с цветовой индикацией (зелёный < 600ms, оранжевый >= 600ms, красный - timeout)
+  - Кнопка быстрого перехода на страницу прокси
+
+Использование:
+
+```bash
+    flclashx-serverinfo: Proxy
+```
+
 - flclashx-background: Устанавливает пользовательское фоновое изображение для приложения. Укажите прямую ссылку на изображение.
 
 **Рекомендации для изображения:**

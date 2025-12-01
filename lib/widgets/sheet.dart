@@ -9,7 +9,6 @@ import 'side_sheet.dart';
 
 @immutable
 class SheetProps {
-
   const SheetProps({
     this.maxWidth,
     this.maxHeight,
@@ -26,7 +25,6 @@ class SheetProps {
 
 @immutable
 class ExtendProps {
-
   const ExtendProps({
     this.maxWidth,
     this.useSafeArea = true,
@@ -57,8 +55,8 @@ Future<T?> showSheet<T>({
         isScrollControlled: props.isScrollControlled,
         backgroundColor: Colors.transparent,
         builder: (_) => SafeArea(
-            child: builder(context, SheetType.bottomSheet),
-          ),
+          child: builder(context, SheetType.bottomSheet),
+        ),
         showDragHandle: false,
         useSafeArea: props.useSafeArea,
       ),
@@ -99,7 +97,6 @@ Future<T?> showExtend<T>(
 }
 
 class AdaptiveSheetScaffold extends StatefulWidget {
-
   const AdaptiveSheetScaffold({
     super.key,
     required this.type,
@@ -122,9 +119,11 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
-    final backgroundColor = colorScheme.surface.withOpacity(0.75);
     final bottomSheet = widget.type == SheetType.bottomSheet;
     final sideSheet = widget.type == SheetType.sideSheet;
+    final backgroundColor = sideSheet 
+        ? colorScheme.surface.withOpacity(0.6)
+        : colorScheme.surface.withOpacity(0.85);
     final appBar = AppBar(
       forceMaterialTransparency: bottomSheet ? true : false,
       automaticallyImplyLeading: bottomSheet

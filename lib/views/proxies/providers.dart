@@ -16,9 +16,7 @@ class ProvidersView extends ConsumerStatefulWidget {
 
   const ProvidersView({
     super.key,
-    required this.type,
   });
-  final SheetType type;
 
   @override
   ConsumerState<ProvidersView> createState() => _ProvidersViewState();
@@ -86,8 +84,8 @@ class _ProvidersViewState extends ConsumerState<ProvidersView> {
       title: appLocalizations.ruleProviders,
       items: ruleProviders,
     );
-    return AdaptiveSheetScaffold(
-      disableBackground: false,
+    return CommonScaffold(
+      disableBackground: true,
       actions: [
         IconButton(
           onPressed: _updateProviders,
@@ -96,7 +94,6 @@ class _ProvidersViewState extends ConsumerState<ProvidersView> {
           ),
         )
       ],
-      type: widget.type,
       body: generateListView([
         ...proxySection,
         ...ruleSection,

@@ -272,16 +272,27 @@ jobs:
 
       - name: Generate release.md
         run: |
-          # Add pre-release warning at the top if needed
-          if [ "${{ env.IS_STABLE }}" != "true" ]; then
-            echo "⚠️ **This is a pre-release version for testing purposes.**" > release.md
-            echo "" >> release.md
-            echo "---" >> release.md
-            echo "" >> release.md
+          tags=($(git tag --merged $(git rev-parse HEAD) --sort=-creatordate))
+          
+          # Determine previous tag based on release type
+          if [ "${{ env.IS_STABLE }}" == "true" ]; then
+            # For stable: get latest stable release from API
+            preTag=$(curl --silent "https://api.github.com/repos/pluralplay/FlClashX/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")' || echo "")
+          else
+            # For pre-release: get the latest pre-release tag (last tag with '-' in name before current)
+            preTag=""
+            for tag in "${tags[@]}"; do
+              if [ "$tag" != "${tags[0]}" ] && [[ "$tag" == *-* ]]; then
+                preTag="$tag"
+                break
+              fi
+            done
+            # If no previous pre-release found, use latest stable
+            if [ -z "$preTag" ]; then
+              preTag=$(curl --silent "https://api.github.com/repos/pluralplay/FlClashX/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")' || echo "")
+            fi
           fi
           
-          tags=($(git tag --merged $(git rev-parse HEAD) --sort=-creatordate))
-          preTag=$(curl --silent "https://api.github.com/repos/pluralplay/FlClashX/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")' || echo "")
           currentTag=""
           for ((i = 0; i <= ${#tags[@]}; i++)); do
             if (( i < ${#tags[@]} )); then
@@ -308,7 +319,11 @@ jobs:
       - name: Patch release.md
         run: |
           version=$(echo "${{ github.ref_name }}" | sed 's/^v//')
-          sed "s|VERSION|$version|g" ./.github/release_template.md >> release.md
+          if [ "${{ env.IS_STABLE }}" == "true" ]; then
+            sed "s|VERSION|$version|g" ./.github/release_template.md >> release.md
+          else
+            sed "s|VERSION|$version|g" ./.github/pre_release_template.md >> release.md
+          fi
 
       - name: Generate sha256
         if: env.IS_STABLE == 'true'

@@ -1,17 +1,23 @@
 package com.follow.clashx
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import androidx.appcompat.app.AppCompatDelegate
 import com.follow.clashx.plugins.AppPlugin
 import com.follow.clashx.plugins.ServicePlugin
 import com.follow.clashx.plugins.TilePlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import org.json.JSONObject
 
 class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Apply app theme before creating the activity to fix splash screen theme
+        applyAppTheme()
+        
         super.onCreate(savedInstanceState)
         
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -67,5 +73,36 @@ class MainActivity : FlutterActivity() {
         GlobalState.flutterEngine = null
         GlobalState.runState.value = RunState.STOP
         super.onDestroy()
+    }
+
+    private fun applyAppTheme() {
+        try {
+            val prefs = getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+            val configJson = prefs.getString("flutter.config", null)
+            
+            if (configJson != null) {
+                val config = JSONObject(configJson)
+                val themeProps = config.optJSONObject("themeProps")
+                val themeMode = themeProps?.optString("themeMode", "ThemeMode.system") ?: "ThemeMode.system"
+                
+                when {
+                    themeMode.contains("light", ignoreCase = true) -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                    themeMode.contains("dark", ignoreCase = true) -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    }
+                    else -> {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    }
+                }
+            } else {
+                // Default to system theme if config not found
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+        } catch (e: Exception) {
+            // Fallback to system theme on error
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        }
     }
 }

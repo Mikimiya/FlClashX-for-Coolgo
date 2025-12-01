@@ -138,6 +138,20 @@ Usage:
     flclashx-servicelogo: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/remnawave.svg
 ```
 
+- flclashx-serverinfo: Proxy group name to display in the ChangeServerButton widget. The widget shows the active server from the specified group with country flag, ping, and a quick switch button.
+
+**Displayed elements:**
+  - Country flag (automatically extracted from serverDescription or proxy name)
+  - Active server name
+  - Current ping with color indication (green < 600ms, orange >= 600ms, red - timeout)
+  - Quick navigation button to proxy page
+
+Usage:
+
+```bash
+    flclashx-serverinfo: Proxy
+```
+
 - flclashx-background: Sets a custom background image for the application. Provide a direct link to an image.
 
 **Image Recommendations:**

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flclashx/common/common.dart';
 import 'package:flclashx/providers/providers.dart';
 import 'package:flclashx/state.dart';
@@ -36,23 +37,21 @@ class ServiceInfoWidget extends ConsumerWidget {
         ),
       );
     } else {
-      logoWidget = Image.network(
-        logoUrl,
+      logoWidget = CachedNetworkImage(
+        imageUrl: logoUrl,
         width: logoSize,
         height: logoSize,
-        errorBuilder: (context, error, stackTrace) => Icon(
-            Icons.contact_mail,
-            size: logoSize,
-            color: context.colorScheme.primary,
-          ),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Icon(
-            Icons.contact_mail,
-            size: logoSize,
-            color: context.colorScheme.primary,
-          );
-        },
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Icon(
+          Icons.contact_mail,
+          size: logoSize,
+          color: context.colorScheme.primary,
+        ),
+        errorWidget: (context, url, error) => Icon(
+          Icons.contact_mail,
+          size: logoSize,
+          color: context.colorScheme.primary,
+        ),
       );
     }
 

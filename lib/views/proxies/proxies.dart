@@ -99,9 +99,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
                   onPressed: () {
                     showExtend(
                       context,
-                      builder: (_, type) => ProvidersView(
-                          type: type,
-                        ),
+                      builder: (_, type) => const ProvidersView(),
                     );
                   },
                 ),
@@ -112,12 +110,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
                   onPressed: () {
                     showExtend(
                       context,
-                      builder: (_, type) => AdaptiveSheetScaffold(
-                          disableBackground: false,
-                          type: type,
-                          body: const _IconConfigView(),
-                          title: appLocalizations.iconConfiguration,
-                        ),
+                      builder: (_, type) => const _IconConfigView(),
                     );
                   },
                 ),
@@ -158,9 +151,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
           onPressed: () {
             showExtend(
               context,
-              builder: (_, type) => ProvidersView(
-                  type: type,
-                ),
+              builder: (_, type) => const ProvidersView(),
             );
           },
           icon: const Icon(
@@ -180,12 +171,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
               onPressed: () {
                 showExtend(
                   context,
-                  builder: (_, type) => AdaptiveSheetScaffold(
-                      disableBackground: false,
-                      type: type,
-                      body: const _IconConfigView(),
-                      title: appLocalizations.iconConfiguration,
-                    ),
+                  builder: (_, type) => const _IconConfigView(),
                 );
               },
               icon: const Icon(
@@ -259,34 +245,38 @@ class _IconConfigView extends ConsumerWidget {
     final iconMap = ref.watch(proxiesStyleSettingProvider.select(
       (state) => state.iconMap,
     ));
-    return MapInputPage(
+    return CommonScaffold(
+      disableBackground: true,
       title: appLocalizations.iconConfiguration,
-      map: iconMap,
-      keyLabel: appLocalizations.regExp,
-      valueLabel: appLocalizations.icon,
-      titleBuilder: (item) => Text(item.key),
-      leadingBuilder: (item) => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+      body: MapInputPage(
+        title: appLocalizations.iconConfiguration,
+        map: iconMap,
+        keyLabel: appLocalizations.regExp,
+        valueLabel: appLocalizations.icon,
+        titleBuilder: (item) => Text(item.key),
+        leadingBuilder: (item) => Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: CommonTargetIcon(
+            src: item.value,
+            size: 42,
+          ),
         ),
-        clipBehavior: Clip.antiAlias,
-        child: CommonTargetIcon(
-          src: item.value,
-          size: 42,
+        subtitleBuilder: (item) => Text(
+          item.value,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
+        onChange: (value) {
+          ref.read(proxiesStyleSettingProvider.notifier).updateState(
+                (state) => state.copyWith(
+                  iconMap: value,
+                ),
+              );
+        },
       ),
-      subtitleBuilder: (item) => Text(
-        item.value,
-        maxLines: 2,
-        overflow: TextOverflow.ellipsis,
-      ),
-      onChange: (value) {
-        ref.read(proxiesStyleSettingProvider.notifier).updateState(
-              (state) => state.copyWith(
-                iconMap: value,
-              ),
-            );
-      },
     );
   }
 }

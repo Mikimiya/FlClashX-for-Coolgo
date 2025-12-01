@@ -79,18 +79,18 @@ class ProxiesSetting extends StatelessWidget {
   List<Widget> _buildSortSetting() => generateSection(
       title: appLocalizations.sort,
       items: [
-        SingleChildScrollView(
+        Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          scrollDirection: Axis.horizontal,
           child: Consumer(
             builder: (_, ref, __) {
               final sortType = ref.watch(proxiesStyleSettingProvider.select(
                 (state) => state.sortType,
               ));
-              return Row(
-                mainAxisSize: MainAxisSize.min,
+              return Wrap(
+                spacing: 16,
+                runSpacing: 8,
                 children: [
-                  for (final item in ProxiesSortType.values) ...[
+                  for (final item in ProxiesSortType.values)
                     SettingInfoCard(
                       Info(
                         label: _getStringProxiesSortType(item),
@@ -105,8 +105,6 @@ class ProxiesSetting extends StatelessWidget {
                           ));
                       },
                     ),
-                    if (item != ProxiesSortType.values.last) const SizedBox(width: 16),
-                  ]
                 ],
               );
             },
@@ -118,18 +116,18 @@ class ProxiesSetting extends StatelessWidget {
   List<Widget> _buildSizeSetting() => generateSection(
       title: appLocalizations.size,
       items: [
-        SingleChildScrollView(
+        Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          scrollDirection: Axis.horizontal,
           child: Consumer(
             builder: (_, ref, __) {
               final cardType = ref.watch(proxiesStyleSettingProvider.select(
                 (state) => state.cardType,
               ));
-              return Row(
-                mainAxisSize: MainAxisSize.min,
+              return Wrap(
+                spacing: 16,
+                runSpacing: 8,
                 children: [
-                  for (final item in ProxyCardType.values) ...[
+                  for (final item in ProxyCardType.values)
                     SettingTextCard(
                       Intl.message(item.name),
                       isSelected: item == cardType,
@@ -141,8 +139,6 @@ class ProxiesSetting extends StatelessWidget {
                           ));
                       },
                     ),
-                    if (item != ProxyCardType.values.last) const SizedBox(width: 16),
-                  ]
                 ],
               );
             },
