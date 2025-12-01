@@ -20,7 +20,7 @@ jobs:
             os: windows-latest
             arch: amd64
           - platform: linux
-            os: ubuntu-22.04
+            os: ubuntu-24.04
             arch: amd64
           - platform: macos
             os: macos-latest
@@ -272,6 +272,14 @@ jobs:
 
       - name: Generate release.md
         run: |
+          # Add pre-release warning at the top if needed
+          if [ "${{ env.IS_STABLE }}" != "true" ]; then
+            echo "⚠️ **This is a pre-release version for testing purposes.**" > release.md
+            echo "" >> release.md
+            echo "---" >> release.md
+            echo "" >> release.md
+          fi
+          
           tags=($(git tag --merged $(git rev-parse HEAD) --sort=-creatordate))
           preTag=$(curl --silent "https://api.github.com/repos/pluralplay/FlClashX/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")' || echo "")
           currentTag=""
@@ -300,10 +308,6 @@ jobs:
       - name: Patch release.md
         run: |
           version=$(echo "${{ github.ref_name }}" | sed 's/^v//')
-          if [ "${{ env.IS_STABLE }}" != "true" ]; then
-            echo "⚠️ **This is a pre-release version for testing purposes.**" >> release.md
-            echo "" >> release.md
-          fi
           sed "s|VERSION|$version|g" ./.github/release_template.md >> release.md
 
       - name: Generate sha256
