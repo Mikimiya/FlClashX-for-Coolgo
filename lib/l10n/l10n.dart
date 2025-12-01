@@ -574,9 +574,9 @@ class AppLocalizations {
   /// `Submit`
   String get submit => Intl.message('Submit', name: 'submit', desc: '', args: []);
 
-  /// `Do you want to pass`
+  /// `Adding profile from`
   String get doYouWantToPass => Intl.message(
-      'Do you want to pass',
+      'Adding profile from',
       name: 'doYouWantToPass',
       desc: '',
       args: [],
@@ -2552,10 +2552,26 @@ class AppLocalizations {
       args: [],
     );
 
+  /// `Gratitude`
+  String get gratitude => Intl.message(
+      'Gratitude',
+      name: 'gratitude',
+      desc: '',
+      args: [],
+    );
+
   /// `Original Repository`
   String get originalRepository => Intl.message(
       'Original Repository',
       name: 'originalRepository',
+      desc: '',
+      args: [],
+    );
+
+  /// `Open logs folder`
+  String get openLogsFolder => Intl.message(
+      'Open logs folder',
+      name: 'openLogsFolder',
       desc: '',
       args: [],
     );

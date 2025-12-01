@@ -959,21 +959,18 @@ class AppController {
     linkManager.initAppLinksListen(
       (url) async {
         final res = await globalState.showMessage(
-          title: "${appLocalizations.add}${appLocalizations.profile}",
+          title: "${appLocalizations.add} ${appLocalizations.profile}",
           message: TextSpan(
             children: [
               TextSpan(text: appLocalizations.doYouWantToPass),
               TextSpan(
-                text: " $url ",
+                text: " $url",
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   decoration: TextDecoration.underline,
                   decorationColor: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              TextSpan(
-                  text:
-                      "${appLocalizations.create}${appLocalizations.profile}"),
             ],
           ),
         );

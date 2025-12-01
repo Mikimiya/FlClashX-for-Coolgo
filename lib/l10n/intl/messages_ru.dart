@@ -271,7 +271,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dnsMode": MessageLookupByLibrary.simpleMessage("Режим DNS"),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
-      "Вы хотите пропустить",
+      "Добавляем профиль по адресу",
     ),
     "domain": MessageLookupByLibrary.simpleMessage("Домен"),
     "download": MessageLookupByLibrary.simpleMessage("Загрузка"),
@@ -748,6 +748,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "testUrl": MessageLookupByLibrary.simpleMessage("Тест URL"),
     "textScale": MessageLookupByLibrary.simpleMessage("Масштабирование текста"),
     "thanks": MessageLookupByLibrary.simpleMessage("Спасибо за вклад"),
+    "gratitude": MessageLookupByLibrary.simpleMessage("Благодарность"),
+    "openLogsFolder": MessageLookupByLibrary.simpleMessage("Открыть папку логов"),
     "theme": MessageLookupByLibrary.simpleMessage("Тема"),
     "themeColor": MessageLookupByLibrary.simpleMessage("Цвет темы"),
     "themeDesc": MessageLookupByLibrary.simpleMessage(

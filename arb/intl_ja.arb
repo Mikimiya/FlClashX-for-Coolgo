@@ -98,7 +98,7 @@
   "dark": "ダーク",
   "importFromURL": "URLからインポート",
   "submit": "送信",
-  "doYouWantToPass": "通過させますか？",
+  "doYouWantToPass": "プロファイルを追加中",
   "create": "作成",
   "defaultSort": "デフォルト順",
   "delaySort": "遅延順",
@@ -418,5 +418,10 @@
   "importFile": "ファイルからインポート",
   "importUrl": "URLからインポート",
   "autoSetSystemDns": "オートセットシステムDNS",
-  "changeServer": "サーバーを変更"
+  "changeServer": "サーバーを変更",
+  "support": "サポート",
+  "thanks": "貢献に感謝",
+  "gratitude": "感謝",
+  "originalRepository": "オリジナルリポジトリ",
+  "openLogsFolder": "ログフォルダを開く"
 }

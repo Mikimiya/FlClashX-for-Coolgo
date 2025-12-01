@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 @immutable
 class Contributor {
-
   const Contributor({
     this.avatar,
     required this.name,
@@ -22,7 +21,6 @@ class Contributor {
 
 @immutable
 class ThanksPerson {
-
   const ThanksPerson({
     this.avatar,
     required this.name,
@@ -47,8 +45,42 @@ class AboutView extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildThanksSection(BuildContext context) {
-    const thanks = [
+  List<Widget> _buildThanksForContributionSection(BuildContext context) {
+    const contributors = [
+      Contributor(
+        avatar: "assets/images/avatars/x_kit_.jpg",
+        name: "x_kit_",
+        link: "https://github.com/this-xkit",
+      ),
+      Contributor(
+        avatar: "assets/images/avatars/katsukibtw.jpg",
+        name: "katsukibtw",
+        link: "https://github.com/katsukibtw",
+      ),
+    ];
+    return generateSection(
+      separated: false,
+      title: appLocalizations.thanks,
+      items: [
+        ListItem(
+          title: Wrap(
+            spacing: 16,
+            runSpacing: 12,
+            children: [
+              for (final contributor in contributors)
+                Avatar(
+                  contributor: contributor,
+                  size: 48.0,
+                ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  List<Widget> _buildGratitudeSection(BuildContext context) {
+    const gratitude = [
       ThanksPerson(
         name: "cool_coala",
         avatar: "assets/images/avatars/cool_coala.jpg",
@@ -61,20 +93,16 @@ class AboutView extends StatelessWidget {
         name: "legiz",
         avatar: "assets/images/avatars/legiz.jpg",
       ),
-      ThanksPerson(
-        name: "x_kit_",
-        avatar: "assets/images/avatars/x_kit_.jpg",
-      ),
     ];
     return generateSection(
       separated: false,
-      title: appLocalizations.thanks,
+      title: appLocalizations.gratitude,
       items: [
         ListItem(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              for (final person in thanks)
+              for (final person in gratitude)
                 SizedBox(
                   width: 70,
                   child: ThanksAvatar(
@@ -89,54 +117,54 @@ class AboutView extends StatelessWidget {
   }
 
   List<Widget> _buildMoreSection(BuildContext context) => generateSection(
-      separated: false,
-      title: appLocalizations.more,
-      items: [
-        ListItem(
-          title: Text(appLocalizations.checkUpdate),
-          onTap: () {
-            _checkUpdate(context);
-          },
-          trailing: const Icon(Icons.update),
-        ),
-        ListItem(
-          title: const Text("Telegram"),
-          onTap: () {
-            globalState.openUrl(
-              "https://t.me/FlClashx",
-            );
-          },
-          trailing: const Icon(Icons.insert_link),
-        ),
-        ListItem(
-          title: Text(appLocalizations.project),
-          onTap: () {
-            globalState.openUrl(
-              "https://github.com/$repository",
-            );
-          },
-          trailing: const Icon(Icons.insert_link),
-        ),
-        ListItem(
-          title: Text(appLocalizations.originalRepository),
-          onTap: () {
-            globalState.openUrl(
-              "https://github.com/chen08209/FlClash",
-            );
-          },
-          trailing: const Icon(Icons.insert_link),
-        ),
-        ListItem(
-          title: Text(appLocalizations.core),
-          onTap: () {
-            globalState.openUrl(
-              "https://github.com/chen08209/Clash.Meta/tree/FlClash",
-            );
-          },
-          trailing: const Icon(Icons.insert_link),
-        ),
-      ],
-    );
+        separated: false,
+        title: appLocalizations.more,
+        items: [
+          ListItem(
+            title: Text(appLocalizations.checkUpdate),
+            onTap: () {
+              _checkUpdate(context);
+            },
+            trailing: const Icon(Icons.update),
+          ),
+          ListItem(
+            title: const Text("Telegram"),
+            onTap: () {
+              globalState.openUrl(
+                "https://t.me/FlClashx",
+              );
+            },
+            trailing: const Icon(Icons.insert_link),
+          ),
+          ListItem(
+            title: Text(appLocalizations.project),
+            onTap: () {
+              globalState.openUrl(
+                "https://github.com/$repository",
+              );
+            },
+            trailing: const Icon(Icons.insert_link),
+          ),
+          ListItem(
+            title: Text(appLocalizations.originalRepository),
+            onTap: () {
+              globalState.openUrl(
+                "https://github.com/chen08209/FlClash",
+              );
+            },
+            trailing: const Icon(Icons.insert_link),
+          ),
+          ListItem(
+            title: Text(appLocalizations.core),
+            onTap: () {
+              globalState.openUrl(
+                "https://github.com/chen08209/Clash.Meta/tree/FlClash",
+              );
+            },
+            trailing: const Icon(Icons.insert_link),
+          ),
+        ],
+      );
 
   List<Widget> _buildContributorsSection() {
     const contributors = [
@@ -273,7 +301,8 @@ class AboutView extends StatelessWidget {
         height: 12,
       ),
       ..._buildContributorsSection(),
-      ..._buildThanksSection(context),
+      ..._buildThanksForContributionSection(context),
+      ..._buildGratitudeSection(context),
       ..._buildMoreSection(context),
     ];
     return Padding(
@@ -287,18 +316,19 @@ class AboutView extends StatelessWidget {
 }
 
 class Avatar extends StatelessWidget {
-
   const Avatar({
     super.key,
     required this.contributor,
+    this.size = 56.0,
   });
   final Contributor contributor;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
-    const avatarSize = 56.0;
-    const fontSize = 14.0;
-    const avatarFontSize = 26.0;
+    final avatarSize = size;
+    final fontSize = size * 0.25; // 14.0 for 56px
+    final avatarFontSize = size * 0.46; // 26.0 for 56px
 
     final avatarWidget = Column(
       mainAxisSize: MainAxisSize.min,
@@ -316,7 +346,7 @@ class Avatar extends StatelessWidget {
             child: contributor.avatar == null
                 ? Text(
                     contributor.name[0].toUpperCase(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.white,
                       fontFamily: 'Unbounded',
                       fontSize: avatarFontSize,
@@ -331,7 +361,7 @@ class Avatar extends StatelessWidget {
         ),
         Text(
           contributor.name,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Unbounded',
             fontSize: fontSize,
           ),
@@ -353,7 +383,6 @@ class Avatar extends StatelessWidget {
 }
 
 class ThanksAvatar extends StatelessWidget {
-
   const ThanksAvatar({
     super.key,
     required this.person,
@@ -362,9 +391,9 @@ class ThanksAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const avatarSize = 40.0;
-    const fontSize = 10.0;
-    const avatarFontSize = 18.0;
+    const avatarSize = 36.0;
+    const fontSize = 9.0;
+    const avatarFontSize = 16.0;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -430,7 +459,6 @@ class _CoreVersionWidget extends StatelessWidget {
 }
 
 class _EasterEggDetector extends StatefulWidget {
-
   const _EasterEggDetector({
     required this.child,
     required this.onEasterEgg,
@@ -471,7 +499,7 @@ class _EasterEggDetectorState extends State<_EasterEggDetector> {
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-      onTap: _handleTap,
-      child: widget.child,
-    );
+        onTap: _handleTap,
+        child: widget.child,
+      );
 }

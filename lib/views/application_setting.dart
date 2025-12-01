@@ -7,6 +7,45 @@ import 'package:flclashx/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
+
+class OpenLogsFolderItem extends ConsumerWidget {
+  const OpenLogsFolderItem({super.key});
+
+  Future<void> _openLogsFolder() async {
+    try {
+      final homePath = await appPath.homeDirPath;
+      final logsPath = join(homePath, 'logs');
+      final logsDir = Directory(logsPath);
+      
+      // Create logs directory if it doesn't exist
+      if (!await logsDir.exists()) {
+        await logsDir.create(recursive: true);
+      }
+      
+      // Open the folder based on platform
+      if (Platform.isWindows) {
+        await Process.run('explorer', [logsPath]);
+      } else if (Platform.isMacOS) {
+        await Process.run('open', [logsPath]);
+      } else if (Platform.isLinux) {
+        await Process.run('xdg-open', [logsPath]);
+      }
+    } catch (e) {
+      commonPrint.log('Failed to open logs folder: $e');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListItem(
+      title: Text(appLocalizations.openLogsFolder),
+      leading: const Icon(Icons.folder_open),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+      onTap: _openLogsFolder,
+    );
+  }
+}
 
 class ResetAppItem extends ConsumerWidget {
   const ResetAppItem({super.key});
@@ -412,8 +451,9 @@ class ApplicationSettingView extends StatelessWidget {
       AutoCheckUpdateItem(),
       Padding(
         padding: const EdgeInsets.only(top: 16),
-        child: ResetAppItem(),
+        child: OpenLogsFolderItem(),
       ),
+      ResetAppItem(),
     ];
     return ListView.separated(
       itemBuilder: (_, index) {

@@ -262,7 +262,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dnsMode": MessageLookupByLibrary.simpleMessage("DNS mode"),
     "doYouWantToPass": MessageLookupByLibrary.simpleMessage(
-      "Do you want to pass",
+      "Adding profile from",
     ),
     "domain": MessageLookupByLibrary.simpleMessage("Domain"),
     "download": MessageLookupByLibrary.simpleMessage("Download"),
@@ -717,6 +717,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "testUrl": MessageLookupByLibrary.simpleMessage("Test url"),
     "textScale": MessageLookupByLibrary.simpleMessage("Text Scaling"),
     "thanks": MessageLookupByLibrary.simpleMessage("Thanks for contribution"),
+    "gratitude": MessageLookupByLibrary.simpleMessage("Gratitude"),
+    "openLogsFolder": MessageLookupByLibrary.simpleMessage("Open logs folder"),
     "theme": MessageLookupByLibrary.simpleMessage("Theme"),
     "themeColor": MessageLookupByLibrary.simpleMessage("Theme color"),
     "themeDesc": MessageLookupByLibrary.simpleMessage(

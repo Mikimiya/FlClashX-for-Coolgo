@@ -98,7 +98,7 @@
   "dark": "深色",
   "importFromURL": "从URL导入",
   "submit": "提交",
-  "doYouWantToPass": "是否要通过",
+  "doYouWantToPass": "添加配置文件从",
   "create": "创建",
   "defaultSort": "按默认排序",
   "delaySort": "按延迟排序",
@@ -418,5 +418,10 @@
   "importFile": "通过文件导入",
   "importUrl": "通过URL导入",
   "autoSetSystemDns": "自动设置系统DNS",
-  "changeServer": "切换服务器"
+  "changeServer": "切换服务器",
+  "support": "支持",
+  "thanks": "感谢贡献",
+  "gratitude": "感激",
+  "originalRepository": "原始存储库",
+  "openLogsFolder": "打开日志文件夹"
 }

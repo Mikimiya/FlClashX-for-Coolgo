@@ -103,7 +103,7 @@
   "dark": "Темный",
   "importFromURL": "Импорт из URL",
   "submit": "Отправить",
-  "doYouWantToPass": "Вы хотите пропустить",
+  "doYouWantToPass": "Добавляем профиль по адресу",
   "create": "Создать",
   "defaultSort": "Сортировка по умолчанию",
   "delaySort": "Сортировка по задержке",
@@ -447,7 +447,9 @@
   "sendToTv": "Отправить на ТВ",
   "support": "Поддержка",
   "thanks": "Спасибо за вклад",
+  "gratitude": "Благодарность",
   "originalRepository": "Оригинальный репозиторий",
+  "openLogsFolder": "Открыть папку логов",
   "receiveSubscriptionTitle": "Получение подписки",
   "settingsSendDeviceDataTitle": "Отправлять HWID",
   "settingsSendDeviceDataSubtitle": "Отправлять идентификатор устройства, версию приложения и название устройства на сервер прокси-провайдера"
