@@ -205,6 +205,21 @@ class Build {
     return sha256.convert(await stream.reduce((a, b) => a + b)).toString();
   }
 
+  static Future<String> extractCoreVersion() async {
+    final versionFile =
+        File(join("core", "Clash.Meta", "constant", "version.go"));
+    if (!await versionFile.exists()) {
+      throw "version.go file not found";
+    }
+    final content = await versionFile.readAsString();
+    final versionRegex = RegExp(r'Version\s*=\s*"([^"]+)"');
+    final match = versionRegex.firstMatch(content);
+    if (match == null) {
+      throw "Could not extract version from version.go";
+    }
+    return match.group(1)!;
+  }
+
   static Future<List<String>> buildCore({
     required Mode mode,
     required Target target,
@@ -483,6 +498,7 @@ class BuildCommand extends Command {
   _buildMacosApp({
     required Arch arch,
     required String env,
+    required String coreVersion,
   }) async {
     await Build.exec(
       name: "flutter build macos",
@@ -492,6 +508,7 @@ class BuildCommand extends Command {
         "macos",
         "--release",
         "--dart-define=APP_ENV=$env",
+        "--dart-define=CORE_VERSION=$coreVersion",
       ],
     );
 
@@ -591,6 +608,8 @@ class BuildCommand extends Command {
       return;
     }
 
+    final coreVersion = await Build.extractCoreVersion();
+
     switch (target) {
       case Target.windows:
         final token = target != Target.android
@@ -601,7 +620,7 @@ class BuildCommand extends Command {
           target: target,
           targets: "exe,zip",
           args:
-              " --description $archName --build-dart-define=CORE_SHA256=$token",
+              " --description $archName --build-dart-define=CORE_SHA256=$token --build-dart-define=CORE_VERSION=$coreVersion",
           env: env,
         );
         return;
@@ -621,7 +640,7 @@ class BuildCommand extends Command {
           target: target,
           targets: targets,
           args:
-              " --description $archName --build-target-platform $defaultTarget",
+              " --description $archName --build-target-platform $defaultTarget --build-dart-define=CORE_VERSION=$coreVersion",
           env: env,
         );
         return;
@@ -633,7 +652,8 @@ class BuildCommand extends Command {
         await _buildDistributor(
           target: target,
           targets: "apk",
-          args: ",split-per-abi --build-target-platform $allTargets",
+          args:
+              ",split-per-abi --build-target-platform $allTargets --build-dart-define=CORE_VERSION=$coreVersion",
           env: env,
         );
 
@@ -641,7 +661,8 @@ class BuildCommand extends Command {
         await _buildDistributor(
           target: target,
           targets: "apk",
-          args: " --build-target-platform $allTargets",
+          args:
+              " --build-target-platform $allTargets --build-dart-define=CORE_VERSION=$coreVersion",
           env: env,
         );
 
@@ -651,6 +672,7 @@ class BuildCommand extends Command {
         await _buildMacosApp(
           arch: arch!,
           env: env,
+          coreVersion: coreVersion,
         );
         return;
     }
