@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flclashx/common/common.dart';
 import 'package:flclashx/enum/enum.dart';
 import 'package:flclashx/models/models.dart';
@@ -67,7 +69,7 @@ Future<T?> showSheet<T>({
         constraints: BoxConstraints(
           maxWidth: props.maxWidth ?? 360,
         ),
-        filter: props.blur ? commonFilter : null,
+        filter: (props.blur && !Platform.isAndroid) ? commonFilter : null,
         builder: (_) => builder(context, SheetType.sideSheet),
       ),
   };
@@ -90,7 +92,7 @@ Future<T?> showExtend<T>(
         constraints: BoxConstraints(
           maxWidth: props.maxWidth ?? 360,
         ),
-        filter: props.blur ? commonFilter : null,
+        filter: (props.blur && !Platform.isAndroid) ? commonFilter : null,
         builder: (context) => builder(context, SheetType.sideSheet),
       ),
   };
@@ -122,8 +124,8 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
     final bottomSheet = widget.type == SheetType.bottomSheet;
     final sideSheet = widget.type == SheetType.sideSheet;
     final backgroundColor = sideSheet 
-        ? colorScheme.surface.withOpacity(0.6)
-        : colorScheme.surface.withOpacity(0.85);
+        ? colorScheme.surface.withOpacity(0.92)
+        : colorScheme.surface.withOpacity(0.92);
     final appBar = AppBar(
       forceMaterialTransparency: bottomSheet ? true : false,
       automaticallyImplyLeading: bottomSheet

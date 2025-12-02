@@ -244,21 +244,14 @@ class _CommonPageTransitionState extends State<CommonPageTransition> {
   Widget build(BuildContext context) {
     assert(debugCheckHasDirectionality(context));
     final textDirection = Directionality.of(context);
-    return RepaintBoundary(
+    return SlideTransition(
+      position: _secondaryPositionAnimation,
+      textDirection: textDirection,
+      transformHitTests: false,
       child: SlideTransition(
-        position: _secondaryPositionAnimation,
+        position: _primaryPositionAnimation,
         textDirection: textDirection,
-        transformHitTests: false,
-        child: RepaintBoundary(
-          child: SlideTransition(
-            position: _primaryPositionAnimation,
-            textDirection: textDirection,
-            child: DecoratedBoxTransition(
-              decoration: _primaryShadowAnimation,
-              child: widget.child,
-            ),
-          ),
-        ),
+        child: widget.child,
       ),
     );
   }
