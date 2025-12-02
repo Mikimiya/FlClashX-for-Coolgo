@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flclashx/common/common.dart';
+import 'package:flclashx/enum/enum.dart';
 import 'package:flclashx/providers/providers.dart';
 import 'package:flclashx/state.dart';
 import 'package:flclashx/widgets/widgets.dart';
@@ -9,6 +11,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class ServiceInfoWidget extends ConsumerWidget {
   const ServiceInfoWidget({super.key});
+
+  String? _decodeBase64IfNeeded(String? value) {
+    if (value == null || value.isEmpty) return value;
+    
+    try {
+      final decoded = utf8.decode(base64.decode(value));
+      return decoded;
+    } catch (e) {
+      return value;
+    }
+  }
 
   Widget _buildLogo(BuildContext context, String? logoUrl) {
     const logoSize = 44.0;
@@ -69,9 +82,9 @@ class ServiceInfoWidget extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final serviceName = profile.serviceName;
+    final serviceName = _decodeBase64IfNeeded(profile.serviceName);
     final supportUrl = profile.supportUrl;
-    final logoUrl = profile.providerHeaders['flclashx-servicelogo'];
+    final logoUrl = _decodeBase64IfNeeded(profile.providerHeaders['flclashx-servicelogo']);
 
     if (serviceName == null || serviceName.isEmpty) {
       return const SizedBox.shrink();
@@ -107,6 +120,7 @@ class ServiceInfoWidget extends ConsumerWidget {
                         serviceName,
                         style: context.textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.w600,
+                          fontFamily: FontFamily.twEmoji.value,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
