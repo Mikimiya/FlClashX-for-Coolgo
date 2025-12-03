@@ -29,7 +29,7 @@ def format_release_message(version, commits, release_url, is_stable):
     version_clean = version.lstrip('v')
     
     emoji = "🎉" if is_stable else "🚀"
-    release_type = "СТАБИЛЬНАЯ ВЕРСИЯ" if is_stable else "ПРЕ-РЕЛИЗ"
+    release_type = "FlClashX. СТАБИЛЬНАЯ ВЕРСИЯ В СЕТИ" if is_stable else "FlClashX. ПРЕРЕЛИЗ В СЕТИ"
     
     message = f"{emoji} **{version_clean} В СЕТИ!** {emoji}\n\n"
     message += f"_{release_type}_\n\n"
