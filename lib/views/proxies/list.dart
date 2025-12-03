@@ -65,8 +65,9 @@ class _ProxiesListViewState extends State<ProxiesListView> {
   @override
   void dispose() {
     _headerStateNotifier.dispose();
-    _controller.removeListener(_adjustHeader);
-    _controller.dispose();
+    _controller
+      ..removeListener(_adjustHeader)
+      ..dispose();
     super.dispose();
   }
 
@@ -79,7 +80,7 @@ class _ProxiesListViewState extends State<ProxiesListView> {
     required String query,
   }) {
     final items = <Widget>[];
-    final GroupNameProxiesMap groupNameProxiesMap = {};
+    final groupNameProxiesMap = <String, List<Proxy>>{};
     for (final groupName in groupNames) {
       final group = ref.watch(
         groupsProvider.select(
@@ -89,7 +90,14 @@ class _ProxiesListViewState extends State<ProxiesListView> {
       if (group == null) {
         continue;
       }
-      final chunks = group.all.chunks(columns);
+      final sortedProxies = globalState.appController.getSortProxies(
+        group.all
+            .where((item) => item.name.toLowerCase().contains(query))
+            .toList(),
+        group.testUrl,
+      );
+      groupNameProxiesMap[groupName] = sortedProxies;
+      final chunks = sortedProxies.chunks(columns);
       final rows = chunks
           .map<Widget>((proxies) {
             final children = proxies

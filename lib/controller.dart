@@ -235,10 +235,74 @@ class AppController {
         }
       }
 
+      final hexHeader = headers['flclashx-hex'];
+      if (hexHeader != null && hexHeader.isNotEmpty) {
+        _applyThemeColorFromHex(hexHeader);
+      }
+
       return updatedProfile;
     } catch (e) {
       commonPrint.log("Failed to update profile from headers: $e");
       return profile;
+    }
+  }
+
+  void _applyThemeColorFromHex(String hexHeader) {
+    try {
+      // Формат: FF5733 или FF5733:vibrant
+      final parts = hexHeader.split(':');
+      final hexString = parts[0].trim().replaceAll('#', '');
+      final variantName = parts.length > 1 ? parts[1].trim() : null;
+      
+      if (hexString.length != 6 && hexString.length != 8) {
+        commonPrint.log('Invalid hex color length: $hexString');
+        return;
+      }
+      
+      // Парсим цвет
+      final colorValue = int.parse(
+        hexString.length == 6 ? 'FF$hexString' : hexString,
+        radix: 16,
+      );
+      
+      commonPrint.log('Applying theme from flclashx-hex: #${hexString.toUpperCase()}'
+          '${variantName != null ? ', variant=$variantName' : ''}');
+      
+      _ref.read(themeSettingProvider.notifier).updateState((state) {
+        // Добавляем цвет в палитру, если его там нет
+        final updatedColors = [...state.primaryColors];
+        if (!updatedColors.contains(colorValue)) {
+          updatedColors.add(colorValue);
+        }
+        
+        // Парсим variant если передан
+        DynamicSchemeVariant? newVariant;
+        if (variantName != null) {
+          try {
+            newVariant = DynamicSchemeVariant.values.firstWhere(
+              (v) => v.name.toLowerCase() == variantName.toLowerCase(),
+            );
+            commonPrint.log('Using scheme variant: ${newVariant.name}');
+          } catch (e) {
+            commonPrint.log('Unknown variant: $variantName, using current: ${state.schemeVariant.name}');
+          }
+        }
+        
+        commonPrint.log('Theme updated: primaryColor=#${colorValue.toRadixString(16).toUpperCase()}');
+        
+        return state.copyWith(
+          primaryColor: colorValue,
+          primaryColors: updatedColors,
+          schemeVariant: newVariant ?? state.schemeVariant,
+        );
+      });
+      
+      // Сохраняем изменения
+      savePreferencesDebounce();
+      
+      commonPrint.log('Theme applied successfully');
+    } catch (e) {
+      commonPrint.log('Failed to parse hex color from header: $hexHeader - $e');
     }
   }
 
@@ -271,9 +335,16 @@ class AppController {
   Future<void> updateProfile(Profile profile) async {
     final prefs = await SharedPreferences.getInstance();
     final shouldSend = prefs.getBool('sendDeviceHeaders') ?? true;
-    final newProfile = await profile.update(
+    var newProfile = await profile.update(
       shouldSendHeaders: shouldSend,
     );
+    
+    // Обрабатываем заголовки из профиля
+    if (newProfile.providerHeaders.isNotEmpty) {
+      newProfile = _updateProfileFromHeaders(newProfile);
+      applyProviderHeaders(newProfile.providerHeaders);
+    }
+    
     _ref
         .read(profilesProvider.notifier)
         .setProfile(newProfile.copyWith(isUpdating: false));
@@ -1329,6 +1400,10 @@ class AppController {
             autoLaunch: !state.autoLaunch,
           ),
         );
+  }
+
+  void updateTheme(ThemeProps themeProps) {
+    _ref.read(themeSettingProvider.notifier).updateState((_) => themeProps);
   }
 
   Future<void> updateVisible() async {

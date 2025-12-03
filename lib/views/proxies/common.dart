@@ -30,19 +30,20 @@ Future<void> proxyDelayTest(Proxy proxy, [String? testUrl]) async {
   if (state.proxyName.isEmpty) {
     return;
   }
-  appController.setDelay(
-    Delay(
-      url: url,
-      name: state.proxyName,
-      value: 0,
-    ),
-  );
-  appController.setDelay(
-    await clashCore.getDelay(
-      url,
-      state.proxyName,
-    ),
-  );
+  appController
+    ..setDelay(
+      Delay(
+        url: url,
+        name: state.proxyName,
+        value: 0,
+      ),
+    )
+    ..setDelay(
+      await clashCore.getDelay(
+        url,
+        state.proxyName,
+      ),
+    );
 }
 
 Future<void> delayTest(List<Proxy> proxies, [String? testUrl]) async {
@@ -58,19 +59,20 @@ Future<void> delayTest(List<Proxy> proxies, [String? testUrl]) async {
     if (name.isEmpty) {
       return;
     }
-    appController.setDelay(
-      Delay(
-        url: url,
-        name: name,
-        value: 0,
-      ),
-    );
-    appController.setDelay(
-      await clashCore.getDelay(
-        url,
-        name,
-      ),
-    );
+    appController
+      ..setDelay(
+        Delay(
+          url: url,
+          name: name,
+          value: 0,
+        ),
+      )
+      ..setDelay(
+        await clashCore.getDelay(
+          url,
+          name,
+        ),
+      );
   }).toList();
 
   final batchesDelayProxies = delayProxies.batch(100);

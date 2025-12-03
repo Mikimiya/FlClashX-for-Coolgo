@@ -1,6 +1,7 @@
 import 'package:flclashx/common/common.dart';
 import 'package:flclashx/enum/enum.dart';
 import 'package:flclashx/models/common.dart';
+import 'package:flclashx/models/models.dart';
 import 'package:flclashx/providers/providers.dart';
 import 'package:flclashx/state.dart';
 import 'package:flclashx/views/proxies/list.dart';
@@ -9,6 +10,7 @@ import 'package:flclashx/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'common.dart';
 import 'setting.dart';
 import 'tab.dart';
 
@@ -24,6 +26,25 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
   bool _hasProviders = false;
   bool _isTab = false;
 
+  Future<void> _pingAllGroups() async {
+    final groups = ref.read(currentGroupsStateProvider).value;
+    final allProxies = <Proxy>[];
+    final seenNames = <String>{};
+    
+    for (final group in groups) {
+      for (final proxy in group.all) {
+        if (!seenNames.contains(proxy.name)) {
+          seenNames.add(proxy.name);
+          allProxies.add(proxy);
+        }
+      }
+    }
+    
+    if (allProxies.isNotEmpty) {
+      await delayTest(allProxies, null);
+    }
+  }
+
   @override
   List<Widget> get actions => [
         if (_isTab)
@@ -36,7 +57,13 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
               weight: 1,
             ),
           ),
-        if (!_isTab)
+        if (!_isTab) ...[
+          IconButton(
+            onPressed: _pingAllGroups,
+            icon: const Icon(
+              Icons.network_ping,
+            ),
+          ),
           Consumer(
             builder: (_, ref, __) {
               final unfoldSet = ref.watch(unfoldSetProvider);
@@ -46,7 +73,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
                 ),
               );
               final allExpanded = groupNames.isNotEmpty &&
-                  groupNames.every((name) => unfoldSet.contains(name));
+                  groupNames.every(unfoldSet.contains);
               return IconButton(
                 onPressed: () {
                   if (allExpanded) {
@@ -62,6 +89,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
               );
             },
           ),
+        ],
         CommonPopupBox(
           targetBuilder: (open) => IconButton(
               onPressed: () {
@@ -145,58 +173,6 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
 
   @override
   void initState() {
-    [
-      if (_hasProviders)
-        IconButton(
-          onPressed: () {
-            showExtend(
-              context,
-              builder: (_, type) => const ProvidersView(),
-            );
-          },
-          icon: const Icon(
-            Icons.poll_outlined,
-          ),
-        ),
-      _isTab
-          ? IconButton(
-              onPressed: () {
-                _proxiesTabKey.currentState?.scrollToGroupSelected();
-              },
-              icon: const Icon(
-                Icons.adjust_outlined,
-              ),
-            )
-          : IconButton(
-              onPressed: () {
-                showExtend(
-                  context,
-                  builder: (_, type) => const _IconConfigView(),
-                );
-              },
-              icon: const Icon(
-                Icons.style_outlined,
-              ),
-            ),
-      IconButton(
-        onPressed: () {
-          showSheet(
-            context: context,
-            props: const SheetProps(
-              isScrollControlled: true,
-            ),
-            builder: (_, type) => AdaptiveSheetScaffold(
-                type: type,
-                body: const ProxiesSetting(),
-                title: appLocalizations.settings,
-              ),
-          );
-        },
-        icon: const Icon(
-          Icons.tune,
-        ),
-      )
-    ];
     ref.listenManual(
       proxiesActionsStateProvider,
       fireImmediately: true,
