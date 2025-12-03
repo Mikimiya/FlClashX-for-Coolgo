@@ -69,12 +69,13 @@ object GlobalState {
     fun handleStart(): Boolean {
         if (runState.value == RunState.STOP) {
             runState.value = RunState.PENDING
-            runLock.lock()
-            val tilePlugin = getCurrentTilePlugin()
-            if (tilePlugin != null) {
-                tilePlugin.handleStart()
-            } else {
-                initServiceEngine()
+            runLock.withLock {
+                val tilePlugin = getCurrentTilePlugin()
+                if (tilePlugin != null) {
+                    tilePlugin.handleStart()
+                } else {
+                    initServiceEngine()
+                }
             }
             return true
         }
@@ -84,8 +85,9 @@ object GlobalState {
     fun handleStop() {
         if (runState.value == RunState.START) {
             runState.value = RunState.PENDING
-            runLock.lock()
-            getCurrentTilePlugin()?.handleStop()
+            runLock.withLock {
+                getCurrentTilePlugin()?.handleStop()
+            }
         }
     }
 
