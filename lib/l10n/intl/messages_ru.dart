@@ -125,22 +125,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoRunDesc": MessageLookupByLibrary.simpleMessage(
       "Автоматически запускать прокси при открытии приложения",
     ),
-    "overrideProviderSettings": MessageLookupByLibrary.simpleMessage("Переопределение"),
-    "overrideProviderSettingsDesc": MessageLookupByLibrary.simpleMessage(
-      "Игнорировать настройки от провайдера и управлять вручную",
-    ),
-    "managedByProvider": MessageLookupByLibrary.simpleMessage(
-      "Заблокированными настройками управляет ваш провайдер",
-    ),
-    "overrideNetworkSettings": MessageLookupByLibrary.simpleMessage(
-      "Переопределение сетевых настроек",
-    ),
-    "overrideNetworkSettingsDesc": MessageLookupByLibrary.simpleMessage(
-      "Игнорировать сетевые настройки из конфига провайдера",
-    ),
-    "managedByProviderNetwork": MessageLookupByLibrary.simpleMessage(
-      "Этими параметрами управляет ваш провайдер",
-    ),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage(
       "Автоматическая настройка системного DNS",
     ),
@@ -188,7 +172,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "checking": MessageLookupByLibrary.simpleMessage("Проверка..."),
     "clearData": MessageLookupByLibrary.simpleMessage("Очистить данные"),
-    "clearDataTip": MessageLookupByLibrary.simpleMessage("Это удалит все данные приложения и перезапустит его. Вы уверены?"),
+    "clearDataTip": MessageLookupByLibrary.simpleMessage(
+      "Это удалит все данные приложения и перезапустит его. Вы уверены?",
+    ),
     "clipboardExport": MessageLookupByLibrary.simpleMessage(
       "Экспорт в буфер обмена",
     ),
@@ -353,6 +339,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("Глобальный"),
     "go": MessageLookupByLibrary.simpleMessage("Перейти"),
     "goDownload": MessageLookupByLibrary.simpleMessage("Перейти к загрузке"),
+    "gratitude": MessageLookupByLibrary.simpleMessage("Благодарность"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Сохранить изменения в кэше?",
     ),
@@ -429,6 +416,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Разблокировать Loopback для UWP-приложений",
     ),
     "loose": MessageLookupByLibrary.simpleMessage("Свободный"),
+    "managedByProvider": MessageLookupByLibrary.simpleMessage(
+      "Заблокированными настройками управляет ваш провайдер",
+    ),
+    "managedByProviderNetwork": MessageLookupByLibrary.simpleMessage(
+      "Этими параметрами управляет ваш провайдер",
+    ),
     "memoryInfo": MessageLookupByLibrary.simpleMessage("Информация о памяти"),
     "messageTest": MessageLookupByLibrary.simpleMessage(
       "Тестирование сообщения",
@@ -504,6 +497,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "onlyStatisticsProxyDesc": MessageLookupByLibrary.simpleMessage(
       "Учитывать в статистике только трафик через прокси",
     ),
+    "openLogsFolder": MessageLookupByLibrary.simpleMessage(
+      "Открыть папку логов",
+    ),
     "options": MessageLookupByLibrary.simpleMessage("Опции"),
     "originalRepository": MessageLookupByLibrary.simpleMessage(
       "Оригинальный репозиторий",
@@ -524,8 +520,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "overrideInvalidTip": MessageLookupByLibrary.simpleMessage(
       "В скриптовом режиме не действует",
     ),
+    "overrideNetworkSettings": MessageLookupByLibrary.simpleMessage(
+      "Переопределение сетевых настроек",
+    ),
+    "overrideNetworkSettingsDesc": MessageLookupByLibrary.simpleMessage(
+      "Игнорировать сетевые настройки из конфига провайдера",
+    ),
     "overrideOriginRules": MessageLookupByLibrary.simpleMessage(
       "Переопределить оригинальное правило",
+    ),
+    "overrideProviderSettings": MessageLookupByLibrary.simpleMessage(
+      "Переопределение",
+    ),
+    "overrideProviderSettingsDesc": MessageLookupByLibrary.simpleMessage(
+      "Игнорировать настройки от провайдера и управлять вручную",
     ),
     "palette": MessageLookupByLibrary.simpleMessage("Палитра"),
     "password": MessageLookupByLibrary.simpleMessage("Пароль"),
@@ -658,6 +666,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(
       "DNS-запросы следуют правилам маршрутизации (требуется настройка proxy-server-nameserver)",
     ),
+    "restart": MessageLookupByLibrary.simpleMessage("Перезапустить"),
     "routeAddress": MessageLookupByLibrary.simpleMessage("Адрес маршрутизации"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage(
       "Настройка адреса прослушивания маршрутизации",
@@ -748,8 +757,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "testUrl": MessageLookupByLibrary.simpleMessage("Тест URL"),
     "textScale": MessageLookupByLibrary.simpleMessage("Масштабирование текста"),
     "thanks": MessageLookupByLibrary.simpleMessage("Спасибо за вклад"),
-    "gratitude": MessageLookupByLibrary.simpleMessage("Благодарность"),
-    "openLogsFolder": MessageLookupByLibrary.simpleMessage("Открыть папку логов"),
     "theme": MessageLookupByLibrary.simpleMessage("Тема"),
     "themeColor": MessageLookupByLibrary.simpleMessage("Цвет темы"),
     "themeDesc": MessageLookupByLibrary.simpleMessage(

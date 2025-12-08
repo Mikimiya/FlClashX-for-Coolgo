@@ -13,7 +13,7 @@ class ChangeServerButton extends ConsumerWidget {
 
   String? _decodeBase64IfNeeded(String? value) {
     if (value == null || value.isEmpty) return value;
-    
+
     try {
       final decoded = utf8.decode(base64.decode(value));
       return decoded;
@@ -101,12 +101,11 @@ class ChangeServerButton extends ConsumerWidget {
       ),
     );
 
-    // Пробуем извлечь флаг сначала из name, затем из serverDescription
     var flag = _extractFlag(currentProxy.name);
     if (flag == null && currentProxy.serverDescription != null) {
       flag = _extractFlag(currentProxy.serverDescription!);
     }
-    
+
     final nameWithoutFlag = _removeFlagFromText(currentProxy.name);
 
     return SizedBox(

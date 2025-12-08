@@ -237,6 +237,8 @@ mixin _$Profile {
   bool? get denyWidgetEditing => throw _privateConstructorUsedError;
   Set<String>? get providerSettings => throw _privateConstructorUsedError;
   Map<String, String> get providerHeaders => throw _privateConstructorUsedError;
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  bool get showHwidLimitNotice => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -269,7 +271,9 @@ abstract class $ProfileCopyWith<$Res> {
       @JsonKey(includeToJson: false, includeFromJson: false) bool isUpdating,
       bool? denyWidgetEditing,
       Set<String>? providerSettings,
-      Map<String, String> providerHeaders});
+      Map<String, String> providerHeaders,
+      @JsonKey(includeToJson: false, includeFromJson: false)
+      bool showHwidLimitNotice});
 
   $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo;
   $OverrideDataCopyWith<$Res> get overrideData;
@@ -309,6 +313,7 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
     Object? denyWidgetEditing = freezed,
     Object? providerSettings = freezed,
     Object? providerHeaders = null,
+    Object? showHwidLimitNotice = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -395,6 +400,10 @@ class _$ProfileCopyWithImpl<$Res, $Val extends Profile>
           ? _value.providerHeaders
           : providerHeaders // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
+      showHwidLimitNotice: null == showHwidLimitNotice
+          ? _value.showHwidLimitNotice
+          : showHwidLimitNotice // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 
@@ -447,7 +456,9 @@ abstract class _$$ProfileImplCopyWith<$Res> implements $ProfileCopyWith<$Res> {
       @JsonKey(includeToJson: false, includeFromJson: false) bool isUpdating,
       bool? denyWidgetEditing,
       Set<String>? providerSettings,
-      Map<String, String> providerHeaders});
+      Map<String, String> providerHeaders,
+      @JsonKey(includeToJson: false, includeFromJson: false)
+      bool showHwidLimitNotice});
 
   @override
   $SubscriptionInfoCopyWith<$Res>? get subscriptionInfo;
@@ -487,6 +498,7 @@ class __$$ProfileImplCopyWithImpl<$Res>
     Object? denyWidgetEditing = freezed,
     Object? providerSettings = freezed,
     Object? providerHeaders = null,
+    Object? showHwidLimitNotice = null,
   }) {
     return _then(_$ProfileImpl(
       id: null == id
@@ -573,6 +585,10 @@ class __$$ProfileImplCopyWithImpl<$Res>
           ? _value._providerHeaders
           : providerHeaders // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
+      showHwidLimitNotice: null == showHwidLimitNotice
+          ? _value.showHwidLimitNotice
+          : showHwidLimitNotice // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -602,7 +618,9 @@ class _$ProfileImpl implements _Profile {
       this.isUpdating = false,
       this.denyWidgetEditing,
       final Set<String>? providerSettings,
-      final Map<String, String> providerHeaders = const {}})
+      final Map<String, String> providerHeaders = const {},
+      @JsonKey(includeToJson: false, includeFromJson: false)
+      this.showHwidLimitNotice = false})
       : _selectedMap = selectedMap,
         _unfoldSet = unfoldSet,
         _providerSettings = providerSettings,
@@ -687,8 +705,12 @@ class _$ProfileImpl implements _Profile {
   }
 
   @override
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  final bool showHwidLimitNotice;
+
+  @override
   String toString() {
-    return 'Profile(id: $id, label: $label, currentGroupName: $currentGroupName, announceText: $announceText, supportUrl: $supportUrl, serviceName: $serviceName, dashboardLayout: $dashboardLayout, proxiesView: $proxiesView, customBehavior: $customBehavior, url: $url, lastUpdateDate: $lastUpdateDate, autoUpdateDuration: $autoUpdateDuration, subscriptionInfo: $subscriptionInfo, autoUpdate: $autoUpdate, selectedMap: $selectedMap, unfoldSet: $unfoldSet, overrideData: $overrideData, isUpdating: $isUpdating, denyWidgetEditing: $denyWidgetEditing, providerSettings: $providerSettings, providerHeaders: $providerHeaders)';
+    return 'Profile(id: $id, label: $label, currentGroupName: $currentGroupName, announceText: $announceText, supportUrl: $supportUrl, serviceName: $serviceName, dashboardLayout: $dashboardLayout, proxiesView: $proxiesView, customBehavior: $customBehavior, url: $url, lastUpdateDate: $lastUpdateDate, autoUpdateDuration: $autoUpdateDuration, subscriptionInfo: $subscriptionInfo, autoUpdate: $autoUpdate, selectedMap: $selectedMap, unfoldSet: $unfoldSet, overrideData: $overrideData, isUpdating: $isUpdating, denyWidgetEditing: $denyWidgetEditing, providerSettings: $providerSettings, providerHeaders: $providerHeaders, showHwidLimitNotice: $showHwidLimitNotice)';
   }
 
   @override
@@ -734,7 +756,9 @@ class _$ProfileImpl implements _Profile {
             const DeepCollectionEquality()
                 .equals(other._providerSettings, _providerSettings) &&
             const DeepCollectionEquality()
-                .equals(other._providerHeaders, _providerHeaders));
+                .equals(other._providerHeaders, _providerHeaders) &&
+            (identical(other.showHwidLimitNotice, showHwidLimitNotice) ||
+                other.showHwidLimitNotice == showHwidLimitNotice));
   }
 
   @JsonKey(ignore: true)
@@ -761,7 +785,8 @@ class _$ProfileImpl implements _Profile {
         isUpdating,
         denyWidgetEditing,
         const DeepCollectionEquality().hash(_providerSettings),
-        const DeepCollectionEquality().hash(_providerHeaders)
+        const DeepCollectionEquality().hash(_providerHeaders),
+        showHwidLimitNotice
       ]);
 
   @JsonKey(ignore: true)
@@ -801,7 +826,9 @@ abstract class _Profile implements Profile {
       final bool isUpdating,
       final bool? denyWidgetEditing,
       final Set<String>? providerSettings,
-      final Map<String, String> providerHeaders}) = _$ProfileImpl;
+      final Map<String, String> providerHeaders,
+      @JsonKey(includeToJson: false, includeFromJson: false)
+      final bool showHwidLimitNotice}) = _$ProfileImpl;
 
   factory _Profile.fromJson(Map<String, dynamic> json) = _$ProfileImpl.fromJson;
 
@@ -848,6 +875,9 @@ abstract class _Profile implements Profile {
   Set<String>? get providerSettings;
   @override
   Map<String, String> get providerHeaders;
+  @override
+  @JsonKey(includeToJson: false, includeFromJson: false)
+  bool get showHwidLimitNotice;
   @override
   @JsonKey(ignore: true)
   _$$ProfileImplCopyWith<_$ProfileImpl> get copyWith =>

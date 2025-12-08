@@ -123,6 +123,7 @@
   "port": "ポート",
   "logLevel": "ログレベル",
   "show": "表示",
+  "restart": "再起動",
   "exit": "終了",
   "systemProxy": "システムプロキシ",
   "project": "プロジェクト",

@@ -12,7 +12,6 @@ import 'package:tray_manager/tray_manager.dart';
 import 'package:win32/win32.dart';
 
 class TrayManager extends ConsumerStatefulWidget {
-
   const TrayManager({
     super.key,
     required this.child,
@@ -148,7 +147,9 @@ class _TrayContainerState extends ConsumerState<TrayManager> with TrayListener {
   @override
   void onTrayIconMouseDown() {
     _closeWindowsPopupMenu();
-    window?.show();
+    if (!Platform.isLinux) {
+      window?.show();
+    }
   }
 
   @override

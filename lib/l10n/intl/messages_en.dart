@@ -128,22 +128,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "autoRunDesc": MessageLookupByLibrary.simpleMessage(
       "Auto run when the application is opened",
     ),
-    "overrideProviderSettings": MessageLookupByLibrary.simpleMessage("Override"),
-    "overrideProviderSettingsDesc": MessageLookupByLibrary.simpleMessage(
-      "Ignore provider settings and manage manually",
-    ),
-    "managedByProvider": MessageLookupByLibrary.simpleMessage(
-      "These settings are managed by your provider",
-    ),
-    "overrideNetworkSettings": MessageLookupByLibrary.simpleMessage(
-      "Override network settings",
-    ),
-    "overrideNetworkSettingsDesc": MessageLookupByLibrary.simpleMessage(
-      "Ignore network settings from provider config",
-    ),
-    "managedByProviderNetwork": MessageLookupByLibrary.simpleMessage(
-      "These parameters are managed by your provider",
-    ),
     "autoSetSystemDns": MessageLookupByLibrary.simpleMessage(
       "Auto set system DNS",
     ),
@@ -187,7 +171,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "checking": MessageLookupByLibrary.simpleMessage("Checking..."),
     "clearData": MessageLookupByLibrary.simpleMessage("Clear Data"),
-    "clearDataTip": MessageLookupByLibrary.simpleMessage("This will delete all app data and restart the application. Are you sure?"),
+    "clearDataTip": MessageLookupByLibrary.simpleMessage(
+      "This will delete all app data and restart the application. Are you sure?",
+    ),
     "clipboardExport": MessageLookupByLibrary.simpleMessage("Export clipboard"),
     "clipboardImport": MessageLookupByLibrary.simpleMessage("Clipboard import"),
     "color": MessageLookupByLibrary.simpleMessage("Color"),
@@ -336,6 +322,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "global": MessageLookupByLibrary.simpleMessage("Global"),
     "go": MessageLookupByLibrary.simpleMessage("Go"),
     "goDownload": MessageLookupByLibrary.simpleMessage("Go to download"),
+    "gratitude": MessageLookupByLibrary.simpleMessage("Gratitude"),
     "hasCacheChange": MessageLookupByLibrary.simpleMessage(
       "Do you want to cache the changes?",
     ),
@@ -410,6 +397,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Used for UWP loopback unlocking",
     ),
     "loose": MessageLookupByLibrary.simpleMessage("Loose"),
+    "managedByProvider": MessageLookupByLibrary.simpleMessage(
+      "These settings are managed by your provider",
+    ),
+    "managedByProviderNetwork": MessageLookupByLibrary.simpleMessage(
+      "These parameters are managed by your provider",
+    ),
     "memoryInfo": MessageLookupByLibrary.simpleMessage("Memory info"),
     "messageTest": MessageLookupByLibrary.simpleMessage("Message test"),
     "messageTestTip": MessageLookupByLibrary.simpleMessage(
@@ -474,11 +467,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Only third-party apps",
     ),
     "onlyStatisticsProxy": MessageLookupByLibrary.simpleMessage(
-      "Only statistics proxy",
+      "Count only proxy traffic",
     ),
     "onlyStatisticsProxyDesc": MessageLookupByLibrary.simpleMessage(
-      "When turned on, only statistics proxy traffic",
+      "When turned on, only proxy traffic will be counted in statistics",
     ),
+    "openLogsFolder": MessageLookupByLibrary.simpleMessage("Open logs folder"),
     "options": MessageLookupByLibrary.simpleMessage("Options"),
     "originalRepository": MessageLookupByLibrary.simpleMessage(
       "Original Repository",
@@ -497,8 +491,20 @@ class MessageLookup extends MessageLookupByLibrary {
     "overrideInvalidTip": MessageLookupByLibrary.simpleMessage(
       "Does not take effect in script mode",
     ),
+    "overrideNetworkSettings": MessageLookupByLibrary.simpleMessage(
+      "Override network settings",
+    ),
+    "overrideNetworkSettingsDesc": MessageLookupByLibrary.simpleMessage(
+      "Ignore network settings from provider config",
+    ),
     "overrideOriginRules": MessageLookupByLibrary.simpleMessage(
       "Override the original rule",
+    ),
+    "overrideProviderSettings": MessageLookupByLibrary.simpleMessage(
+      "Override",
+    ),
+    "overrideProviderSettingsDesc": MessageLookupByLibrary.simpleMessage(
+      "Ignore provider settings and manage manually",
     ),
     "palette": MessageLookupByLibrary.simpleMessage("Palette"),
     "password": MessageLookupByLibrary.simpleMessage("Password"),
@@ -625,6 +631,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "respectRulesDesc": MessageLookupByLibrary.simpleMessage(
       "DNS connection following rules, need to configure proxy-server-nameserver",
     ),
+    "restart": MessageLookupByLibrary.simpleMessage("Restart"),
     "routeAddress": MessageLookupByLibrary.simpleMessage("Route address"),
     "routeAddressDesc": MessageLookupByLibrary.simpleMessage(
       "Config listen route address",
@@ -660,10 +667,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "settings": MessageLookupByLibrary.simpleMessage("Settings"),
     "settingsSendDeviceDataSubtitle": MessageLookupByLibrary.simpleMessage(
-      "Help improve the app by sending anonymous data",
+      "Send device identifier, app version and device name to proxy provider server",
     ),
     "settingsSendDeviceDataTitle": MessageLookupByLibrary.simpleMessage(
-      "Send device data",
+      "Send HWID",
     ),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "shrink": MessageLookupByLibrary.simpleMessage("Shrink"),
@@ -717,8 +724,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "testUrl": MessageLookupByLibrary.simpleMessage("Test url"),
     "textScale": MessageLookupByLibrary.simpleMessage("Text Scaling"),
     "thanks": MessageLookupByLibrary.simpleMessage("Thanks for contribution"),
-    "gratitude": MessageLookupByLibrary.simpleMessage("Gratitude"),
-    "openLogsFolder": MessageLookupByLibrary.simpleMessage("Open logs folder"),
     "theme": MessageLookupByLibrary.simpleMessage("Theme"),
     "themeColor": MessageLookupByLibrary.simpleMessage("Theme color"),
     "themeDesc": MessageLookupByLibrary.simpleMessage(

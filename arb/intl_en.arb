@@ -128,6 +128,7 @@
   "port": "Port",
   "logLevel": "LogLevel",
   "show": "Show",
+  "restart": "Restart",
   "exit": "Exit",
   "systemProxy": "System proxy",
   "project": "Project",

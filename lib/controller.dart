@@ -24,7 +24,6 @@ import 'models/models.dart';
 import 'views/profiles/override_profile.dart';
 
 class AppController {
-
   AppController(this.context, WidgetRef ref) : _ref = ref;
   int? lastProfileModified;
   Timer? _profileUpdateTimer;
@@ -178,13 +177,15 @@ class AppController {
       // If settings is null (header removed), reset to defaults (false)
       final effectiveSettings = settings ?? {};
 
-      _ref.read(appSettingProvider.notifier).updateState((state) => state.copyWith(
-          minimizeOnExit: effectiveSettings.contains('minimize'),
-          autoLaunch: effectiveSettings.contains('autorun'),
-          silentLaunch: effectiveSettings.contains('shadowstart'),
-          autoRun: effectiveSettings.contains('autostart'),
-          autoCheckUpdate: effectiveSettings.contains('autoupdate'),
-        ));
+      _ref
+          .read(appSettingProvider.notifier)
+          .updateState((state) => state.copyWith(
+                minimizeOnExit: effectiveSettings.contains('minimize'),
+                autoLaunch: effectiveSettings.contains('autorun'),
+                silentLaunch: effectiveSettings.contains('shadowstart'),
+                autoRun: effectiveSettings.contains('autostart'),
+                autoCheckUpdate: effectiveSettings.contains('autoupdate'),
+              ));
     } catch (e) {
       // Silently ignore subscription settings errors
     }
@@ -249,33 +250,30 @@ class AppController {
 
   void _applyThemeColorFromHex(String hexHeader) {
     try {
-      // Формат: FF5733 или FF5733:vibrant
       final parts = hexHeader.split(':');
       final hexString = parts[0].trim().replaceAll('#', '');
       final variantName = parts.length > 1 ? parts[1].trim() : null;
-      
+
       if (hexString.length != 6 && hexString.length != 8) {
         commonPrint.log('Invalid hex color length: $hexString');
         return;
       }
-      
-      // Парсим цвет
+
       final colorValue = int.parse(
         hexString.length == 6 ? 'FF$hexString' : hexString,
         radix: 16,
       );
-      
-      commonPrint.log('Applying theme from flclashx-hex: #${hexString.toUpperCase()}'
-          '${variantName != null ? ', variant=$variantName' : ''}');
-      
+
+      commonPrint
+          .log('Applying theme from flclashx-hex: #${hexString.toUpperCase()}'
+              '${variantName != null ? ', variant=$variantName' : ''}');
+
       _ref.read(themeSettingProvider.notifier).updateState((state) {
-        // Добавляем цвет в палитру, если его там нет
         final updatedColors = [...state.primaryColors];
         if (!updatedColors.contains(colorValue)) {
           updatedColors.add(colorValue);
         }
-        
-        // Парсим variant если передан
+
         DynamicSchemeVariant? newVariant;
         if (variantName != null) {
           try {
@@ -284,22 +282,23 @@ class AppController {
             );
             commonPrint.log('Using scheme variant: ${newVariant.name}');
           } catch (e) {
-            commonPrint.log('Unknown variant: $variantName, using current: ${state.schemeVariant.name}');
+            commonPrint.log(
+                'Unknown variant: $variantName, using current: ${state.schemeVariant.name}');
           }
         }
-        
-        commonPrint.log('Theme updated: primaryColor=#${colorValue.toRadixString(16).toUpperCase()}');
-        
+
+        commonPrint.log(
+            'Theme updated: primaryColor=#${colorValue.toRadixString(16).toUpperCase()}');
+
         return state.copyWith(
           primaryColor: colorValue,
           primaryColors: updatedColors,
           schemeVariant: newVariant ?? state.schemeVariant,
         );
       });
-      
-      // Сохраняем изменения
+
       savePreferencesDebounce();
-      
+
       commonPrint.log('Theme applied successfully');
     } catch (e) {
       commonPrint.log('Failed to parse hex color from header: $hexHeader - $e');
@@ -338,16 +337,20 @@ class AppController {
     var newProfile = await profile.update(
       shouldSendHeaders: shouldSend,
     );
-    
-    // Обрабатываем заголовки из профиля
+
     if (newProfile.providerHeaders.isNotEmpty) {
       newProfile = _updateProfileFromHeaders(newProfile);
       applyProviderHeaders(newProfile.providerHeaders);
     }
-    
-    _ref
-        .read(profilesProvider.notifier)
-        .setProfile(newProfile.copyWith(isUpdating: false));
+
+    if (newProfile.showHwidLimitNotice &&
+        newProfile.announceText != null &&
+        newProfile.announceText!.isNotEmpty) {
+      _showHwidLimitNotice(newProfile.announceText!, newProfile.supportUrl);
+    }
+
+    _ref.read(profilesProvider.notifier).setProfile(
+        newProfile.copyWith(isUpdating: false, showHwidLimitNotice: false));
 
     if (newProfile.customBehavior == 'update') {
       _applyCustomViewSettings(newProfile);
@@ -358,6 +361,66 @@ class AppController {
       unawaited(_updateGeoFilesAfterProfileUpdate().catchError((e) {
         commonPrint.log("Error updating geo files: $e");
       }));
+    }
+  }
+
+  void _showHwidLimitNotice(String encodedText, String? supportUrl) {
+    String? announceText;
+    var textToDecode = encodedText;
+
+    if (encodedText.startsWith('base64:')) {
+      textToDecode = encodedText.substring(7);
+    }
+
+    try {
+      final normalized = base64.normalize(textToDecode);
+      announceText = utf8.decode(base64.decode(normalized));
+    } catch (e) {
+      announceText = encodedText;
+    }
+
+    if (announceText.isNotEmpty) {
+      final actions = <Widget>[];
+
+      if (supportUrl != null && supportUrl.isNotEmpty) {
+        actions.add(
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              globalState.openUrl(supportUrl);
+            },
+            child: Text(appLocalizations.support),
+          ),
+        );
+      }
+
+      actions.add(
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(appLocalizations.confirm),
+        ),
+      );
+
+      globalState.showCommonDialog(
+        child: CommonDialog(
+          title: appLocalizations.tip,
+          actions: actions,
+          child: Container(
+            width: 300,
+            constraints: const BoxConstraints(maxHeight: 200),
+            child: SingleChildScrollView(
+              child: SelectableText(
+                announceText,
+                style: const TextStyle(
+                  overflow: TextOverflow.visible,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
     }
   }
 
@@ -395,7 +458,8 @@ class AppController {
     }
   }
 
-  String _getMetadataKey(String profileId, String key) => 'geo_metadata_${profileId}_$key';
+  String _getMetadataKey(String profileId, String key) =>
+      'geo_metadata_${profileId}_$key';
 
   Future<Map<String, String>?> _getSavedMetadata(
       String profileId, String key) async {
@@ -555,7 +619,8 @@ class AppController {
         : (List.from(hotKeyActions)..[index] = hotKeyAction);
   }
 
-  List<Group> getCurrentGroups() => _ref.read(currentGroupsStateProvider.select((state) => state.value));
+  List<Group> getCurrentGroups() =>
+      _ref.read(currentGroupsStateProvider.select((state) => state.value));
 
   String getRealTestUrl(String? url) => _ref.read(getRealTestUrlProvider(url));
 
@@ -570,9 +635,11 @@ class AppController {
     return currentGroupName;
   }
 
-  ProxyCardState getProxyCardState(proxyName) => _ref.read(getProxyCardStateProvider(proxyName));
+  ProxyCardState getProxyCardState(proxyName) =>
+      _ref.read(getProxyCardStateProvider(proxyName));
 
-  String? getSelectedProxyName(groupName) => _ref.read(getSelectedProxyNameProvider(groupName));
+  String? getSelectedProxyName(groupName) =>
+      _ref.read(getSelectedProxyNameProvider(groupName));
 
   void updateCurrentGroupName(String groupName) {
     final profile = _ref.read(currentProfileProvider);
@@ -637,16 +704,19 @@ class AppController {
   Future<void> _setupClashConfig() async {
     await _ref.read(currentProfileProvider)?.checkAndUpdate();
     var patchConfig = _ref.read(patchClashConfigProvider);
-    
+
     // Sync network settings from provider config if not overriding
     final appSetting = _ref.read(appSettingProvider);
     if (!appSetting.overrideNetworkSettings) {
-      final syncedConfig = await globalState.syncNetworkSettingsFromProvider(patchConfig);
+      final syncedConfig =
+          await globalState.syncNetworkSettingsFromProvider(patchConfig);
       // Always update provider when using provider settings to ensure UI reflects config
-      _ref.read(patchClashConfigProvider.notifier).updateState((state) => syncedConfig);
+      _ref
+          .read(patchClashConfigProvider.notifier)
+          .updateState((state) => syncedConfig);
       patchConfig = syncedConfig;
     }
-    
+
     final res = await _requestAdmin(patchConfig.tun.enable);
     if (res.isError) {
       return;
@@ -827,27 +897,50 @@ class AppController {
     }
   }
 
+  Future<void> handleRestart() async {
+    commonPrint.log("Starting application restart...");
+
+    if (Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+      final executablePath = Platform.resolvedExecutable;
+      commonPrint.log("Launching new process: $executablePath");
+
+      try {
+        await Process.start(
+          executablePath,
+          [],
+          mode: ProcessStartMode.detached,
+        );
+        commonPrint.log("New process started, exiting old process...");
+      } catch (e) {
+        commonPrint.log("Failed to start new process: $e");
+        return;
+      }
+    }
+
+    system.exit();
+  }
+
   Future handleClear() async {
     try {
       // Stop proxy/VPN first
       await globalState.handleStop();
       commonPrint.log("stopped proxy/VPN");
-      
+
       // Stop core
       await clashCore.shutdown();
       commonPrint.log("shutdown core");
-      
+
       // Wait a bit for all file handles to close
       await Future.delayed(const Duration(milliseconds: 500));
-      
+
       // Clear preferences
       await preferences.clearPreferences();
       commonPrint.log("cleared preferences");
-      
+
       // Get paths
       final homePath = await appPath.homeDirPath;
       final profilesPath = await appPath.profilesPath;
-      
+
       // Delete profiles directory
       final profilesDir = Directory(profilesPath);
       if (await profilesDir.exists()) {
@@ -858,14 +951,14 @@ class AppController {
           commonPrint.log("failed to delete profiles directory: $e");
         }
       }
-      
+
       // Delete cache and temporary files
       final filesToDelete = [
         'cache.db',
         'libCachedImageData.json',
         'FlClashX.lock',
       ];
-      
+
       for (final fileName in filesToDelete) {
         final file = File(join(homePath, fileName));
         if (await file.exists()) {
@@ -877,14 +970,14 @@ class AppController {
           }
         }
       }
-      
+
       // Reset config
       globalState.config = const Config(
         themeProps: defaultThemeProps,
       );
-      
+
       commonPrint.log("handleClear completed");
-      
+
       // Close file logger to release file handles (MUST be last step)
       await fileLogger.dispose();
     } catch (e) {
@@ -1054,33 +1147,34 @@ class AppController {
     );
   }
 
-  Future<bool> showDisclaimer() async => await globalState.showCommonDialog<bool>(
-          dismissible: false,
-          child: CommonDialog(
-            title: appLocalizations.disclaimer,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop<bool>(false);
-                },
-                child: Text(appLocalizations.exit),
-              ),
-              TextButton(
-                onPressed: () {
-                  _ref.read(appSettingProvider.notifier).updateState(
-                        (state) => state.copyWith(disclaimerAccepted: true),
-                      );
-                  Navigator.of(context).pop<bool>(true);
-                },
-                child: Text(appLocalizations.agree),
-              )
-            ],
-            child: SelectableText(
-              appLocalizations.disclaimerDesc,
+  Future<bool> showDisclaimer() async =>
+      await globalState.showCommonDialog<bool>(
+        dismissible: false,
+        child: CommonDialog(
+          title: appLocalizations.disclaimer,
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop<bool>(false);
+              },
+              child: Text(appLocalizations.exit),
             ),
+            TextButton(
+              onPressed: () {
+                _ref.read(appSettingProvider.notifier).updateState(
+                      (state) => state.copyWith(disclaimerAccepted: true),
+                    );
+                Navigator.of(context).pop<bool>(true);
+              },
+              child: Text(appLocalizations.agree),
+            )
+          ],
+          child: SelectableText(
+            appLocalizations.disclaimerDesc,
           ),
-        ) ??
-        false;
+        ),
+      ) ??
+      false;
 
   Future<void> _handlerDisclaimer() async {
     if (_ref.read(appSettingProvider).disclaimerAccepted) {
@@ -1106,8 +1200,7 @@ class AppController {
         () async {
           final prefs = await SharedPreferences.getInstance();
           final shouldSend = prefs.getBool('sendDeviceHeaders') ?? true;
-          return Profile.normal(url: url)
-              .update(shouldSendHeaders: shouldSend);
+          return Profile.normal(url: url).update(shouldSendHeaders: shouldSend);
         },
         title: "${appLocalizations.add}${appLocalizations.profile}",
       );
@@ -1118,7 +1211,8 @@ class AppController {
       }
     } catch (err) {
       commonPrint.log('Add Profile Failed: $err');
-      unawaited(globalState.showMessage(message: TextSpan(text: err.toString())));
+      unawaited(
+          globalState.showMessage(message: TextSpan(text: err.toString())));
     }
   }
 
@@ -1162,50 +1256,52 @@ class AppController {
   }
 
   List<Proxy> _sortOfName(List<Proxy> proxies) => List.of(proxies)
-      ..sort(
-        (a, b) => utils.sortByChar(
-          utils.getPinyin(a.name),
-          utils.getPinyin(b.name),
-        ),
-      );
+    ..sort(
+      (a, b) => utils.sortByChar(
+        utils.getPinyin(a.name),
+        utils.getPinyin(b.name),
+      ),
+    );
 
   List<Proxy> _sortOfDelay({
     required List<Proxy> proxies,
     String? testUrl,
-  }) => List.of(proxies)
-      ..sort(
-        (a, b) {
-          final aDelay = _ref.read(getDelayProvider(
-            proxyName: a.name,
-            testUrl: testUrl,
-          ));
-          final bDelay = _ref.read(
-            getDelayProvider(
-              proxyName: b.name,
+  }) =>
+      List.of(proxies)
+        ..sort(
+          (a, b) {
+            final aDelay = _ref.read(getDelayProvider(
+              proxyName: a.name,
               testUrl: testUrl,
-            ),
-          );
-          if (aDelay == null && bDelay == null) {
-            return 0;
-          }
-          if (aDelay == null || aDelay == -1) {
-            return 1;
-          }
-          if (bDelay == null || bDelay == -1) {
-            return -1;
-          }
-          return aDelay.compareTo(bDelay);
-        },
-      );
+            ));
+            final bDelay = _ref.read(
+              getDelayProvider(
+                proxyName: b.name,
+                testUrl: testUrl,
+              ),
+            );
+            if (aDelay == null && bDelay == null) {
+              return 0;
+            }
+            if (aDelay == null || aDelay == -1) {
+              return 1;
+            }
+            if (bDelay == null || bDelay == -1) {
+              return -1;
+            }
+            return aDelay.compareTo(bDelay);
+          },
+        );
 
-  List<Proxy> getSortProxies(List<Proxy> proxies, [String? url]) => switch (_ref.read(proxiesStyleSettingProvider).sortType) {
-      ProxiesSortType.none => proxies,
-      ProxiesSortType.delay => _sortOfDelay(
-          proxies: proxies,
-          testUrl: url,
-        ),
-      ProxiesSortType.name => _sortOfName(proxies),
-    };
+  List<Proxy> getSortProxies(List<Proxy> proxies, [String? url]) =>
+      switch (_ref.read(proxiesStyleSettingProvider).sortType) {
+        ProxiesSortType.none => proxies,
+        ProxiesSortType.delay => _sortOfDelay(
+            proxies: proxies,
+            testUrl: url,
+          ),
+        ProxiesSortType.name => _sortOfName(proxies),
+      };
 
   Future<Null> clearEffect(String profileId) async {
     final profilePath = await appPath.getProfilePath(profileId);

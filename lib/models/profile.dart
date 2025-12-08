@@ -72,6 +72,9 @@ class Profile with _$Profile {
     bool? denyWidgetEditing,
     Set<String>? providerSettings,
     @Default({}) Map<String, String> providerHeaders,
+    @JsonKey(includeToJson: false, includeFromJson: false)
+    @Default(false)
+    bool showHwidLimitNotice,
   }) = _Profile;
 
   factory Profile.fromJson(Map<String, Object?> json) =>
@@ -241,6 +244,7 @@ extension ProfileExtension on Profile {
 
     final proxiesViewHeader = response.headers.value('flclashx-view');
     final settingsHeader = response.headers.value('flclashx-settings');
+    final hwidLimitHeader = response.headers.value('x-hwid-limit');
     
     final responseData = response.data;
     if (responseData == null) {
@@ -258,6 +262,8 @@ extension ProfileExtension on Profile {
     
     globalState.appController.applySubscriptionSettings(parsedSettings);
 
+    final showHwidLimit = hwidLimitHeader?.toLowerCase() == 'true';
+
     return copyWith(
       label: label ?? utils.getFileNameForDisposition(disposition) ?? id,
       subscriptionInfo: SubscriptionInfo.formHString(userinfo),
@@ -271,6 +277,7 @@ extension ProfileExtension on Profile {
       customBehavior: customBehavior,
       providerSettings: parsedSettings,
       providerHeaders: providerHeaders,
+      showHwidLimitNotice: showHwidLimit,
     ).saveFile(responseData);
   }
 

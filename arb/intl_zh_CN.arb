@@ -123,6 +123,7 @@
   "port": "端口",
   "logLevel": "日志等级",
   "show": "显示",
+  "restart": "重启",
   "exit": "退出",
   "systemProxy": "系统代理",
   "project": "项目",
