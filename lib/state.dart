@@ -584,6 +584,7 @@ class DetectionState {
   bool? _preIsStart;
   Timer? _setTimeoutTimer;
   CancelToken? cancelToken;
+  DateTime? _lastManualCheck;
 
   final state = ValueNotifier<NetworkDetectionState>(
     const NetworkDetectionState(
@@ -601,6 +602,18 @@ class DetectionState {
         milliseconds: 1200,
       ),
     );
+  }
+
+  bool forceCheck() {
+    if (_lastManualCheck != null) {
+      final timeSinceLastCheck = DateTime.now().difference(_lastManualCheck!);
+      if (timeSinceLastCheck.inSeconds < 15) {
+        return false;
+      }
+    }
+    _lastManualCheck = DateTime.now();
+    _checkIp();
+    return true;
   }
 
   Future<void> _checkIp() async {

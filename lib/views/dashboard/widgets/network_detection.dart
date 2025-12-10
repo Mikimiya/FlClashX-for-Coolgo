@@ -33,7 +33,17 @@ class _NetworkDetectionState extends ConsumerState<NetworkDetection> {
           final ipInfo = state.ipInfo;
           final isLoading = state.isLoading;
           return CommonCard(
-            onPressed: () {},
+            onPressed: () {
+              final success = detectionState.forceCheck();
+              if (!success) {
+                globalState.showMessage(
+                  title: appLocalizations.tip,
+                  message: TextSpan(
+                    text: appLocalizations.tooFrequentOperation,
+                  ),
+                );
+              }
+            },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

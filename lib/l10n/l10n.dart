@@ -2689,6 +2689,16 @@ class AppLocalizations {
     );
   }
 
+  /// `Please wait 15 seconds before refreshing again`
+  String get tooFrequentOperation {
+    return Intl.message(
+      'Please wait 15 seconds before refreshing again',
+      name: 'tooFrequentOperation',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Listen`
   String get listen {
     return Intl.message('Listen', name: 'listen', desc: '', args: []);

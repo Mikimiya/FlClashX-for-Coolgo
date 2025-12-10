@@ -736,6 +736,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tip": MessageLookupByLibrary.simpleMessage("tip"),
     "toggle": MessageLookupByLibrary.simpleMessage("Toggle"),
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("TonalSpot"),
+    "tooFrequentOperation": MessageLookupByLibrary.simpleMessage(
+      "Please wait 15 seconds before refreshing again",
+    ),
     "tools": MessageLookupByLibrary.simpleMessage("Settings"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxy Port"),
     "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),

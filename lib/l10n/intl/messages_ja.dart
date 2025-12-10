@@ -540,6 +540,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tip": MessageLookupByLibrary.simpleMessage("ヒント"),
     "toggle": MessageLookupByLibrary.simpleMessage("トグル"),
     "tonalSpotScheme": MessageLookupByLibrary.simpleMessage("トーンスポット"),
+    "tooFrequentOperation": MessageLookupByLibrary.simpleMessage(
+      "再度更新する前に15秒お待ちください",
+    ),
     "tools": MessageLookupByLibrary.simpleMessage("設定"),
     "tproxyPort": MessageLookupByLibrary.simpleMessage("Tproxyポート"),
     "trafficUsage": MessageLookupByLibrary.simpleMessage("トラフィック使用量"),
