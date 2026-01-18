@@ -85,6 +85,7 @@ class TrayState with _$TrayState {
     required Brightness? brightness,
     required List<Group> groups,
     required SelectedMap selectedMap,
+    @Default(true) bool globalModeEnabled,
   }) = _TrayState;
 }
 

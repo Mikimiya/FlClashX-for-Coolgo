@@ -98,7 +98,7 @@ final profilesProvider =
 );
 
 typedef _$Profiles = AutoDisposeNotifier<List<Profile>>;
-String _$currentProfileIdHash() => r'829e95b74952d8e962c7ddc88ee114c82ddbd53e';
+String _$currentProfileIdHash() => r'6a11a2c9c98b102e8cc59bf73828dc20b0356901';
 
 /// See also [CurrentProfileId].
 @ProviderFor(CurrentProfileId)
@@ -210,4 +210,4 @@ final patchClashConfigProvider =
 
 typedef _$PatchClashConfig = AutoDisposeNotifier<ClashConfig>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

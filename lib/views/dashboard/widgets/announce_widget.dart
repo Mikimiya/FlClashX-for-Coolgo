@@ -59,7 +59,7 @@ class AnnounceWidget extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final encodedText = profile.announceText;
+    final encodedText = profile.providerHeaders['announce'];
     String? announceText;
 
     if (encodedText != null && encodedText.isNotEmpty) {

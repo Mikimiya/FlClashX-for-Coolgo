@@ -1,6 +1,5 @@
 import 'package:flclashx/common/common.dart';
 import 'package:flclashx/enum/enum.dart';
-import 'package:flclashx/models/common.dart';
 import 'package:flclashx/models/models.dart';
 import 'package:flclashx/providers/providers.dart';
 import 'package:flclashx/state.dart';
@@ -47,7 +46,14 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
 
   @override
   List<Widget> get actions => [
-        const _ModeSelectorAction(),
+        Consumer(
+          builder: (_, ref, child) {
+            final globalModeEnabled = ref.watch(globalModeEnabledProvider);
+            if (!globalModeEnabled) return const SizedBox.shrink();
+            return child!;
+          },
+          child: const _ModeSelectorAction(),
+        ),
         const SearchOrderMarker(),
         if (_isTab)
           IconButton(

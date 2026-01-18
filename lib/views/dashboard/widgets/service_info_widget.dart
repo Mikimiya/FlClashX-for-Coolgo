@@ -81,10 +81,10 @@ class ServiceInfoWidget extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final serviceName = _decodeBase64IfNeeded(profile.serviceName);
-    final supportUrl = profile.supportUrl;
-    final logoUrl =
-        _decodeBase64IfNeeded(profile.providerHeaders['flclashx-servicelogo']);
+    final headers = profile.providerHeaders;
+    final serviceName = _decodeBase64IfNeeded(headers['flclashx-servicename']);
+    final supportUrl = headers['support-url'];
+    final logoUrl = _decodeBase64IfNeeded(headers['flclashx-servicelogo']);
 
     if (serviceName == null || serviceName.isEmpty) {
       return const SizedBox.shrink();

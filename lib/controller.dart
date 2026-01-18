@@ -21,6 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'common/common.dart';
 import 'models/models.dart';
+import 'plugins/vpn.dart';
 import 'views/profiles/override_profile.dart';
 
 class AppController {
@@ -72,7 +73,60 @@ class AppController {
         proxyName: proxyName,
       );
       await updateGroups();
+      // Update cached server name for foreground notification
+      _updateForegroundServerName(groupName, proxyName);
     }, args: [groupName, proxyName]);
+  }
+  
+  /// Update cached server name in VPN plugin for foreground notification
+  /// Also sends IPC message to service isolate to update selectedMap
+  void _updateForegroundServerName(String groupName, String serverName) {
+    vpn?.updateServerName(serverName);
+    // Send IPC message to service isolate (Android only)
+    clashLib?.sendIpcMessage({
+      'action': 'updateForegroundServer',
+      'groupName': groupName,
+      'serverName': serverName,
+    });
+  }
+  
+  /// Initialize foreground notification cache with current profile and server
+  void initForegroundCache() {
+    final profile = globalState.config.currentProfile;
+    if (profile == null) return;
+    
+    final profileName = profile.label ?? profile.id ?? "FlClashX";
+    
+    // Decode service name from header
+    String serviceName = "";
+    final svc = profile.providerHeaders['flclashx-servicename'];
+    if (svc != null && svc.isNotEmpty) {
+      try {
+        final normalized = base64.normalize(svc);
+        serviceName = utf8.decode(base64.decode(normalized)).trim();
+      } catch (_) {
+        serviceName = svc.trim();
+      }
+    }
+    
+    vpn?.updateProfileInfo(
+      profileName: profileName,
+      serviceName: serviceName,
+    );
+    
+    // Get current server name from selectedMap
+    String? groupName = profile.providerHeaders['flclashx-serverinfo'];
+    if (groupName != null && groupName.isNotEmpty) {
+      String decodedGroupName;
+      try {
+        final normalized = base64.normalize(groupName);
+        decodedGroupName = utf8.decode(base64.decode(normalized)).trim();
+      } catch (_) {
+        decodedGroupName = groupName.trim();
+      }
+      final serverName = profile.selectedMap[decodedGroupName] ?? "";
+      vpn?.updateServerName(serverName);
+    }
   }
 
   Future<void> restartCore() async {
@@ -88,6 +142,8 @@ class AppController {
     await StatusBarManager.updateIcon(isConnected: isStart);
 
     if (isStart) {
+      // Initialize foreground notification cache before starting
+      initForegroundCache();
       await globalState.handleStart([
         updateRunTime,
         updateTraffic,
@@ -191,60 +247,56 @@ class AppController {
     }
   }
 
-  Profile _updateProfileFromHeaders(Profile profile) {
+  void _applyAllHeaderSettings(Profile profile, {required bool isNewProfile}) {
+    final headers = profile.providerHeaders;
+    if (headers.isEmpty) return;
+    
+    final customBehavior = headers['flclashx-custom'];
+    
+    final shouldApply = switch (customBehavior) {
+      'add' => isNewProfile,
+      'update' => true,
+      _ => false,
+    };
+    
+    if (!shouldApply) return;
+    
+    _applyProviderSettings(headers);
+    _applyThemeColor(headers);
+    _applyCustomViewSettings(profile);
+  }
+  
+  void _applyProviderSettings(Map<String, String> headers) {
     try {
-      final headers = profile.providerHeaders;
-      if (headers.isEmpty) return profile;
-
-      var updatedProfile = profile;
-
-      final dashboardHeader = headers['flclashx-widgets'];
-      if (dashboardHeader != null &&
-          dashboardHeader != profile.dashboardLayout) {
-        updatedProfile =
-            updatedProfile.copyWith(dashboardLayout: dashboardHeader);
+      final currentSettings = _ref.read(appSettingProvider);
+      if (currentSettings.overrideProviderSettings) {
+        commonPrint.log(
+            "Override provider settings enabled - ignoring provider settings");
+        return;
       }
 
-      final serviceName = headers['flclashx-servicename'];
-      if (serviceName != null && serviceName != profile.serviceName) {
-        updatedProfile = updatedProfile.copyWith(serviceName: serviceName);
+      final settingsHeader = headers['flclashx-settings'];
+      if (settingsHeader != null) {
+        final settings = settingsHeader
+            .split(',')
+            .map((s) => s.trim().toLowerCase())
+            .where((s) => s.isNotEmpty)
+            .toSet();
+        applySubscriptionSettings(settings);
       }
-
-      final customBehavior = headers['flclashx-custom'];
-      if (customBehavior != null && customBehavior != profile.customBehavior) {
-        updatedProfile =
-            updatedProfile.copyWith(customBehavior: customBehavior);
-      }
-
-      final proxiesView = headers['flclashx-view'];
-      if (proxiesView != null && proxiesView != profile.proxiesView) {
-        updatedProfile = updatedProfile.copyWith(proxiesView: proxiesView);
-      }
-
-      final denyWidgetHeader = headers['flclashx-denywidgets'];
-      if (denyWidgetHeader != null) {
-        bool? denyWidgetValue;
-        if (denyWidgetHeader == 'true') {
-          denyWidgetValue = true;
-        } else if (denyWidgetHeader == 'false') {
-          denyWidgetValue = false;
-        }
-        if (denyWidgetValue != null &&
-            denyWidgetValue != profile.denyWidgetEditing) {
-          updatedProfile =
-              updatedProfile.copyWith(denyWidgetEditing: denyWidgetValue);
-        }
-      }
-
+    } catch (e) {
+      commonPrint.log("Failed to apply provider settings: $e");
+    }
+  }
+  
+  void _applyThemeColor(Map<String, String> headers) {
+    try {
       final hexHeader = headers['flclashx-hex'];
       if (hexHeader != null && hexHeader.isNotEmpty) {
         _applyThemeColorFromHex(hexHeader);
       }
-
-      return updatedProfile;
     } catch (e) {
-      commonPrint.log("Failed to update profile from headers: $e");
-      return profile;
+      commonPrint.log("Failed to apply theme color: $e");
     }
   }
 
@@ -305,56 +357,27 @@ class AppController {
     }
   }
 
-  void applyProviderHeaders(Map<String, String> headers) {
-    try {
-      final currentSettings = _ref.read(appSettingProvider);
-      if (currentSettings.overrideProviderSettings) {
-        commonPrint.log(
-            "Override provider settings enabled - ignoring provider headers");
-        return;
-      }
-
-      final settingsHeader = headers['flclashx-settings'];
-      if (settingsHeader != null) {
-        final settings = settingsHeader
-            .split(',')
-            .map((s) => s.trim().toLowerCase())
-            .where((s) => s.isNotEmpty)
-            .toSet();
-        applySubscriptionSettings(settings);
-      } else {
-        // If header is missing, reset settings to defaults
-        applySubscriptionSettings(null);
-      }
-    } catch (e) {
-      // Silently ignore provider headers errors
-    }
-  }
 
   Future<void> updateProfile(Profile profile) async {
     final prefs = await SharedPreferences.getInstance();
     final shouldSend = prefs.getBool('sendDeviceHeaders') ?? true;
-    var newProfile = await profile.update(
+    final newProfile = await profile.update(
       shouldSendHeaders: shouldSend,
     );
 
-    if (newProfile.providerHeaders.isNotEmpty) {
-      newProfile = _updateProfileFromHeaders(newProfile);
-      applyProviderHeaders(newProfile.providerHeaders);
+    final headers = newProfile.providerHeaders;
+    if (headers.isNotEmpty) {
+      _applyAllHeaderSettings(newProfile, isNewProfile: false);
     }
 
-    if (newProfile.showHwidLimitNotice &&
-        newProfile.announceText != null &&
-        newProfile.announceText!.isNotEmpty) {
-      _showHwidLimitNotice(newProfile.announceText!, newProfile.supportUrl);
+    final showHwidLimit = headers['x-hwid-limit']?.toLowerCase() == 'true';
+    final announceText = headers['announce'];
+    if (showHwidLimit && announceText != null && announceText.isNotEmpty) {
+      _showHwidLimitNotice(announceText, headers['support-url']);
     }
 
     _ref.read(profilesProvider.notifier).setProfile(
-        newProfile.copyWith(isUpdating: false, showHwidLimitNotice: false));
-
-    if (newProfile.customBehavior == 'update') {
-      _applyCustomViewSettings(newProfile);
-    }
+        newProfile.copyWith(isUpdating: false));
 
     if (profile.id == _ref.read(currentProfileIdProvider)) {
       applyProfileDebounce(silence: true);
@@ -777,12 +800,8 @@ class AppController {
       );
 
       if (currentProfile.providerHeaders.isNotEmpty) {
-        currentProfile = _updateProfileFromHeaders(currentProfile);
-        _ref.read(profilesProvider.notifier).setProfile(currentProfile);
-        applyProviderHeaders(currentProfile.providerHeaders);
+        _applyAllHeaderSettings(currentProfile, isNewProfile: false);
       }
-
-      _applyCustomViewSettings(currentProfile);
     }
 
     applyProfile();
@@ -818,6 +837,40 @@ class AppController {
       } catch (e) {
         commonPrint.log(e.toString());
       }
+    }
+  }
+
+  /// Updates subscription info for the current profile on app startup.
+  /// This ensures the subscription info is always up-to-date when the app launches.
+  Future<void> _updateCurrentProfileSubscription() async {
+    try {
+      final currentProfileId = _ref.read(currentProfileIdProvider);
+      commonPrint.log("_updateCurrentProfileSubscription: currentProfileId = $currentProfileId");
+      if (currentProfileId == null) {
+        commonPrint.log("_updateCurrentProfileSubscription: No current profile selected, skipping");
+        return;
+      }
+      
+      final profiles = _ref.read(profilesProvider);
+      commonPrint.log("_updateCurrentProfileSubscription: profiles count = ${profiles.length}");
+      
+      final currentProfile = profiles.where((p) => p.id == currentProfileId).firstOrNull;
+      if (currentProfile == null) {
+        commonPrint.log("_updateCurrentProfileSubscription: Profile not found in list, skipping");
+        return;
+      }
+      
+      if (currentProfile.type == ProfileType.file) {
+        commonPrint.log("_updateCurrentProfileSubscription: Profile is file type, skipping");
+        return;
+      }
+      
+      commonPrint.log("Updating subscription info for current profile '${currentProfile.label}' on startup...");
+      await updateProfile(currentProfile);
+      commonPrint.log("Subscription info updated successfully");
+    } catch (e, stackTrace) {
+      commonPrint.log("Failed to update subscription info on startup: $e");
+      commonPrint.log("Stack trace: $stackTrace");
     }
   }
 
@@ -1093,6 +1146,8 @@ class AppController {
     autoLaunch?.updateStatus(
       _ref.read(appSettingProvider).autoLaunch,
     );
+    // Delay subscription update to ensure network is ready after app initialization
+    Future.delayed(const Duration(seconds: 1), _updateCurrentProfileSubscription);
     autoUpdateProfiles();
     autoCheckUpdate();
     if (!Platform.isMacOS) {
@@ -1220,7 +1275,7 @@ class AppController {
       );
 
       if (profile != null) {
-        _applyCustomViewSettings(profile);
+        _applyAllHeaderSettings(profile, isNewProfile: true);
         await addProfile(profile);
       }
     } catch (err) {
@@ -1349,10 +1404,11 @@ class AppController {
   }
 
   void _applyCustomViewSettings(Profile profile) {
-    if (profile.dashboardLayout != null &&
-        profile.dashboardLayout!.isNotEmpty) {
-      final newLayout =
-          DashboardWidgetParser.parseLayout(profile.dashboardLayout);
+    final headers = profile.providerHeaders;
+    
+    final dashboardLayout = headers['flclashx-widgets'];
+    if (dashboardLayout != null && dashboardLayout.isNotEmpty) {
+      final newLayout = DashboardWidgetParser.parseLayout(dashboardLayout);
       if (newLayout.isNotEmpty) {
         _ref.read(appSettingProvider.notifier).updateState(
               (state) => state.copyWith(dashboardWidgets: newLayout),
@@ -1360,12 +1416,13 @@ class AppController {
       }
     }
 
-    if (profile.proxiesView != null && profile.proxiesView!.isNotEmpty) {
+    final proxiesView = headers['flclashx-view'];
+    if (proxiesView != null && proxiesView.isNotEmpty) {
       final proxiesStyleNotifier =
           _ref.read(proxiesStyleSettingProvider.notifier);
       proxiesStyleNotifier.updateState((currentState) {
         var newState = currentState;
-        final settings = profile.proxiesView!.split(';');
+        final settings = proxiesView.split(';');
         for (final setting in settings) {
           final parts = setting.split(':');
           if (parts.length == 2) {
@@ -1595,7 +1652,7 @@ class AppController {
     final configJson = globalState.config.toJson();
     return Isolate.run<List<int>>(() async {
       final archive = Archive();
-      archive.add("config.json", configJson);
+      archive.addJson("config.json", configJson);
       archive.addDirectoryToArchive(profilesPath, homeDirPath);
       final zipEncoder = ZipEncoder();
       return zipEncoder.encode(archive) ?? [];

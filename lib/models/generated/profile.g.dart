@@ -29,12 +29,6 @@ _$ProfileImpl _$$ProfileImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       label: json['label'] as String?,
       currentGroupName: json['currentGroupName'] as String?,
-      announceText: json['announceText'] as String?,
-      supportUrl: json['supportUrl'] as String?,
-      serviceName: json['serviceName'] as String?,
-      dashboardLayout: json['dashboardLayout'] as String?,
-      proxiesView: json['proxiesView'] as String?,
-      customBehavior: json['customBehavior'] as String?,
       url: json['url'] as String? ?? "",
       lastUpdateDate: json['lastUpdateDate'] == null
           ? null
@@ -57,10 +51,6 @@ _$ProfileImpl _$$ProfileImplFromJson(Map<String, dynamic> json) =>
       overrideData: json['overrideData'] == null
           ? const OverrideData()
           : OverrideData.fromJson(json['overrideData'] as Map<String, dynamic>),
-      denyWidgetEditing: json['denyWidgetEditing'] as bool?,
-      providerSettings: (json['providerSettings'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toSet(),
       providerHeaders: (json['providerHeaders'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, e as String),
           ) ??
@@ -72,12 +62,6 @@ Map<String, dynamic> _$$ProfileImplToJson(_$ProfileImpl instance) =>
       'id': instance.id,
       'label': instance.label,
       'currentGroupName': instance.currentGroupName,
-      'announceText': instance.announceText,
-      'supportUrl': instance.supportUrl,
-      'serviceName': instance.serviceName,
-      'dashboardLayout': instance.dashboardLayout,
-      'proxiesView': instance.proxiesView,
-      'customBehavior': instance.customBehavior,
       'url': instance.url,
       'lastUpdateDate': instance.lastUpdateDate?.toIso8601String(),
       'autoUpdateDuration': instance.autoUpdateDuration.inMicroseconds,
@@ -86,8 +70,6 @@ Map<String, dynamic> _$$ProfileImplToJson(_$ProfileImpl instance) =>
       'selectedMap': instance.selectedMap,
       'unfoldSet': instance.unfoldSet.toList(),
       'overrideData': instance.overrideData,
-      'denyWidgetEditing': instance.denyWidgetEditing,
-      'providerSettings': instance.providerSettings?.toList(),
       'providerHeaders': instance.providerHeaders,
     };
 

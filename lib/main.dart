@@ -32,6 +32,11 @@ Future<void> main() async {
   await globalState.initApp(version);
   await android?.init();
   await window?.init(version);
+  
+  // Initialize VPN plugin on Android to handle method channel calls from VPN service
+  if (Platform.isAndroid) {
+    vpn; // Accessing the getter initializes the singleton
+  }
   HttpOverrides.global = FlClashHttpOverrides();
   runApp(const ProviderScope(
     child: Application(),
@@ -80,10 +85,25 @@ Future<void> _service(List<String> flags) async {
           commonPrint.log("TileService: Showing start notification");
           unawaited(app?.tip(appLocalizations.startVpn));
           
-          // Initialize GeoIP/GeoSite data
-          commonPrint.log("TileService: Initializing GeoIP/GeoSite...");
-          await ClashCore.initGeo();
-          commonPrint.log("TileService: GeoIP/GeoSite initialized");
+          // Initialize GeoIP/GeoSite only if profile enables it (geodata-mode == true)
+          try {
+            final currentProfileId = globalState.config.currentProfileId;
+            if (currentProfileId != null) {
+              final profileConfig = await globalState.getProfileConfig(currentProfileId);
+              final geodataMode = profileConfig["geodata-mode"];
+              if (geodataMode == true) {
+                commonPrint.log("TileService: Initializing GeoIP/GeoSite (geodata-mode=true)...");
+                await ClashCore.initGeo();
+                commonPrint.log("TileService: GeoIP/GeoSite initialized");
+              } else {
+                commonPrint.log("TileService: Skipping Geo init (geodata-mode != true)");
+              }
+            } else {
+              commonPrint.log("TileService: Skipping Geo init (no current profile)");
+            }
+          } catch (e) {
+            commonPrint.log("TileService: Skipping Geo init due to error: $e");
+          }
           
           commonPrint.log("TileService: Getting paths...");
           final homeDirPath = await appPath.homeDirPath;
@@ -157,13 +177,63 @@ Future<void> _service(List<String> flags) async {
     ),
   );
 
-  commonPrint.log("[DART] Setting up VPN foreground params handler");
+  // Provide foreground notification params using data from globalState.config
+  // This runs in service isolate, so we read from the in-memory config (loaded at service start)
   vpn?.handleGetStartForegroundParams = () {
-    final traffic = clashLibHandler.getTraffic();
-    return json.encode({
-      "title": clashLibHandler.getCurrentProfileName(),
-      "content": "$traffic"
-    });
+    try {
+      final traffic = clashLibHandler.getTraffic();
+      final profile = globalState.config.currentProfile;
+      final profileName = profile?.label ?? profile?.id ?? "FlClashX";
+
+      // Get server group name from header (may be base64-encoded)
+      String? groupName = profile?.providerHeaders['flclashx-serverinfo'];
+      if (groupName != null && groupName.isNotEmpty) {
+        try {
+          final normalized = base64.normalize(groupName);
+          groupName = utf8.decode(base64.decode(normalized));
+        } catch (_) {
+          // not base64, keep as is
+        }
+        groupName = groupName?.trim();
+      }
+
+      // Get selected proxy name from selectedMap
+      String serverName = "";
+      if (groupName != null && groupName.isNotEmpty) {
+        final selectedMap = profile?.selectedMap ?? const <String, String>{};
+        serverName = selectedMap[groupName] ?? "";
+      }
+
+      // Build title using active server (keep flags/emojis)
+      final serverDisplay = serverName.trim();
+      final title = serverDisplay.isNotEmpty ? "$profileName / $serverDisplay" : profileName;
+
+      // Service name (subtext) from header flclashx-servicename (constant per profile)
+      String serviceName = "";
+      try {
+        String? svc = profile?.providerHeaders['flclashx-servicename'];
+        if (svc != null && svc.isNotEmpty) {
+          try {
+            final normalized = base64.normalize(svc);
+            svc = utf8.decode(base64.decode(normalized));
+          } catch (_) {}
+          serviceName = svc?.trim() ?? "";
+        }
+      } catch (_) {}
+
+      return json.encode({
+        "title": title,
+        "server": serviceName,
+        "content": "$traffic"
+      });
+    } catch (_) {
+      // Fallback minimal
+      return json.encode({
+        "title": "FlClashX",
+        "server": "",
+        "content": ""
+      });
+    }
   };
 
   commonPrint.log("[DART] Adding VPN listener");
@@ -201,6 +271,28 @@ void _handleMainIpc(ClashLibHandler clashLibHandler) {
   }
   final serviceReceiverPort = ReceivePort();
   serviceReceiverPort.listen((message) async {
+    // Handle special IPC messages for foreground notification updates
+    if (message is Map<String, dynamic>) {
+      final action = message['action'];
+      if (action == 'updateForegroundServer') {
+        final serverName = message['serverName'] as String? ?? '';
+        final groupName = message['groupName'] as String? ?? '';
+        // Update selectedMap in globalState.config
+        final profile = globalState.config.currentProfile;
+        if (profile != null && groupName.isNotEmpty) {
+          final newSelectedMap = Map<String, String>.from(profile.selectedMap);
+          newSelectedMap[groupName] = serverName;
+          final updatedProfile = profile.copyWith(selectedMap: newSelectedMap);
+          globalState.config = globalState.config.copyWith(
+            profiles: globalState.config.profiles.map((p) => 
+              p.id == profile.id ? updatedProfile : p
+            ).toList(),
+          );
+        }
+        sendPort.send({'success': true});
+        return;
+      }
+    }
     final res = await clashLibHandler.invokeAction(message);
     sendPort.send(res);
   });

@@ -52,12 +52,6 @@ class Profile with _$Profile {
     required String id,
     String? label,
     String? currentGroupName,
-    String? announceText,
-    String? supportUrl,
-    String? serviceName,
-    String? dashboardLayout,
-    String? proxiesView,
-    String? customBehavior,
     @Default("") String url,
     DateTime? lastUpdateDate,
     required Duration autoUpdateDuration,
@@ -69,12 +63,7 @@ class Profile with _$Profile {
     @JsonKey(includeToJson: false, includeFromJson: false)
     @Default(false)
     bool isUpdating,
-    bool? denyWidgetEditing,
-    Set<String>? providerSettings,
     @Default({}) Map<String, String> providerHeaders,
-    @JsonKey(includeToJson: false, includeFromJson: false)
-    @Default(false)
-    bool showHwidLimitNotice,
   }) = _Profile;
 
   factory Profile.fromJson(Map<String, Object?> json) =>
@@ -144,25 +133,6 @@ extension ProfilesExt on List<Profile> {
   }
 }
 
-Set<String>? _parseSettingsFromHeader(String? settingsHeader) {
-  try {
-    if (settingsHeader == null) {
-      return null;
-    }
-
-    final settings = settingsHeader
-        .split(',')
-        .map((s) => s.trim().toLowerCase())
-        .where((s) => s.isNotEmpty)
-        .toSet();
-
-    return settings;
-  } catch (e) {
-    commonPrint.log("Failed to parse settings from header: $e");
-    return null;
-  }
-}
-
 extension ProfileExtension on Profile {
   ProfileType get type =>
       url.isEmpty == true ? ProfileType.file : ProfileType.url;
@@ -218,66 +188,48 @@ extension ProfileExtension on Profile {
 
     final disposition = response.headers.value("content-disposition");
     final userinfo = response.headers.value('subscription-userinfo');
-    final announce = response.headers.value('announce');
-    final updateIntervalHeader =
-        response.headers.value('profile-update-interval');
-    final supportUrl = response.headers.value('support-url');
-    final dashboardHeader = response.headers.value('flclashx-widgets');
-    final serviceName = response.headers.value('flclashx-servicename');
-    final customBehavior = response.headers.value('flclashx-custom');
-
-    final denyWidgetHeader = response.headers.value('flclashx-denywidgets');
-    bool? denyWidgetValue;
-    if (denyWidgetHeader == 'true') {
-      denyWidgetValue = true;
-    } else if (denyWidgetHeader == 'false') {
-      denyWidgetValue = false;
-    }
-
-    Duration? durationFromHeader;
-    if (updateIntervalHeader != null) {
-      final hours = int.tryParse(updateIntervalHeader);
-      if (hours != null && hours > 0) {
-        durationFromHeader = Duration(hours: hours);
-      }
-    }
-
-    final proxiesViewHeader = response.headers.value('flclashx-view');
-    final settingsHeader = response.headers.value('flclashx-settings');
-    final hwidLimitHeader = response.headers.value('x-hwid-limit');
     
     final responseData = response.data;
     if (responseData == null) {
       throw Exception("Failed to get profile data from response.");
     }
 
-    final parsedSettings = _parseSettingsFromHeader(settingsHeader);
-    
     final providerHeaders = <String, String>{};
+    
+    final headersToCollect = [
+      'announce',
+      'support-url', 
+      'profile-update-interval',
+      'x-hwid-limit',
+    ];
+    
+    for (final headerName in headersToCollect) {
+      final value = response.headers.value(headerName);
+      if (value != null && value.isNotEmpty) {
+        providerHeaders[headerName] = value;
+      }
+    }
+    
     response.headers.forEach((name, values) {
       if (name.toLowerCase().startsWith('flclashx-') && values.isNotEmpty) {
         providerHeaders[name.toLowerCase()] = values.first;
       }
     });
     
-    globalState.appController.applySubscriptionSettings(parsedSettings);
-
-    final showHwidLimit = hwidLimitHeader?.toLowerCase() == 'true';
-
+    Duration? durationFromHeader;
+    final updateIntervalHeader = providerHeaders['profile-update-interval'];
+    if (updateIntervalHeader != null) {
+      final hours = int.tryParse(updateIntervalHeader);
+      if (hours != null && hours > 0) {
+        durationFromHeader = Duration(hours: hours);
+      }
+    }
+    
     return copyWith(
       label: label ?? utils.getFileNameForDisposition(disposition) ?? id,
       subscriptionInfo: SubscriptionInfo.formHString(userinfo),
-      announceText: announce,
-      supportUrl: supportUrl,
-      serviceName: serviceName,
-      dashboardLayout: dashboardHeader,
       autoUpdateDuration: durationFromHeader ?? autoUpdateDuration,
-      denyWidgetEditing: denyWidgetValue,
-      proxiesView: proxiesViewHeader,
-      customBehavior: customBehavior,
-      providerSettings: parsedSettings,
       providerHeaders: providerHeaders,
-      showHwidLimitNotice: showHwidLimit,
     ).saveFile(responseData);
   }
 

@@ -44,6 +44,9 @@ class ClashLib extends ClashHandlerInterface with AndroidClashInterface {
         }
         sendPort = message;
         _canSendCompleter.complete(true);
+      } else if (message is Map) {
+        // Ignore IPC responses (Map type) - they don't need processing
+        return;
       } else {
         handleResult(
           ActionResult.fromJson(json.decode(
@@ -80,6 +83,12 @@ class ClashLib extends ClashHandlerInterface with AndroidClashInterface {
 
   @override
   Future<void> sendMessage(String message) async {
+    await _canSendCompleter.future;
+    sendPort?.send(message);
+  }
+
+  /// Send a custom IPC message to service (for foreground notification updates)
+  Future<void> sendIpcMessage(Map<String, dynamic> message) async {
     await _canSendCompleter.future;
     sendPort?.send(message);
   }

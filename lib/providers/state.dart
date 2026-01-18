@@ -168,6 +168,7 @@ TrayState trayState(Ref ref) {
   );
 
   final selectedMap = ref.watch(selectedMapProvider);
+  final globalModeEnabled = ref.watch(globalModeEnabledProvider);
 
   return TrayState(
     mode: clashConfig.mode,
@@ -180,6 +181,7 @@ TrayState trayState(Ref ref) {
     brightness: brightness,
     groups: groups,
     selectedMap: selectedMap,
+    globalModeEnabled: globalModeEnabled,
   );
 }
 
@@ -451,6 +453,34 @@ Profile? currentProfile(Ref ref) {
   final profileId = ref.watch(currentProfileIdProvider);
   return ref
       .watch(profilesProvider.select((state) => state.getProfile(profileId)));
+}
+
+@riverpod
+bool globalModeEnabled(Ref ref) {
+  final profile = ref.watch(currentProfileProvider);
+  final value = profile?.providerHeaders['flclashx-globalmode'];
+  return value?.toLowerCase() != 'false';
+}
+
+@riverpod
+bool hasAnnounceData(Ref ref) {
+  final profile = ref.watch(currentProfileProvider);
+  final value = profile?.providerHeaders['announce'];
+  return value != null && value.isNotEmpty;
+}
+
+@riverpod
+bool hasServiceInfoData(Ref ref) {
+  final profile = ref.watch(currentProfileProvider);
+  final value = profile?.providerHeaders['flclashx-servicename'];
+  return value != null && value.isNotEmpty;
+}
+
+@riverpod
+bool hasServerInfoData(Ref ref) {
+  final profile = ref.watch(currentProfileProvider);
+  final value = profile?.providerHeaders['flclashx-serverinfo'];
+  return value != null && value.isNotEmpty;
 }
 
 @riverpod

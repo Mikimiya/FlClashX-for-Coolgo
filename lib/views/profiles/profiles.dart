@@ -455,14 +455,14 @@ class _ProfileItemState extends State<ProfileItem> {
                                       SendToTvPage(profileUrl: widget.profile.url));
                                 },
                               ),
-                              if (widget.profile.supportUrl != null && widget.profile.supportUrl!.isNotEmpty && !_isTV )
+                              if (widget.profile.providerHeaders['support-url'] != null && widget.profile.providerHeaders['support-url']!.isNotEmpty && !_isTV )
                             PopupMenuItemData(
-                              icon: widget.profile.supportUrl!.toLowerCase().contains('t.me')
+                              icon: widget.profile.providerHeaders['support-url']!.toLowerCase().contains('t.me')
                               ? Icons.telegram
                               : Icons.insert_link,
                               label: appLocalizations.support,
                               onPressed: () {
-                                globalState.openUrl(widget.profile.supportUrl!);
+                                globalState.openUrl(widget.profile.providerHeaders['support-url']!);
                               },
                             ),
                             PopupMenuItemData(

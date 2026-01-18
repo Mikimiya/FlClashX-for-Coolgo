@@ -73,9 +73,9 @@ class _DashboardViewState extends ConsumerState<DashboardView> with PageMixin {
         Consumer(
           builder: (context, ref, child) {
             final denyEditing = ref.watch(currentProfileProvider
-                .select((profile) => profile?.denyWidgetEditing));
+                .select((profile) => profile?.providerHeaders['flclashx-denywidgets']));
 
-            if (denyEditing == true) {
+            if (denyEditing == 'true') {
               return const SizedBox.shrink();
             }
 
@@ -134,18 +134,58 @@ class _DashboardViewState extends ConsumerState<DashboardView> with PageMixin {
     });
   }
 
+  bool _isAllowedWidget(
+    DashboardWidget item, {
+    required bool globalModeEnabled,
+    required bool hasAnnounceData,
+    required bool hasServiceInfoData,
+    required bool hasServerInfoData,
+  }) {
+    if (!item.platforms.contains(SupportPlatform.currentPlatform)) {
+      return false;
+    }
+    
+    if (!globalModeEnabled) {
+      if (item == DashboardWidget.outboundMode || 
+          item == DashboardWidget.outboundModeV2) {
+        return false;
+      }
+    }
+    
+    if (item == DashboardWidget.announce && !hasAnnounceData) {
+      return false;
+    }
+    if (item == DashboardWidget.serviceInfo && !hasServiceInfoData) {
+      return false;
+    }
+    if (item == DashboardWidget.changeServerButton && !hasServerInfoData) {
+      return false;
+    }
+    
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final dashboardState = ref.watch(dashboardStateProvider);
+    final globalModeEnabled = ref.watch(globalModeEnabledProvider);
+    final hasAnnounce = ref.watch(hasAnnounceDataProvider);
+    final hasServiceInfo = ref.watch(hasServiceInfoDataProvider);
+    final hasServerInfo = ref.watch(hasServerInfoDataProvider);
     final columns = max(4 * ((dashboardState.viewWidth / 320).ceil()), 8);
     final spacing = 16.ap;
+    
+    bool isAllowed(DashboardWidget item) => _isAllowedWidget(
+      item,
+      globalModeEnabled: globalModeEnabled,
+      hasAnnounceData: hasAnnounce,
+      hasServiceInfoData: hasServiceInfo,
+      hasServerInfoData: hasServerInfo,
+    );
+    
     final children = [
       ...dashboardState.dashboardWidgets
-          .where(
-            (item) => item.platforms.contains(
-              SupportPlatform.currentPlatform,
-            ),
-          )
+          .where(isAllowed)
           .map(
             (item) => item.widget,
           ),
@@ -153,11 +193,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> with PageMixin {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _addedWidgetsNotifier.value = DashboardWidget.values
           .where(
-            (item) =>
-                !children.contains(item.widget) &&
-                item.platforms.contains(
-                  SupportPlatform.currentPlatform,
-                ),
+            (item) => !children.contains(item.widget) && isAllowed(item),
           )
           .map((item) => item.widget)
           .toList();
@@ -182,11 +218,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> with PageMixin {
                             onUpdate: _handleSave,
                             children: [
                               ...dashboardState.dashboardWidgets
-                                  .where(
-                                    (item) => item.platforms.contains(
-                                      SupportPlatform.currentPlatform,
-                                    ),
-                                  )
+                                  .where(isAllowed)
                                   .map(
                                     (item) => item.widget,
                                   ),

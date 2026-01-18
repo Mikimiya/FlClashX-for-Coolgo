@@ -69,17 +69,19 @@ class Tray {
       checked: false,
     );
     menuItems.add(startMenuItem);
-    menuItems.add(MenuItem.separator());
-    for (final mode in Mode.values) {
-      menuItems.add(
-        MenuItem.checkbox(
-          label: Intl.message(mode.name),
-          onClick: (_) {
-            globalState.appController.changeMode(mode);
-          },
-          checked: mode == trayState.mode,
-        ),
-      );
+    if (trayState.globalModeEnabled) {
+      menuItems.add(MenuItem.separator());
+      for (final mode in Mode.values) {
+        menuItems.add(
+          MenuItem.checkbox(
+            label: Intl.message(mode.name),
+            onClick: (_) {
+              globalState.appController.changeMode(mode);
+            },
+            checked: mode == trayState.mode,
+          ),
+        );
+      }
     }
     menuItems.add(MenuItem.separator());
     if (trayState.isStart) {

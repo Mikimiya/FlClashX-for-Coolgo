@@ -172,12 +172,13 @@ data object VpnPlugin : FlutterPlugin, MethodChannel.MethodCallHandler {
             val startForegroundParams = if (data != null) Gson().fromJson(
                 data, StartForegroundParams::class.java
             ) else StartForegroundParams(
-                title = "", content = ""
+                title = "", server = "", content = ""
             )
             if (lastStartForegroundParams != startForegroundParams) {
                 lastStartForegroundParams = startForegroundParams
                 flClashXService?.startForeground(
                     startForegroundParams.title,
+                    startForegroundParams.server,
                     startForegroundParams.content,
                 )
             }

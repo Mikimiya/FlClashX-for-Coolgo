@@ -11,7 +11,7 @@ extension ArchiveExt on Archive {
       final relativePath = relative(entity.path, from: parentPath);
       if (entity is File) {
         final data = entity.readAsBytesSync();
-        final archiveFile = ArchiveFile(relativePath, data.length, data);
+        final archiveFile = ArchiveFile.bytes(relativePath, data);
         addFile(archiveFile);
       } else if (entity is Directory) {
         addDirectoryToArchive(entity.path, parentPath);
@@ -19,11 +19,11 @@ extension ArchiveExt on Archive {
     }
   }
 
-  void add<T>(String name, T raw) {
+  void addJson<T>(String name, T raw) {
     final jsonString = json.encode(raw);
     final data = utf8.encode(jsonString);
     addFile(
-      ArchiveFile(name, data.length, data),
+      ArchiveFile.bytes(name, data),
     );
   }
 }

@@ -19,11 +19,19 @@ ArchitecturesAllowed={{ARCH}}
 ArchitecturesInstallIn64BitMode={{ARCH}}
 UninstallDisplayIcon={uninstallexe}
 ChangesAssociations=yes
+; Update mode settings
+UsePreviousAppDir=yes
+UsePreviousGroup=yes
+UsePreviousTasks=yes
 
 [Code]
 const
   SHCNE_ASSOCCHANGED = $08000000;
   SHCNF_IDLIST = $0000;
+
+var
+  IsUpgrade: Boolean;
+  PreviousVersion: String;
 
 procedure SHChangeNotify(wEventId: Integer; uFlags: Integer; dwItem1: Integer; dwItem2: Integer); external 'SHChangeNotify@shell32.dll stdcall';
 
@@ -54,10 +62,43 @@ begin
   Sleep(1000);
 end;
 
+function IsAppInstalled(): Boolean;
+var
+  UninstallKey: String;
+begin
+  UninstallKey := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_ID}}_is1';
+  Result := RegKeyExists(HKEY_LOCAL_MACHINE, UninstallKey) or 
+            RegKeyExists(HKEY_CURRENT_USER, UninstallKey);
+end;
+
+function IsUpgradeInstallation(): Boolean;
+begin
+  Result := IsUpgrade;
+end;
+
+function GetInstalledVersion(): String;
+var
+  UninstallKey: String;
+  Version: String;
+begin
+  Result := '';
+  UninstallKey := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{{APP_ID}}_is1';
+  
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE, UninstallKey, 'DisplayVersion', Version) then
+    Result := Version
+  else if RegQueryStringValue(HKEY_CURRENT_USER, UninstallKey, 'DisplayVersion', Version) then
+    Result := Version;
+end;
+
 function InitializeSetup(): Boolean;
 var
   ResultCode: Integer;
 begin
+  // Check if app is already installed
+  IsUpgrade := IsAppInstalled();
+  if IsUpgrade then
+    PreviousVersion := GetInstalledVersion();
+  
   // Stop service if running
   Exec('sc.exe', 'stop "FlClashHelperService"', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
   Sleep(1000);
@@ -66,6 +107,45 @@ begin
   KillProcesses;
   
   Result := True;
+end;
+
+procedure InitializeWizard();
+begin
+  if IsUpgrade then
+  begin
+    WizardForm.Caption := '{{DISPLAY_NAME}} - Обновление';
+    if PreviousVersion <> '' then
+      WizardForm.WelcomeLabel2.Caption := 
+        'Обнаружена установленная версия ' + PreviousVersion + '.' + #13#10 + #13#10 +
+        'Программа установит версию {{APP_VERSION}}.' + #13#10 + #13#10 +
+        'Нажмите «Далее», чтобы продолжить обновление, или «Отмена», чтобы выйти.'
+    else
+      WizardForm.WelcomeLabel2.Caption := 
+        'Обнаружена установленная версия программы.' + #13#10 + #13#10 +
+        'Программа установит версию {{APP_VERSION}}.' + #13#10 + #13#10 +
+        'Нажмите «Далее», чтобы продолжить обновление, или «Отмена», чтобы выйти.';
+  end;
+end;
+
+function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo,
+  MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo: String): String;
+begin
+  if IsUpgrade then
+  begin
+    Result := 'Обновление' + NewLine;
+    if PreviousVersion <> '' then
+      Result := Result + 'Текущая версия: ' + PreviousVersion + NewLine;
+    Result := Result + 'Новая версия: {{APP_VERSION}}' + NewLine + NewLine;
+  end
+  else
+    Result := 'Новая установка' + NewLine + NewLine;
+    
+  if MemoDirInfo <> '' then
+    Result := Result + MemoDirInfo + NewLine + NewLine;
+  if MemoGroupInfo <> '' then
+    Result := Result + MemoGroupInfo + NewLine + NewLine;
+  if MemoTasksInfo <> '' then
+    Result := Result + MemoTasksInfo + NewLine;
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
@@ -140,7 +220,7 @@ Name: "chineseSimplified"; MessagesFile: {% if locale.file %}{{ locale.file }}{%
 {% endfor %}
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: checkedonce
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: checkedonce; Check: not IsUpgradeInstallation
 [Files]
 Source: "{{SOURCE_DIR}}\\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
