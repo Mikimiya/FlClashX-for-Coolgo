@@ -39,6 +39,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m8(label) => "${label} должен быть URL";
 
+  static String m9(days) => "Ваша подписка истекает через ${days} дн.";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("О программе"),
@@ -834,5 +836,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "years": MessageLookupByLibrary.simpleMessage("Лет"),
     "zh_CN": MessageLookupByLibrary.simpleMessage("Упрощенный китайский"),
+    "subscriptionExpiresSoon": MessageLookupByLibrary.simpleMessage(
+      "Подписка скоро истекает",
+    ),
+    "subscriptionExpiresInDays": m9,
+    "subscriptionExpiresToday": MessageLookupByLibrary.simpleMessage(
+      "Ваша подписка истекает сегодня",
+    ),
+    "subscriptionExpired": MessageLookupByLibrary.simpleMessage(
+      "Ваша подписка истекла",
+    ),
+    "renew": MessageLookupByLibrary.simpleMessage("Продлить"),
   };
 }

@@ -38,6 +38,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m8(label) => "${label}必须为URL";
 
+  static String m9(days) => "您的订阅将在${days}天后到期";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("关于"),
@@ -514,5 +516,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
     "zh_CN": MessageLookupByLibrary.simpleMessage("中文简体"),
+    "subscriptionExpiresSoon": MessageLookupByLibrary.simpleMessage(
+      "订阅即将到期",
+    ),
+    "subscriptionExpiresInDays": m9,
+    "subscriptionExpiresToday": MessageLookupByLibrary.simpleMessage(
+      "您的订阅今天到期",
+    ),
+    "subscriptionExpired": MessageLookupByLibrary.simpleMessage(
+      "您的订阅已过期",
+    ),
+    "renew": MessageLookupByLibrary.simpleMessage("续订"),
   };
 }

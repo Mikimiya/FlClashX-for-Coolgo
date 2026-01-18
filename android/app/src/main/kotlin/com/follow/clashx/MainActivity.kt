@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.follow.clashx.plugins.AppPlugin
 import com.follow.clashx.plugins.ServicePlugin
 import com.follow.clashx.plugins.TilePlugin
+import com.follow.clashx.plugins.VpnPlugin
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -66,6 +67,7 @@ class MainActivity : FlutterActivity() {
         flutterEngine.plugins.add(AppPlugin())
         flutterEngine.plugins.add(ServicePlugin)
         flutterEngine.plugins.add(TilePlugin())
+        flutterEngine.plugins.add(VpnPlugin)
         GlobalState.flutterEngine = flutterEngine
         
         // Sync VPN status when app opens - this ensures UI reflects actual VPN state

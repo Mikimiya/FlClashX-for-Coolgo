@@ -425,5 +425,10 @@
   "thanks": "感谢贡献",
   "gratitude": "感激",
   "originalRepository": "原始存储库",
-  "openLogsFolder": "打开日志文件夹"
+  "openLogsFolder": "打开日志文件夹",
+  "subscriptionExpiresSoon": "订阅即将到期",
+  "subscriptionExpiresInDays": "您的订阅将在{days}天后到期",
+  "subscriptionExpiresToday": "您的订阅今天到期",
+  "subscriptionExpired": "您的订阅已过期",
+  "renew": "续订"
 }

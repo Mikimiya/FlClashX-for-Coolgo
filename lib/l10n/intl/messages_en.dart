@@ -40,6 +40,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m8(label) => "${label} must be a url";
 
+  static String m9(days) => "Your subscription expires in ${days} day(s)";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("About"),
@@ -795,5 +797,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage("Whitelist mode"),
     "years": MessageLookupByLibrary.simpleMessage("Years"),
     "zh_CN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
+    "subscriptionExpiresSoon": MessageLookupByLibrary.simpleMessage(
+      "Subscription expires soon",
+    ),
+    "subscriptionExpiresInDays": m9,
+    "subscriptionExpiresToday": MessageLookupByLibrary.simpleMessage(
+      "Your subscription expires today",
+    ),
+    "subscriptionExpired": MessageLookupByLibrary.simpleMessage(
+      "Your subscription has expired",
+    ),
+    "renew": MessageLookupByLibrary.simpleMessage("Renew"),
   };
 }

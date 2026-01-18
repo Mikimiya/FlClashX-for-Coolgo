@@ -141,6 +141,19 @@ class Vpn {
 
   Future<bool?> stop() async => methodChannel.invokeMethod<bool>("stop");
 
+  /// Show subscription expiration notification
+  Future<bool?> showSubscriptionNotification({
+    required String title,
+    required String message,
+    required String actionLabel,
+    required String actionUrl,
+  }) async => methodChannel.invokeMethod<bool>("showSubscriptionNotification", {
+    'title': title,
+    'message': message,
+    'actionLabel': actionLabel,
+    'actionUrl': actionUrl,
+  });
+
   void addListener(VpnListener listener) {
     _listeners.add(listener);
   }

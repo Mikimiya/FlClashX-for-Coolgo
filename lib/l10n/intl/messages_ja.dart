@@ -38,6 +38,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m8(label) => "${label}はURLである必要があります";
 
+  static String m9(days) => "サブスクリプションは${days}日後に期限切れになります";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "about": MessageLookupByLibrary.simpleMessage("について"),
@@ -582,5 +584,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "years": MessageLookupByLibrary.simpleMessage("年"),
     "zh_CN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
+    "subscriptionExpiresSoon": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションがまもなく期限切れ",
+    ),
+    "subscriptionExpiresInDays": m9,
+    "subscriptionExpiresToday": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションは本日期限切れになります",
+    ),
+    "subscriptionExpired": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションが期限切れになりました",
+    ),
+    "renew": MessageLookupByLibrary.simpleMessage("更新"),
   };
 }

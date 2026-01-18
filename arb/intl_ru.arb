@@ -454,5 +454,10 @@
   "openLogsFolder": "Открыть папку логов",
   "receiveSubscriptionTitle": "Получение подписки",
   "settingsSendDeviceDataTitle": "Отправлять HWID",
-  "settingsSendDeviceDataSubtitle": "Отправлять идентификатор устройства, версию приложения и название устройства на сервер прокси-провайдера"
+  "settingsSendDeviceDataSubtitle": "Отправлять идентификатор устройства, версию приложения и название устройства на сервер прокси-провайдера",
+  "subscriptionExpiresSoon": "Подписка скоро истекает",
+  "subscriptionExpiresInDays": "Ваша подписка истекает через {days} дн.",
+  "subscriptionExpiresToday": "Ваша подписка истекает сегодня",
+  "subscriptionExpired": "Ваша подписка истекла",
+  "renew": "Продлить"
 }

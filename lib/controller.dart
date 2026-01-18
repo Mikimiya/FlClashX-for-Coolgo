@@ -6,6 +6,7 @@ import 'dart:isolate';
 import 'package:archive/archive.dart';
 import 'package:flclashx/clash/clash.dart';
 import 'package:flclashx/common/archive.dart';
+import 'package:flclashx/services/subscription_notification_service.dart';
 import 'package:flclashx/enum/enum.dart';
 import 'package:flclashx/plugins/app.dart';
 import 'package:flclashx/providers/providers.dart';
@@ -385,6 +386,11 @@ class AppController {
         commonPrint.log("Error updating geo files: $e");
       }));
     }
+
+    // Check subscription expiration and show notification if needed
+    unawaited(SubscriptionNotificationService.checkAndNotify(newProfile).catchError((e) {
+      commonPrint.log("Error checking subscription: $e");
+    }));
   }
 
   void _showHwidLimitNotice(String encodedText, String? supportUrl) {

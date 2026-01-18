@@ -425,5 +425,10 @@
   "thanks": "貢献に感謝",
   "gratitude": "感謝",
   "originalRepository": "オリジナルリポジトリ",
-  "openLogsFolder": "ログフォルダを開く"
+  "openLogsFolder": "ログフォルダを開く",
+  "subscriptionExpiresSoon": "サブスクリプションがまもなく期限切れ",
+  "subscriptionExpiresInDays": "サブスクリプションは{days}日後に期限切れになります",
+  "subscriptionExpiresToday": "サブスクリプションは本日期限切れになります",
+  "subscriptionExpired": "サブスクリプションが期限切れになりました",
+  "renew": "更新"
 }

@@ -3528,6 +3528,56 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Subscription expires soon`
+  String get subscriptionExpiresSoon {
+    return Intl.message(
+      'Subscription expires soon',
+      name: 'subscriptionExpiresSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your subscription expires in {days} day(s)`
+  String subscriptionExpiresInDays(String days) {
+    return Intl.message(
+      'Your subscription expires in $days day(s)',
+      name: 'subscriptionExpiresInDays',
+      desc: '',
+      args: [days],
+    );
+  }
+
+  /// `Your subscription expires today`
+  String get subscriptionExpiresToday {
+    return Intl.message(
+      'Your subscription expires today',
+      name: 'subscriptionExpiresToday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your subscription has expired`
+  String get subscriptionExpired {
+    return Intl.message(
+      'Your subscription has expired',
+      name: 'subscriptionExpired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Renew`
+  String get renew {
+    return Intl.message(
+      'Renew',
+      name: 'renew',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

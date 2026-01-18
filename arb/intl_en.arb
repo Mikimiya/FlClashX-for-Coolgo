@@ -453,5 +453,10 @@
   "openLogsFolder": "Open logs folder",
   "receiveSubscriptionTitle": "Receive Subscription",
   "settingsSendDeviceDataTitle": "Send HWID",
-  "settingsSendDeviceDataSubtitle": "Send device identifier, app version and device name to proxy provider server"
+  "settingsSendDeviceDataSubtitle": "Send device identifier, app version and device name to proxy provider server",
+  "subscriptionExpiresSoon": "Subscription expires soon",
+  "subscriptionExpiresInDays": "Your subscription expires in {days} day(s)",
+  "subscriptionExpiresToday": "Your subscription expires today",
+  "subscriptionExpired": "Your subscription has expired",
+  "renew": "Renew"
 }
