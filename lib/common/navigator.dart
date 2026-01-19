@@ -166,6 +166,7 @@ class CommonPageTransition extends StatefulWidget {
 class _CommonPageTransitionState extends State<CommonPageTransition> {
   late Animation<Offset> _primaryPositionAnimation;
   late Animation<Offset> _secondaryPositionAnimation;
+  // ignore: unused_field - used for decoration animation setup
   late Animation<Decoration> _primaryShadowAnimation;
   CurvedAnimation? _primaryPositionCurve;
   CurvedAnimation? _secondaryPositionCurve;
@@ -270,7 +271,7 @@ class _CommonEdgeShadowPainter extends BoxPainter {
   _CommonEdgeShadowPainter(
     this._decoration,
     super.onChanged,
-  ) : assert(_decoration._colors == null || _decoration._colors!.length > 1);
+  ) : assert(_decoration._colors == null || _decoration._colors.length > 1);
 
   final _CommonEdgeShadowDecoration _decoration;
 

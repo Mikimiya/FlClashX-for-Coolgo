@@ -4,6 +4,7 @@
 #ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
 #endif
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "flutter/generated_plugin_registrant.h"
 
@@ -13,6 +14,34 @@ struct _MyApplication {
 };
 
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
+
+// Helper function to get the executable directory path
+static gchar* get_executable_dir() {
+  g_autoptr(GError) error = nullptr;
+  g_autofree gchar* exe_path = g_file_read_link("/proc/self/exe", &error);
+  if (exe_path == nullptr) {
+    return nullptr;
+  }
+  return g_path_get_dirname(exe_path);
+}
+
+// Helper function to set the window icon
+static void set_window_icon(GtkWindow* window) {
+  g_autofree gchar* exe_dir = get_executable_dir();
+  if (exe_dir == nullptr) {
+    return;
+  }
+  
+  g_autofree gchar* icon_path = g_build_filename(
+    exe_dir, "data", "flutter_assets", "assets", "images", "icon.png", nullptr);
+  
+  g_autoptr(GError) error = nullptr;
+  g_autoptr(GdkPixbuf) icon = gdk_pixbuf_new_from_file(icon_path, &error);
+  
+  if (icon != nullptr) {
+    gtk_window_set_icon(window, icon);
+  }
+}
 
 // Implements GApplication::activate.
 static void my_application_activate(GApplication* application) {
@@ -28,6 +57,9 @@ static void my_application_activate(GApplication* application) {
   
   GtkWindow* window =
       GTK_WINDOW(gtk_application_window_new(GTK_APPLICATION(application)));
+
+  // Set the window icon for taskbar/dock display
+  set_window_icon(window);
 
   // Use a header bar when running in GNOME as this is the common style used
   // by applications and is the setup most users will be using (e.g. Ubuntu

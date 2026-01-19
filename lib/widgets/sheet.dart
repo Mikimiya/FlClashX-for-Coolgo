@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flclashx/common/common.dart';
@@ -128,8 +127,8 @@ class _AdaptiveSheetScaffoldState extends State<AdaptiveSheetScaffold> {
     final bottomSheet = widget.type == SheetType.bottomSheet;
     final sideSheet = widget.type == SheetType.sideSheet;
     final backgroundColor = sideSheet 
-        ? colorScheme.surface.withOpacity(0.92)
-        : colorScheme.surface.withOpacity(0.92);
+        ? colorScheme.surface.withValues(alpha: 0.92)
+        : colorScheme.surface.withValues(alpha: 0.92);
     final appBar = AppBar(
       forceMaterialTransparency: bottomSheet ? true : false,
       automaticallyImplyLeading: bottomSheet

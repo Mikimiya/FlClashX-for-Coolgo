@@ -96,7 +96,7 @@ class AppController {
     final profile = globalState.config.currentProfile;
     if (profile == null) return;
     
-    final profileName = profile.label ?? profile.id ?? "FlClashX";
+    final profileName = profile.label ?? profile.id;
     
     // Decode service name from header
     String serviceName = "";
@@ -306,6 +306,16 @@ class AppController {
       final parts = hexHeader.split(':');
       final hexString = parts[0].trim().replaceAll('#', '');
       final variantName = parts.length > 1 ? parts[1].trim() : null;
+      
+      // Check for pureblack flag in any position after color
+      bool enablePureBlack = false;
+      for (int i = 1; i < parts.length; i++) {
+        final part = parts[i].trim().toLowerCase();
+        if (part == 'pureblack') {
+          enablePureBlack = true;
+          break;
+        }
+      }
 
       if (hexString.length != 6 && hexString.length != 8) {
         commonPrint.log('Invalid hex color length: $hexString');
@@ -319,7 +329,8 @@ class AppController {
 
       commonPrint
           .log('Applying theme from flclashx-hex: #${hexString.toUpperCase()}'
-              '${variantName != null ? ', variant=$variantName' : ''}');
+              '${variantName != null ? ', variant=$variantName' : ''}'
+              '${enablePureBlack ? ', pureBlack=true' : ''}');
 
       _ref.read(themeSettingProvider.notifier).updateState((state) {
         final updatedColors = [...state.primaryColors];
@@ -328,7 +339,7 @@ class AppController {
         }
 
         DynamicSchemeVariant? newVariant;
-        if (variantName != null) {
+        if (variantName != null && variantName.toLowerCase() != 'pureblack') {
           try {
             newVariant = DynamicSchemeVariant.values.firstWhere(
               (v) => v.name.toLowerCase() == variantName.toLowerCase(),
@@ -341,12 +352,14 @@ class AppController {
         }
 
         commonPrint.log(
-            'Theme updated: primaryColor=#${colorValue.toRadixString(16).toUpperCase()}');
+            'Theme updated: primaryColor=#${colorValue.toRadixString(16).toUpperCase()}'
+            '${enablePureBlack ? ', pureBlack=true' : ''}');
 
         return state.copyWith(
           primaryColor: colorValue,
           primaryColors: updatedColors,
           schemeVariant: newVariant ?? state.schemeVariant,
+          pureBlack: enablePureBlack,
         );
       });
 
@@ -564,7 +577,10 @@ class AppController {
         {'type': 'ASN', 'name': asnFileName, 'key': 'asn'},
       ];
 
+      // Counters for logging purposes (values used in log messages via increment)
+      // ignore: unused_local_variable
       var updatedCount = 0;
+      // ignore: unused_local_variable
       var skippedCount = 0;
 
       for (final geoFile in geoFiles) {
@@ -1669,7 +1685,7 @@ class AppController {
       archive.addJson("config.json", configJson);
       archive.addDirectoryToArchive(profilesPath, homeDirPath);
       final zipEncoder = ZipEncoder();
-      return zipEncoder.encode(archive) ?? [];
+      return zipEncoder.encode(archive);
     });
   }
 

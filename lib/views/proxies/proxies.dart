@@ -213,11 +213,9 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
       commonScaffoldState?.floatingActionButton = floatingActionButton;
       commonScaffoldState?.onKeywordsUpdate = onKeywordsUpdate;
       commonScaffoldState?.updateSearchState(
-        (_) => onSearch != null
-            ? AppBarSearchState(
-                onSearch: onSearch!,
-              )
-            : null,
+        (_) => AppBarSearchState(
+          onSearch: onSearch,
+        ),
       );
     });
   }
@@ -239,7 +237,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> with PageMixin {
 }
 
 class _ModeSelectorAction extends ConsumerWidget {
-  const _ModeSelectorAction({super.key});
+  const _ModeSelectorAction();
 
   String _modeLabel(BuildContext context, Mode mode) => switch (mode) {
         Mode.rule => appLocalizations.rule,

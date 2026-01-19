@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flclashx/common/common.dart';
 import 'package:flclashx/enum/enum.dart';
@@ -436,8 +434,8 @@ class CommonScaffoldState extends ConsumerState<CommonScaffold> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                context.colorScheme.surface.withOpacity(0.92),
-                context.colorScheme.surface.withOpacity(0.88),
+                context.colorScheme.surface.withValues(alpha: 0.92),
+                context.colorScheme.surface.withValues(alpha: 0.88),
               ],
             ),
           ),
