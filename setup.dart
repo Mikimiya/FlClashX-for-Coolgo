@@ -84,9 +84,8 @@ class BuildItem {
   });
 
   @override
-  String toString() {
-    return 'BuildLibItem{target: $target, arch: $arch, archName: $archName}';
-  }
+  String toString() =>
+      'BuildLibItem{target: $target, arch: $arch, archName: $archName}';
 }
 
 class Build {
@@ -228,10 +227,9 @@ class Build {
     final isLib = mode == Mode.lib;
 
     final items = buildItems.where(
-      (element) {
-        return element.target == target &&
-            (arch == null ? true : element.arch == arch);
-      },
+      (element) =>
+          element.target == target &&
+          (arch == null ? true : element.arch == arch),
     ).toList();
 
     final List<String> corePaths = [];
@@ -363,9 +361,7 @@ class Build {
     await File(outPath).copy(targetPath);
   }
 
-  static List<String> getExecutable(String command) {
-    return command.split(" ");
-  }
+  static List<String> getExecutable(String command) => command.split(" ");
 
   static getDistributor() async {
     final distributorDir = join(

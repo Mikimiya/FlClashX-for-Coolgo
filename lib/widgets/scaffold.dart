@@ -429,22 +429,20 @@ class CommonScaffoldState extends ConsumerState<CommonScaffold> {
     );
   }
 
-  Widget _buildOverlay(BuildContext context) {
-    return Positioned.fill(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              context.colorScheme.surface.withOpacity(0.92),
-              context.colorScheme.surface.withOpacity(0.88),
-            ],
+  Widget _buildOverlay(BuildContext context) => Positioned.fill(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                context.colorScheme.surface.withOpacity(0.92),
+                context.colorScheme.surface.withOpacity(0.88),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
   @override
   Widget build(BuildContext context) {

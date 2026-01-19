@@ -458,5 +458,6 @@
   "subscriptionExpiresInDays": "Your subscription expires in {days} day(s)",
   "subscriptionExpiresToday": "Your subscription expires today",
   "subscriptionExpired": "Your subscription has expired",
-  "renew": "Renew"
+  "renew": "Renew",
+  "announcement": "Announcement"
 }

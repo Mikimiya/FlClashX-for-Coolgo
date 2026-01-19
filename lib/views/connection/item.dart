@@ -75,17 +75,17 @@ class ConnectionItem extends ConsumerWidget {
       ],
     );
     return CommonPopupBox(
-      targetBuilder: (open) {
-        // openPopup(Offset offset) {
-        //   open(
-        //     offset: offset.translate(
-        //       0,
-        //       0,
-        //     ),
-        //   );
-        // }
+      targetBuilder: (open) =>
+          // openPopup(Offset offset) {
+          //   open(
+          //     offset: offset.translate(
+          //       0,
+          //       0,
+          //     ),
+          //   );
+          // }
 
-        return InkWell(
+          InkWell(
           child: GestureDetector(
             // onLongPressStart: (details) {
             //   if (!system.isDesktop) {
@@ -141,8 +141,7 @@ class ConnectionItem extends ConsumerWidget {
             ),
           ),
           onTap: () {},
-        );
-      },
+        ),
       popup: CommonPopupMenu(
         minWidth: 160,
         items: [

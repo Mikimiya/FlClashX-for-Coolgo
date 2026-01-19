@@ -229,8 +229,6 @@ class _ProxyGroupCardState extends State<ProxyGroupCard>
 
   String get groupName => widget.group.name;
 
-  String get groupType => widget.group.type.name;
-
   bool get isExpand => _expansibleController.isExpanded;
 
 
@@ -352,51 +350,24 @@ class _ProxyGroupCardState extends State<ProxyGroupCard>
                               ),
                               Flexible(
                                 flex: 1,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      groupType,
-                                      style: context
-                                          .textTheme.labelMedium?.toLight,
-                                    ),
-                                    Flexible(
-                                      flex: 1,
-                                      child: Consumer(
-                                        builder: (_, ref, __) {
-                                          final proxyName = ref
-                                              .watch(
-                                                  getSelectedProxyNameProvider(
-                                                groupName,
-                                              ))
-                                              .getSafeValue("");
-                                          return Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              if (proxyName.isNotEmpty) ...[
-                                                Flexible(
-                                                  flex: 1,
-                                                  child: EmojiText(
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    " · $proxyName",
-                                                    style: context.textTheme
-                                                        .labelMedium?.toLight,
-                                                  ),
-                                                ),
-                                              ]
-                                            ],
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  ],
+                                child: Consumer(
+                                  builder: (_, ref, __) {
+                                    final proxyName = ref
+                                        .watch(
+                                            getSelectedProxyNameProvider(
+                                          groupName,
+                                        ))
+                                        .getSafeValue("");
+                                    if (proxyName.isEmpty) {
+                                      return const SizedBox.shrink();
+                                    }
+                                    return EmojiText(
+                                      overflow: TextOverflow.ellipsis,
+                                      proxyName,
+                                      style: context.textTheme
+                                          .labelMedium?.toLight,
+                                    );
+                                  },
                                 ),
                               ),
                               const SizedBox(

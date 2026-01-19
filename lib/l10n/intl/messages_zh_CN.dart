@@ -527,5 +527,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "您的订阅已过期",
     ),
     "renew": MessageLookupByLibrary.simpleMessage("续订"),
+    "announcement": MessageLookupByLibrary.simpleMessage("公告"),
   };
 }

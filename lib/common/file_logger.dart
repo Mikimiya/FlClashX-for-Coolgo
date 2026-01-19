@@ -49,9 +49,7 @@ class FileLogger {
     return logsDir;
   }
 
-  String _getTodayDate() {
-    return DateFormat('yyyy-MM-dd').format(DateTime.now());
-  }
+  String _getTodayDate() => DateFormat('yyyy-MM-dd').format(DateTime.now());
 
   String _getLogFileName(String date, {int index = 0}) {
     if (index == 0) {

@@ -430,5 +430,6 @@
   "subscriptionExpiresInDays": "您的订阅将在{days}天后到期",
   "subscriptionExpiresToday": "您的订阅今天到期",
   "subscriptionExpired": "您的订阅已过期",
-  "renew": "续订"
+  "renew": "续订",
+  "announcement": "公告"
 }

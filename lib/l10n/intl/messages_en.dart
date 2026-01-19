@@ -808,5 +808,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Your subscription has expired",
     ),
     "renew": MessageLookupByLibrary.simpleMessage("Renew"),
+    "announcement": MessageLookupByLibrary.simpleMessage("Announcement"),
   };
 }

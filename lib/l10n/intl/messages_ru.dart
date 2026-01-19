@@ -847,5 +847,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ваша подписка истекла",
     ),
     "renew": MessageLookupByLibrary.simpleMessage("Продлить"),
+    "announcement": MessageLookupByLibrary.simpleMessage("Объявление"),
   };
 }

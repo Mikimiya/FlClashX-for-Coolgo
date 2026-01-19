@@ -37,27 +37,24 @@ class OpenLogsFolderItem extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ListItem(
-      title: Text(appLocalizations.openLogsFolder),
-      leading: const Icon(Icons.folder_open),
-      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-      onTap: _openLogsFolder,
-    );
-  }
+  Widget build(BuildContext context, WidgetRef ref) => ListItem(
+        title: Text(appLocalizations.openLogsFolder),
+        leading: const Icon(Icons.folder_open),
+        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        onTap: _openLogsFolder,
+      );
 }
 
 class ResetAppItem extends ConsumerWidget {
   const ResetAppItem({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ListItem(
-      title: Text(
-        appLocalizations.clearData,
-        style: TextStyle(
-          color: context.colorScheme.error,
-          fontWeight: FontWeight.bold,
+  Widget build(BuildContext context, WidgetRef ref) => ListItem(
+        title: Text(
+          appLocalizations.clearData,
+          style: TextStyle(
+            color: context.colorScheme.error,
+            fontWeight: FontWeight.bold,
         ),
       ),
       leading: Icon(
@@ -80,7 +77,6 @@ class ResetAppItem extends ConsumerWidget {
         }
       },
     );
-  }
 }
 
 class OverrideProviderSettingsItem extends ConsumerWidget {
@@ -461,15 +457,10 @@ class ApplicationSettingView extends StatelessWidget {
       ),
     ];
     return ListView.separated(
-      itemBuilder: (_, index) {
-        final item = items[index];
-        return item;
-      },
-      separatorBuilder: (_, __) {
-        return const Divider(
-          height: 0,
-        );
-      },
+      itemBuilder: (_, index) => items[index],
+      separatorBuilder: (_, __) => const Divider(
+        height: 0,
+      ),
       itemCount: items.length,
     );
   }

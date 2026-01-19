@@ -1282,6 +1282,14 @@ class AppController {
 
       if (profile != null) {
         _applyAllHeaderSettings(profile, isNewProfile: true);
+        
+        final headers = profile.providerHeaders;
+        final showHwidLimit = headers['x-hwid-limit']?.toLowerCase() == 'true';
+        final announceText = headers['announce'];
+        if (showHwidLimit && announceText != null && announceText.isNotEmpty) {
+          _showHwidLimitNotice(announceText, headers['support-url']);
+        }
+        
         await addProfile(profile);
       }
     } catch (err) {

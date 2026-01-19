@@ -506,11 +506,10 @@ class _OpenContainerRoute<T> extends ModalRoute<T> {
                                         closedOpacityTween!.animate(animation),
                                     child: Builder(
                                       key: closedBuilderKey,
-                                      builder: (context) {
-                                        // Use dummy "open container" callback
-                                        // since we are in the process of opening.
-                                        return closedBuilder(context, () {});
-                                      },
+                                      builder: (context) =>
+                                          // Use dummy "open container" callback
+                                          // since we are in the process of opening.
+                                          closedBuilder(context, () {}),
                                     ),
                                   ),
                           ),

@@ -459,5 +459,6 @@
   "subscriptionExpiresInDays": "Ваша подписка истекает через {days} дн.",
   "subscriptionExpiresToday": "Ваша подписка истекает сегодня",
   "subscriptionExpired": "Ваша подписка истекла",
-  "renew": "Продлить"
+  "renew": "Продлить",
+  "announcement": "Объявление"
 }

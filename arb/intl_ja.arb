@@ -430,5 +430,6 @@
   "subscriptionExpiresInDays": "サブスクリプションは{days}日後に期限切れになります",
   "subscriptionExpiresToday": "サブスクリプションは本日期限切れになります",
   "subscriptionExpired": "サブスクリプションが期限切れになりました",
-  "renew": "更新"
+  "renew": "更新",
+  "announcement": "お知らせ"
 }

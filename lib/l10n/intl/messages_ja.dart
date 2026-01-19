@@ -595,5 +595,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "サブスクリプションが期限切れになりました",
     ),
     "renew": MessageLookupByLibrary.simpleMessage("更新"),
+    "announcement": MessageLookupByLibrary.simpleMessage("お知らせ"),
   };
 }

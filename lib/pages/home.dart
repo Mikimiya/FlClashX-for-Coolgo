@@ -16,41 +16,39 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return HomeBackScope(
-      child: Consumer(
-        builder: (_, ref, child) {
-          final state = ref.watch(homeStateProvider);
-          final viewMode = state.viewMode;
-          final navigationItems = state.navigationItems;
-          final pageLabel = state.pageLabel;
-          final index = navigationItems.lastIndexWhere(
-            (element) => element.label == pageLabel,
-          );
-          final currentIndex = index == -1 ? 0 : index;
-          final navigationBar = CommonNavigationBar(
-            viewMode: viewMode,
-            navigationItems: navigationItems,
-            currentIndex: currentIndex,
-          );
-          final bottomNavigationBar =
-              viewMode == ViewMode.mobile ? navigationBar : null;
-          final sideNavigationBar =
-              viewMode != ViewMode.mobile ? navigationBar : null;
-          return CommonScaffold(
-            key: globalState.homeScaffoldKey,
-            title: Intl.message(
-              pageLabel.name,
-            ),
-            sideNavigationBar: sideNavigationBar,
-            body: child!,
-            bottomNavigationBar: bottomNavigationBar,
-          );
-        },
-        child: _HomePageView(),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => HomeBackScope(
+        child: Consumer(
+          builder: (_, ref, child) {
+            final state = ref.watch(homeStateProvider);
+            final viewMode = state.viewMode;
+            final navigationItems = state.navigationItems;
+            final pageLabel = state.pageLabel;
+            final index = navigationItems.lastIndexWhere(
+              (element) => element.label == pageLabel,
+            );
+            final currentIndex = index == -1 ? 0 : index;
+            final navigationBar = CommonNavigationBar(
+              viewMode: viewMode,
+              navigationItems: navigationItems,
+              currentIndex: currentIndex,
+            );
+            final bottomNavigationBar =
+                viewMode == ViewMode.mobile ? navigationBar : null;
+            final sideNavigationBar =
+                viewMode != ViewMode.mobile ? navigationBar : null;
+            return CommonScaffold(
+              key: globalState.homeScaffoldKey,
+              title: Intl.message(
+                pageLabel.name,
+              ),
+              sideNavigationBar: sideNavigationBar,
+              body: child!,
+              bottomNavigationBar: bottomNavigationBar,
+            );
+          },
+          child: _HomePageView(),
+        ),
+      );
 }
 
 class _HomePageView extends ConsumerStatefulWidget {
@@ -278,18 +276,15 @@ class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
   Color? get surfaceTintColor => Colors.transparent;
 
   @override
-  WidgetStateProperty<IconThemeData?>? get iconTheme {
-    return WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-      return IconThemeData(
-        size: 24.0,
-        color: states.contains(WidgetState.disabled)
-            ? _colors.onSurfaceVariant.opacity38
-            : states.contains(WidgetState.selected)
-                ? _colors.onSecondaryContainer
-                : _colors.onSurfaceVariant,
-      );
-    });
-  }
+  WidgetStateProperty<IconThemeData?>? get iconTheme =>
+      WidgetStateProperty.resolveWith((Set<WidgetState> states) => IconThemeData(
+            size: 24.0,
+            color: states.contains(WidgetState.disabled)
+                ? _colors.onSurfaceVariant.opacity38
+                : states.contains(WidgetState.selected)
+                    ? _colors.onSecondaryContainer
+                    : _colors.onSurfaceVariant,
+          ));
 
   @override
   Color? get indicatorColor => _colors.secondaryContainer;
@@ -298,18 +293,15 @@ class _NavigationBarDefaultsM3 extends NavigationBarThemeData {
   ShapeBorder? get indicatorShape => const StadiumBorder();
 
   @override
-  WidgetStateProperty<TextStyle?>? get labelTextStyle {
-    return WidgetStateProperty.resolveWith((Set<WidgetState> states) {
-      final TextStyle style = _textTheme.labelMedium!;
-      return style.apply(
-          overflow: TextOverflow.ellipsis,
-          color: states.contains(WidgetState.disabled)
-              ? _colors.onSurfaceVariant.opacity38
-              : states.contains(WidgetState.selected)
-                  ? _colors.onSurface
-                  : _colors.onSurfaceVariant);
-    });
-  }
+  WidgetStateProperty<TextStyle?>? get labelTextStyle =>
+      WidgetStateProperty.resolveWith((Set<WidgetState> states) =>
+          _textTheme.labelMedium!.apply(
+              overflow: TextOverflow.ellipsis,
+              color: states.contains(WidgetState.disabled)
+                  ? _colors.onSurfaceVariant.opacity38
+                  : states.contains(WidgetState.selected)
+                      ? _colors.onSurface
+                      : _colors.onSurfaceVariant));
 }
 
 class HomeBackScope extends StatelessWidget {
