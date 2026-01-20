@@ -64,6 +64,7 @@ def main():
     message = format_release_message(version, commits, release_url, is_stable)
     
     # Simple notification message for channel 3
+    version_clean = version.lstrip('v')
     simple_message = f"Новый релиз!\nFlClashX {version_clean}\n❤️ Посмотреть: https://t.me/flclashx"
     
     # Log notification details (without secrets)
