@@ -142,15 +142,25 @@ Future<void> _service(List<String> flags) async {
           if (res.isNotEmpty) {
             commonPrint.log("TileService: Start failed with error: $res");
             unawaited(app?.tip("Start failed: $res"));
-            await vpn?.stop();
+            try {
+              await vpn?.stop();
+            } catch (e) {
+              debugPrint("Tile vpn.stop() error (ignored): $e");
+            }
             exit(0);
           }
           
           commonPrint.log("TileService: Starting VPN service");
-          await vpn?.start(
-            clashLibHandler.getAndroidVpnOptions(),
-          );
-          commonPrint.log("TileService: VPN service started");
+          try {
+            await vpn?.start(
+              clashLibHandler.getAndroidVpnOptions(),
+            );
+            commonPrint.log("TileService: VPN service started");
+          } catch (e) {
+            // MissingPluginException may occur if VpnPlugin not yet attached
+            // VPN is started by native side via VpnPlugin.handleStart()
+            commonPrint.log("TileService: vpn.start() error (may be handled by native): $e");
+          }
           
           commonPrint.log("TileService: Starting listener");
           clashLibHandler.startListener();
@@ -160,7 +170,11 @@ Future<void> _service(List<String> flags) async {
           commonPrint.log("Error: $e");
           commonPrint.log("StackTrace: $stackTrace");
           unawaited(app?.tip("Start error: $e"));
-          await vpn?.stop();
+          try {
+            await vpn?.stop();
+          } catch (stopError) {
+            debugPrint("Tile vpn.stop() error (ignored): $stopError");
+          }
           exit(0);
         }
       },
@@ -168,9 +182,15 @@ Future<void> _service(List<String> flags) async {
         try {
           unawaited(app?.tip(appLocalizations.stopVpn));
           clashLibHandler.stopListener();
+        } catch (e) {
+          debugPrint("Tile stop listener error: $e");
+        }
+        try {
           await vpn?.stop();
         } catch (e) {
-          debugPrint("Tile stop error: $e");
+          // MissingPluginException may occur if VpnPlugin not yet attached
+          // VPN will be stopped by native side via VpnPlugin.handleStop()
+          debugPrint("Tile vpn.stop() error (ignored): $e");
         }
         exit(0);
       },

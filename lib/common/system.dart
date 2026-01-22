@@ -79,7 +79,14 @@ class System {
     }
 
     if (Platform.isWindows) {
-      final result = await windows?.registerService();
+      // First, try to start existing service without UAC
+      final startedWithoutUac = await windows?.tryStartExistingService();
+      if (startedWithoutUac == true) {
+        return AuthorizeCode.success;
+      }
+      
+      // Service not installed or couldn't start - need to install with UAC
+      final result = await windows?.installService();
       if (result == true) {
         return AuthorizeCode.success;
       }

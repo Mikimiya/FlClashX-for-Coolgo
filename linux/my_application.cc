@@ -89,14 +89,17 @@ static void my_application_activate(GApplication* application) {
   }
 
   gtk_window_set_default_size(window, 1280, 720);
-  gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
   fl_dart_project_set_dart_entrypoint_arguments(project, self->dart_entrypoint_arguments);
 
   FlView* view = fl_view_new(project);
-  gtk_widget_show(GTK_WIDGET(view));
   gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
+
+  // Show widgets after the view has been added to the window to avoid
+  // early exposes without a ready EGL/GL surface on low-power GPUs.
+  gtk_widget_show(GTK_WIDGET(view));
+  gtk_widget_show(GTK_WIDGET(window));
 
   fl_register_plugins(FL_PLUGIN_REGISTRY(view));
 
@@ -124,6 +127,20 @@ static gboolean my_application_local_command_line(GApplication* application, gch
 
 // Implements GApplication::startup.
 static void my_application_startup(GApplication* application) {
+  // On some Raspberry Pi environments, setting safer defaults helps the
+  // Flutter engine initialize EGL/GL correctly. Only set if not already
+  // provided by the user environment.
+#if defined(__arm__) || defined(__aarch64__)
+  if (!g_getenv("GDK_BACKEND")) {
+    g_setenv("GDK_BACKEND", "x11", FALSE);
+  }
+  if (!g_getenv("GDK_GL")) {
+    g_setenv("GDK_GL", "gles", FALSE);
+  }
+  if (!g_getenv("LIBGL_DRI3_DISABLE")) {
+    g_setenv("LIBGL_DRI3_DISABLE", "1", FALSE);
+  }
+#endif
   //MyApplication* self = MY_APPLICATION(object);
 
   // Perform any actions required at application startup.

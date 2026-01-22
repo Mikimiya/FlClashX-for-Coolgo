@@ -246,7 +246,21 @@ class Windows {
     return WindowsHelperServiceStatus.presence;
   }
 
-  Future<bool> registerService() async {
+  // SDDL string that grants Interactive Users (IU) the following rights:
+  // RP = SERVICE_START (start the service)
+  // WP = SERVICE_STOP (stop the service)
+  // LC = SERVICE_QUERY_STATUS (query service status)
+  // LO = SERVICE_INTERROGATE (interrogate the service)
+  // RC = READ_CONTROL (read security descriptor)
+  // This allows non-admin users to start/stop/query the service without UAC
+  static const String _serviceSecurityDescriptor =
+      'D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;RPWPLCLORC;;;IU)';
+
+  /// Install the helper service (requires UAC elevation).
+  /// This should only be called when the service is not installed.
+  /// After installation, sets security descriptor to allow non-admin users
+  /// to start/stop the service without UAC.
+  Future<bool> installService() async {
     final status = await checkService();
 
     if (status == WindowsHelperServiceStatus.running) {
@@ -261,7 +275,6 @@ class Windows {
         "sc",
         "delete",
         appHelperService,
-        "/force",
         "&&",
       ],
       "sc",
@@ -269,6 +282,12 @@ class Windows {
       appHelperService,
       'binPath= "${appPath.helperPath}"',
       'start= auto',
+      "&&",
+      // Set security descriptor to allow non-admin users to start/stop the service
+      "sc",
+      "sdset",
+      appHelperService,
+      _serviceSecurityDescriptor,
       "&&",
       "sc",
       "start",
@@ -282,6 +301,46 @@ class Windows {
     );
 
     return res;
+  }
+
+  /// Try to start an existing service without UAC.
+  /// Returns true if the service was started successfully or is already running.
+  /// Returns false if the service is not installed or failed to start.
+  Future<bool> tryStartExistingService() async {
+    final status = await checkService();
+
+    if (status == WindowsHelperServiceStatus.running) {
+      return true;
+    }
+
+    if (status == WindowsHelperServiceStatus.none) {
+      return false;
+    }
+
+    // Service exists but not running - try to start it without elevation
+    final result = await Process.run('sc', ['start', appHelperService]);
+    
+    if (result.exitCode == 0) {
+      // Wait for service to fully start
+      await Future.delayed(const Duration(milliseconds: 500));
+      // Verify it's actually running and responding
+      final newStatus = await checkService();
+      return newStatus == WindowsHelperServiceStatus.running;
+    }
+
+    return false;
+  }
+
+  /// Register the service - will request UAC only if service is not installed.
+  /// If the service is already installed, it will try to start it without UAC.
+  Future<bool> registerService() async {
+    // First, try to start existing service without UAC
+    if (await tryStartExistingService()) {
+      return true;
+    }
+
+    // Service not installed or couldn't start - need to install with UAC
+    return installService();
   }
 
   Future<bool> startService() async {
