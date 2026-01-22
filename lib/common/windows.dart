@@ -283,12 +283,6 @@ class Windows {
       'binPath= "${appPath.helperPath}"',
       'start= auto',
       "&&",
-      // Set security descriptor to allow non-admin users to start/stop the service
-      "sc",
-      "sdset",
-      appHelperService,
-      _serviceSecurityDescriptor,
-      "&&",
       "sc",
       "start",
       appHelperService,
