@@ -247,6 +247,8 @@
   "profilesSort": "プロファイルの並び替え",
   "start": "開始",
   "stop": "停止",
+  "running": "実行中",
+  "stopped": "停止中",
   "appDesc": "アプリ関連設定の処理",
   "vpnDesc": "VPN関連設定の変更",
   "dnsDesc": "DNS関連設定の更新",

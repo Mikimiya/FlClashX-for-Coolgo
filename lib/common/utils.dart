@@ -152,16 +152,23 @@ class Utils {
 
   String getTrayIconPath({
     required Brightness brightness,
+    bool isRunning = false,
   }) {
     if (Platform.isMacOS) {
+      // macOS always uses white icon for menu bar
       return "assets/images/icon_white.png";
     }
-    final suffix = Platform.isWindows ? "ico" : "png";
-    return "assets/images/icon.$suffix";
-    // return switch (brightness) {
-    //   Brightness.dark => "assets/images/icon_white.$suffix",
-    //   Brightness.light => "assets/images/icon_black.$suffix",
-    // };
+    
+    // When running - use colored icon
+    if (isRunning) {
+      return "assets/images/icon.ico";
+    }
+    
+    // When stopped - use stop icons based on theme
+    return switch (brightness) {
+      Brightness.dark => "assets/images/icon_stop_white.ico",
+      Brightness.light => "assets/images/icon_stop_black.ico",
+    };
   }
 
   int compareVersions(String version1, String version2) {

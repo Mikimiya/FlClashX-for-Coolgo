@@ -252,6 +252,8 @@
   "profilesSort": "Profiles sort",
   "start": "Start",
   "stop": "Stop",
+  "running": "Running",
+  "stopped": "Stopped",
   "appDesc": "Processing app related settings",
   "vpnDesc": "Modify VPN related settings",
   "dnsDesc": "Update DNS related settings",

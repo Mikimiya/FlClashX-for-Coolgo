@@ -247,6 +247,8 @@
   "profilesSort": "配置排序",
   "start": "启动",
   "stop": "暂停",
+  "running": "运行中",
+  "stopped": "已停止",
   "appDesc": "处理应用相关设置",
   "vpnDesc": "修改VPN相关设置",
   "dnsDesc": "更新DNS相关设置",

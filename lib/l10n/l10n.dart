@@ -1934,6 +1934,16 @@ class AppLocalizations {
     return Intl.message('Stop', name: 'stop', desc: '', args: []);
   }
 
+  /// `Running`
+  String get running {
+    return Intl.message('Running', name: 'running', desc: '', args: []);
+  }
+
+  /// `Stopped`
+  String get stopped {
+    return Intl.message('Stopped', name: 'stopped', desc: '', args: []);
+  }
+
   /// `Processing app related settings`
   String get appDesc {
     return Intl.message(
