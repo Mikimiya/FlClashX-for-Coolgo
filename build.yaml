@@ -6,7 +6,10 @@ targets:
           build_extensions:
             '^lib/models/{{}}.dart': 'lib/models/generated/{{}}.g.dart'
             '^lib/providers/{{}}.dart': 'lib/providers/generated/{{}}.g.dart'
+            '^lib/coolgo/models/{{}}.dart': 'lib/coolgo/models/{{}}.g.dart'
+            '^lib/coolgo/providers/{{}}.dart': 'lib/coolgo/providers/{{}}.g.dart'
       freezed:
         options:
           build_extensions:
             '^lib/models/{{}}.dart': 'lib/models/generated/{{}}.freezed.dart'
+            '^lib/coolgo/models/{{}}.dart': 'lib/coolgo/models/{{}}.freezed.dart'

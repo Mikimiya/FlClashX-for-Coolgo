@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:defer_pointer/defer_pointer.dart';
 import 'package:flclashx/common/common.dart';
+import 'package:flclashx/coolgo/views/views.dart';
 import 'package:flclashx/enum/enum.dart';
 import 'package:flclashx/providers/providers.dart';
 import 'package:flclashx/widgets/widgets.dart';
@@ -53,6 +54,8 @@ class _DashboardViewState extends ConsumerState<DashboardView> with PageMixin {
 
   @override
   List<Widget> get actions => [
+        // CoolGo "回城"按钮
+        const CoolGoHomeButton(),
         _buildIsEdit((isEdit) => isEdit
               ? ValueListenableBuilder(
                   valueListenable: _addedWidgetsNotifier,

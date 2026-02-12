@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flclashx/clash/clash.dart';
 import 'package:flclashx/common/common.dart';
+import 'package:flclashx/coolgo/coolgo.dart';
 import 'package:flclashx/l10n/l10n.dart';
 import 'package:flclashx/manager/hotkey_manager.dart';
 import 'package:flclashx/manager/manager.dart';
@@ -64,7 +65,27 @@ class ApplicationState extends ConsumerState<Application> {
       await globalState.appController.init();
       globalState.appController.initLink();
       app?.initShortcuts();
+      
+      // CoolGo: 检查是否需要显示登录页面
+      await _checkCoolGoAuth();
     });
+  }
+  
+  /// CoolGo: 检查认证状态，如果需要则跳转登录页
+  Future<void> _checkCoolGoAuth() async {
+    final authNotifier = ref.read(coolGoAuthProvider.notifier);
+    final shouldShowLogin = await authNotifier.shouldShowLogin();
+    
+    if (shouldShowLogin) {
+      final context = globalState.navigatorKey.currentContext;
+      if (context != null && context.mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const CoolGoLoginPage(),
+          ),
+        );
+      }
+    }
   }
 
   void _autoUpdateGroupTask() {
